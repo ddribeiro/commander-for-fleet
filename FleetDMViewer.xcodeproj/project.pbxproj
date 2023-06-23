@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5E6326B92A4645CE009CC7A6 /* LockDeviceCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6326B82A4645CE009CC7A6 /* LockDeviceCommand.swift */; };
 		5E7DAB0D2A339C7F00DDFAFC /* NoHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */; };
 		5E9038D52A4384F50077F3DC /* SoftwareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D42A4384F50077F3DC /* SoftwareView.swift */; };
 		5E9038D72A4387670077F3DC /* SoftwareRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D62A4387670077F3DC /* SoftwareRow.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5E6326B82A4645CE009CC7A6 /* LockDeviceCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockDeviceCommand.swift; sourceTree = "<group>"; };
 		5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoHostView.swift; sourceTree = "<group>"; };
 		5E9038D42A4384F50077F3DC /* SoftwareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareView.swift; sourceTree = "<group>"; };
 		5E9038D62A4387670077F3DC /* SoftwareRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareRow.swift; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 				5E9038E02A44B19F0077F3DC /* DeviceInformationQuerySelection.swift */,
 				5EDC18072A3B8FDF00691C2E /* HostRow.swift */,
 				5E9039312A45FC250077F3DC /* HostView.swift */,
+				5E6326B82A4645CE009CC7A6 /* LockDeviceCommand.swift */,
 				5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */,
 				5EDC180D2A409DB100691C2E /* PoliciesView.swift */,
 				5E9038DA2A43A0F60077F3DC /* ProfilesRow.swift */,
@@ -234,6 +237,7 @@
 				5EDA66BD2A2A4955006706CD /* FleetDMViewerApp.swift in Sources */,
 				5E9038D92A43944B0077F3DC /* SoftwareDetailView.swift in Sources */,
 				5E9038DF2A44AF6F0077F3DC /* MDMCommands.swift in Sources */,
+				5E6326B92A4645CE009CC7A6 /* LockDeviceCommand.swift in Sources */,
 				5EDA66D52A2A4979006706CD /* TeamsView.swift in Sources */,
 				5EDC18062A3B5E6B00691C2E /* ViewModel.swift in Sources */,
 				5EDA66DA2A2A4979006706CD /* NetworkManager.swift in Sources */,
