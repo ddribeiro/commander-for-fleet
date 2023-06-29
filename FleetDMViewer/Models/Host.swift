@@ -24,7 +24,7 @@ struct Host: Codable, Identifiable, Hashable {
     var publicIp: String
     var primaryIp: String
     var primaryMac: String
-    var teamId: Int
+    var teamId: Int?
     var gigsDiskSpaceAvailable: Double
     var percentDiskSpaceAvailable: Int
     var diskEncryptionEnabled: Bool?

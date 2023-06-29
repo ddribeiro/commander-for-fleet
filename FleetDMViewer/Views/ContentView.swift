@@ -13,7 +13,7 @@ struct ContentView: View {
     var body: some View {
         if viewModel.isAuthenticated {
             List(selection: $viewModel.selectedHost) {
-                ForEach(viewModel.filteredHosts) { host in
+                ForEach(viewModel.selectedTeam != nil ? viewModel.filteredHosts : viewModel.hosts) { host in
                     HostRow(host: host)
                 }
             }

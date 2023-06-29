@@ -12,10 +12,20 @@ struct TeamsView: View {
     
     var body: some View {
             List(selection: $viewModel.selectedTeam) {
-                ForEach(viewModel.teams) { team in
-                    NavigationLink(value: team) {
-                        Label(team.name, systemImage: "person.3")
-                            .lineLimit(1)
+                Section("All Hosts") {
+                    NavigationLink {
+                        ContentView()
+                    } label: {
+                        Label("All Hosts", systemImage: "laptopcomputer")
+                    }
+                }
+                
+                Section("Teams") {
+                    ForEach(viewModel.teams) { team in
+                        NavigationLink(value: team) {
+                            Label(team.name, systemImage: "person.3")
+                                .lineLimit(1)
+                        }
                     }
                 }
             }
