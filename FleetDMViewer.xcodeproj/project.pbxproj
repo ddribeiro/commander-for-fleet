@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5E028F452A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E028F442A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift */; };
-		5E6326B92A4645CE009CC7A6 /* LockDeviceCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6326B82A4645CE009CC7A6 /* LockDeviceCommand.swift */; };
+		5E028F4E2A4DCEF300D90456 /* CommandsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E028F4D2A4DCEF300D90456 /* CommandsView.swift */; };
+		5E028F512A4DE24400D90456 /* CommandRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E028F502A4DE24400D90456 /* CommandRow.swift */; };
 		5E7DAB0D2A339C7F00DDFAFC /* NoHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */; };
 		5E9038D52A4384F50077F3DC /* SoftwareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D42A4384F50077F3DC /* SoftwareView.swift */; };
 		5E9038D72A4387670077F3DC /* SoftwareRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D62A4387670077F3DC /* SoftwareRow.swift */; };
@@ -39,7 +40,8 @@
 
 /* Begin PBXFileReference section */
 		5E028F442A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager-DocumentsDirectory.swift"; sourceTree = "<group>"; };
-		5E6326B82A4645CE009CC7A6 /* LockDeviceCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockDeviceCommand.swift; sourceTree = "<group>"; };
+		5E028F4D2A4DCEF300D90456 /* CommandsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandsView.swift; sourceTree = "<group>"; };
+		5E028F502A4DE24400D90456 /* CommandRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandRow.swift; sourceTree = "<group>"; };
 		5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoHostView.swift; sourceTree = "<group>"; };
 		5E9038D42A4384F50077F3DC /* SoftwareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareView.swift; sourceTree = "<group>"; };
 		5E9038D62A4387670077F3DC /* SoftwareRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareRow.swift; sourceTree = "<group>"; };
@@ -81,6 +83,45 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5E028F4A2A4DCE3300D90456 /* HostViews */ = {
+			isa = PBXGroup;
+			children = (
+				5EDC18072A3B8FDF00691C2E /* HostRow.swift */,
+				5E9039312A45FC250077F3DC /* HostView.swift */,
+				5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */,
+			);
+			path = HostViews;
+			sourceTree = "<group>";
+		};
+		5E028F4B2A4DCE9100D90456 /* SoftwareViews */ = {
+			isa = PBXGroup;
+			children = (
+				5E9038D42A4384F50077F3DC /* SoftwareView.swift */,
+				5E9038D62A4387670077F3DC /* SoftwareRow.swift */,
+				5E9038D82A43944B0077F3DC /* SoftwareDetailView.swift */,
+			);
+			path = SoftwareViews;
+			sourceTree = "<group>";
+		};
+		5E028F4C2A4DCEA700D90456 /* PoliciesViews */ = {
+			isa = PBXGroup;
+			children = (
+				5EDC180D2A409DB100691C2E /* PoliciesView.swift */,
+				5E9038DA2A43A0F60077F3DC /* ProfilesRow.swift */,
+				5E9038DC2A43A3AE0077F3DC /* ProfilesView.swift */,
+			);
+			path = PoliciesViews;
+			sourceTree = "<group>";
+		};
+		5E028F4F2A4DCF0300D90456 /* CommandsView */ = {
+			isa = PBXGroup;
+			children = (
+				5E028F4D2A4DCEF300D90456 /* CommandsView.swift */,
+				5E028F502A4DE24400D90456 /* CommandRow.swift */,
+			);
+			path = CommandsView;
+			sourceTree = "<group>";
+		};
 		5E9B94E02A3231E600A7A0CE /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -137,19 +178,13 @@
 		5EDA66E22A2A4A13006706CD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5E028F4F2A4DCF0300D90456 /* CommandsView */,
+				5E028F4C2A4DCEA700D90456 /* PoliciesViews */,
+				5E028F4B2A4DCE9100D90456 /* SoftwareViews */,
+				5E028F4A2A4DCE3300D90456 /* HostViews */,
 				5EDC18092A3B961400691C2E /* ContentView.swift */,
 				5EDC180B2A3B96D500691C2E /* DetailView.swift */,
-				5EDC18072A3B8FDF00691C2E /* HostRow.swift */,
-				5E9039312A45FC250077F3DC /* HostView.swift */,
-				5E6326B82A4645CE009CC7A6 /* LockDeviceCommand.swift */,
-				5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */,
-				5EDC180D2A409DB100691C2E /* PoliciesView.swift */,
-				5E9038DA2A43A0F60077F3DC /* ProfilesRow.swift */,
-				5E9038DC2A43A3AE0077F3DC /* ProfilesView.swift */,
 				5EDA66CB2A2A4979006706CD /* TeamsView.swift */,
-				5E9038D42A4384F50077F3DC /* SoftwareView.swift */,
-				5E9038D62A4387670077F3DC /* SoftwareRow.swift */,
-				5E9038D82A43944B0077F3DC /* SoftwareDetailView.swift */,
 				5EDA66CE2A2A4979006706CD /* LoginView.swift */,
 				5EDC17FF2A3A504900691C2E /* MeView.swift */,
 			);
@@ -237,9 +272,9 @@
 				5EDA66BD2A2A4955006706CD /* FleetDMViewerApp.swift in Sources */,
 				5E9038D92A43944B0077F3DC /* SoftwareDetailView.swift in Sources */,
 				5E9038DF2A44AF6F0077F3DC /* MDMCommands.swift in Sources */,
-				5E6326B92A4645CE009CC7A6 /* LockDeviceCommand.swift in Sources */,
 				5EDA66D52A2A4979006706CD /* TeamsView.swift in Sources */,
 				5EDC18062A3B5E6B00691C2E /* ViewModel.swift in Sources */,
+				5E028F4E2A4DCEF300D90456 /* CommandsView.swift in Sources */,
 				5EDA66DA2A2A4979006706CD /* NetworkManager.swift in Sources */,
 				5E9038D72A4387670077F3DC /* SoftwareRow.swift in Sources */,
 				5EDC180C2A3B96D500691C2E /* DetailView.swift in Sources */,
@@ -252,6 +287,7 @@
 				5E9B94E82A32323300A7A0CE /* Endpoint.swift in Sources */,
 				5EDC180A2A3B961400691C2E /* ContentView.swift in Sources */,
 				5EDC180E2A409DB100691C2E /* PoliciesView.swift in Sources */,
+				5E028F512A4DE24400D90456 /* CommandRow.swift in Sources */,
 				5E9038DB2A43A0F60077F3DC /* ProfilesRow.swift in Sources */,
 				5EDC18042A3A506200691C2E /* User.swift in Sources */,
 				5EDC18082A3B8FDF00691C2E /* HostRow.swift in Sources */,

@@ -46,7 +46,11 @@ extension Endpoint where T == User {
 }
 
 extension Endpoint where T == MdmCommandResponse {
-    static let command = Endpoint(path: "mdm/apple/enqueue", type: MdmCommandResponse.self, method: .post, headers: ["Content-Type": "application/json"])
+    static let mdmCommand = Endpoint(path: "mdm/apple/enqueue", type: MdmCommandResponse.self, method: .post, headers: ["Content-Type": "application/json"])
+}
+
+extension Endpoint where T == [CommandResponse] {
+    static let commands = Endpoint(path: "mdm/apple/commands", type: [CommandResponse].self, keyPath: "results")
 }
 
 enum HTTPMethod: String {

@@ -35,6 +35,7 @@ class ViewModel: ObservableObject {
     
     @Published var teams = [Team]()
     @Published var hosts = [Host]()
+    @Published var commands = [CommandResponse]()
     
     @Published var serverURL = ""
     @Published var emailAddress = ""
@@ -44,12 +45,23 @@ class ViewModel: ObservableObject {
     
     @Published var isShowingSignInSheet = true
     
-    @Published var mdmCommands = [MdmCommandResponse]()
     
     var filteredHosts: [Host] {
         hosts.filter { host in
             host.teamId == selectedTeam?.id
         }
+    }
+    
+    var filteredCommands: [CommandResponse] {
+        commands.filter { command in
+            command.deviceId == selectedHost?.uuid
+        }
+    }
+    
+    var sortedCommands: [CommandResponse] {
+        filteredCommands.sorted(by: {
+            $0.updatedAt > $1.updatedAt
+        })
     }
     
     @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
@@ -158,7 +170,7 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func sendMDMCommand(command: MdmCommand) async throws -> MdmCommandResponse {
+    func sendMDMCommand(command: MdmCommand) async throws {
         guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
             print("Could not get server URL")
             throw URLError(.badURL)
@@ -184,11 +196,10 @@ class ViewModel: ObservableObject {
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
             
-            return try await networkManager.fetch(.command, with: encoder.encode(command))
+            _ = try await networkManager.fetch(.mdmCommand, with: encoder.encode(command))
         } catch {
             print("Could not send command")
             print(error.localizedDescription)
-            throw error
         }
     }
     
@@ -226,6 +237,35 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func fetchCommands() async {
+        guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
+            print("Could not get server URL")
+            return
+        }
+        
+        guard let apiToken = KeychainWrapper.default.string(forKey: "apiToken") else {
+            print("Could not get API Key")
+            return
+        }
+        
+        let environment = AppEnvironment(baseURL: URL(string: "\(serverURL)/api/v1/fleet/")!,
+                                         session: {
+            let configuration = URLSessionConfiguration.default
+            configuration.httpAdditionalHeaders = [
+                "Authorization": "Bearer \(apiToken)"
+            ]
+            return URLSession(configuration: configuration)
+        }())
+        
+        let networkManager = NetworkManager(environment: environment)
+        
+        do {
+            commands = try await networkManager.fetch(.commands)
+        } catch {
+            print("Unable to fetch commands")
+        }
+    }
+    
     func generatebase64EncodedPlistData<T: Encodable>(from object: T) throws -> String {
         let encoder = PropertyListEncoder()
         encoder.outputFormat = .xml
@@ -239,20 +279,21 @@ class ViewModel: ObservableObject {
         }
     }
     
-    private func saveCommands() {
-        do {
-            let data = try JSONEncoder().encode(mdmCommands)
-            try data.write(to: commandsSavePath, options: [.atomic, .completeFileProtection])
-        } catch {
-            print("Unable to save data")
-            print(error.localizedDescription)
-        }
-    }
     
-    func addCommand(_ command: MdmCommandResponse) {
-        mdmCommands.append(command)
-        saveCommands()
-    }
+//    private func saveCommands() {
+//        do {
+//            let data = try JSONEncoder().encode(mdmCommands)
+//            try data.write(to: commandsSavePath, options: [.atomic, .completeFileProtection])
+//        } catch {
+//            print("Unable to save data")
+//            print(error.localizedDescription)
+//        }
+//    }
+//    
+//    func addCommand(_ command: MdmCommandResponse) {
+//        mdmCommands.append(command)
+//        saveCommands()
+//    }
     
     private func loadCommands() throws -> [MdmCommandResponse] {
         do {

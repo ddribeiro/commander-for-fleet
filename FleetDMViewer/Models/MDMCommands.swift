@@ -7,6 +7,17 @@
 
 import Foundation
 
+struct CommandResponse: Codable {
+    var deviceId: String
+    var commandUuid: String
+    var updatedAt: Date
+    var requestType: String
+    var status: String
+    var hostname: String
+    
+    static let example = CommandResponse(deviceId: "A04F07D9-0AB0-5682-B99E-996F178A707E", commandUuid: "17269A1C-20F9-407F-9AD0-396B9DFA6596", updatedAt: .now, requestType: "DeviceLock", status: "Acknowledged", hostname: "Dalers-Super-Awesome-Vitual-Machine.local")
+}
+
 struct MdmCommand: Codable {
     var command: String
     var deviceIds: [String]
