@@ -12,6 +12,9 @@ struct HostView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State var updatedHost: Host? = nil
     @State private var selectedView = "Policies"
+    @State private var lockCode: String = ""
+    
+    @State private var showingLockAlert = false
     
     var host: Host
     var views = ["Policies", "Software", "Profiles"]
@@ -200,10 +203,38 @@ struct HostView: View {
         .task {
             await updateHost()
         }
+        .alert("Enter Lock Code", isPresented: $showingLockAlert) {
+            TextField("Enter your code", text: $lockCode)
+                .keyboardType(.numberPad)
+            Button("Cancel", role: .cancel) { }
+            Button("Lock", role: .destructive) {
+//                if lockCode.count == 4 {
+                    Task {
+                        let lockDeviceCommand = LockDeviceCommand(command: LockDeviceCommand.Command(pin: lockCode))
+                        let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: lockDeviceCommand), deviceIds: [host.uuid])
+                        
+                        viewModel.mdmCommands.append(try await viewModel.sendMDMCommand(command: mdmCommand))
+                    }
+//                }
+            }
+        } message: {
+            Text("Enter a 4 digit code to lock the device")
+        }
         .navigationTitle("\(host.computerName)")
         .toolbar {
             Menu {
                 Button {
+                    Task {
+                        let deviceInformationCommand = DeviceInformationCommand(command: DeviceInformationCommand.Command(queries: ["UDID", "DeviceName", "ModelName", "SerialNumber"]))
+                        
+                        print(deviceInformationCommand.commandUUID)
+                        
+                        let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: deviceInformationCommand), deviceIds: [host.uuid])
+                    
+                        viewModel.addCommand(try await viewModel.sendMDMCommand(command: mdmCommand))
+                        
+                        print(viewModel.mdmCommands)
+                    }
                     
                 } label: {
                     Label("Get Device Information", systemImage: "info.circle")
@@ -218,15 +249,20 @@ struct HostView: View {
                 Divider()
                 
                 Button(role: .destructive) {
-                    
+                    showingLockAlert.toggle()
                 } label: {
                     Label("Lock Device", systemImage: "lock.laptopcomputer")
                 }
                 
                 Button(role: .destructive) {
-                    
+                    Task {
+                        let shutdownDeviceCommand = ShutDownDeviceCommand(command: ShutDownDeviceCommand.Command())
+                        let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: shutdownDeviceCommand), deviceIds: [host.uuid])
+                        
+                        viewModel.addCommand(try await viewModel.sendMDMCommand(command: mdmCommand))
+                    }
                 } label: {
-                    Label("Erase Device", systemImage: "trash")
+                    Label("Shutdown Device", systemImage: "power")
                 }
             } label: {
                 Label("MDM Commands", systemImage: "ellipsis.circle")

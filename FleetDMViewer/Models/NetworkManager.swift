@@ -24,7 +24,7 @@ struct NetworkManager {
             throw URLError(.unsupportedURL)
         }
         
-//        print(url.absoluteString)
+        print(url.absoluteString)
         
         var request = URLRequest(url: url)
         request.httpMethod = resource.method.rawValue
@@ -41,9 +41,9 @@ struct NetworkManager {
             }
         }
         
-//        if let responseString = String(data: data, encoding: .utf8) {
-//            print(responseString)
-//        }
+        if let responseString = String(data: data, encoding: .utf8) {
+            print(responseString)
+        }
         
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5E028F452A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E028F442A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift */; };
 		5E6326B92A4645CE009CC7A6 /* LockDeviceCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6326B82A4645CE009CC7A6 /* LockDeviceCommand.swift */; };
 		5E7DAB0D2A339C7F00DDFAFC /* NoHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */; };
 		5E9038D52A4384F50077F3DC /* SoftwareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D42A4384F50077F3DC /* SoftwareView.swift */; };
@@ -15,7 +16,6 @@
 		5E9038DB2A43A0F60077F3DC /* ProfilesRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038DA2A43A0F60077F3DC /* ProfilesRow.swift */; };
 		5E9038DD2A43A3AE0077F3DC /* ProfilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038DC2A43A3AE0077F3DC /* ProfilesView.swift */; };
 		5E9038DF2A44AF6F0077F3DC /* MDMCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038DE2A44AF6F0077F3DC /* MDMCommands.swift */; };
-		5E9038E12A44B19F0077F3DC /* DeviceInformationQuerySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038E02A44B19F0077F3DC /* DeviceInformationQuerySelection.swift */; };
 		5E9039322A45FC250077F3DC /* HostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9039312A45FC250077F3DC /* HostView.swift */; };
 		5E9B94E22A3231F900A7A0CE /* LoginRequestBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E12A3231F900A7A0CE /* LoginRequestBody.swift */; };
 		5E9B94E42A32320D00A7A0CE /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E32A32320D00A7A0CE /* Host.swift */; };
@@ -38,6 +38,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5E028F442A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager-DocumentsDirectory.swift"; sourceTree = "<group>"; };
 		5E6326B82A4645CE009CC7A6 /* LockDeviceCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockDeviceCommand.swift; sourceTree = "<group>"; };
 		5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoHostView.swift; sourceTree = "<group>"; };
 		5E9038D42A4384F50077F3DC /* SoftwareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareView.swift; sourceTree = "<group>"; };
@@ -46,7 +47,6 @@
 		5E9038DA2A43A0F60077F3DC /* ProfilesRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilesRow.swift; sourceTree = "<group>"; };
 		5E9038DC2A43A3AE0077F3DC /* ProfilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilesView.swift; sourceTree = "<group>"; };
 		5E9038DE2A44AF6F0077F3DC /* MDMCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDMCommands.swift; sourceTree = "<group>"; };
-		5E9038E02A44B19F0077F3DC /* DeviceInformationQuerySelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInformationQuerySelection.swift; sourceTree = "<group>"; };
 		5E9039312A45FC250077F3DC /* HostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HostView.swift; sourceTree = "<group>"; };
 		5E9B94E12A3231F900A7A0CE /* LoginRequestBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRequestBody.swift; sourceTree = "<group>"; };
 		5E9B94E32A32320D00A7A0CE /* Host.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
@@ -116,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				5EDA66BC2A2A4955006706CD /* FleetDMViewerApp.swift */,
+				5E028F442A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift */,
 				5E9B94E02A3231E600A7A0CE /* Models */,
 				5EDA66E22A2A4A13006706CD /* Views */,
 				5EDA66C02A2A4955006706CD /* Assets.xcassets */,
@@ -138,7 +139,6 @@
 			children = (
 				5EDC18092A3B961400691C2E /* ContentView.swift */,
 				5EDC180B2A3B96D500691C2E /* DetailView.swift */,
-				5E9038E02A44B19F0077F3DC /* DeviceInformationQuerySelection.swift */,
 				5EDC18072A3B8FDF00691C2E /* HostRow.swift */,
 				5E9039312A45FC250077F3DC /* HostView.swift */,
 				5E6326B82A4645CE009CC7A6 /* LockDeviceCommand.swift */,
@@ -246,9 +246,9 @@
 				5E9039322A45FC250077F3DC /* HostView.swift in Sources */,
 				5EDA66D82A2A4979006706CD /* LoginView.swift in Sources */,
 				5E9B94E62A32321D00A7A0CE /* Team.swift in Sources */,
-				5E9038E12A44B19F0077F3DC /* DeviceInformationQuerySelection.swift in Sources */,
 				5E7DAB0D2A339C7F00DDFAFC /* NoHostView.swift in Sources */,
 				5E9B94E22A3231F900A7A0CE /* LoginRequestBody.swift in Sources */,
+				5E028F452A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift in Sources */,
 				5E9B94E82A32323300A7A0CE /* Endpoint.swift in Sources */,
 				5EDC180A2A3B961400691C2E /* ContentView.swift in Sources */,
 				5EDC180E2A409DB100691C2E /* PoliciesView.swift in Sources */,

@@ -44,6 +44,8 @@ class ViewModel: ObservableObject {
     
     @Published var isShowingSignInSheet = true
     
+    @Published var mdmCommands = [MdmCommandResponse]()
+    
     var filteredHosts: [Host] {
         hosts.filter { host in
             host.teamId == selectedTeam?.id
@@ -51,6 +53,8 @@ class ViewModel: ObservableObject {
     }
     
     @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
+    
+    let commandsSavePath = FileManager.documentsDirectory.appendingPathComponent("mdmcommands")
     
     func saveCredentials() {
         KeychainWrapper.default.set(emailAddress, forKey: "emailAddress")
@@ -154,6 +158,40 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func sendMDMCommand(command: MdmCommand) async throws -> MdmCommandResponse {
+        guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
+            print("Could not get server URL")
+            throw URLError(.badURL)
+        }
+        
+        guard let apiToken = KeychainWrapper.default.string(forKey: "apiToken") else {
+            print("Could not get API Key")
+            throw URLError(.userAuthenticationRequired)
+        }
+        
+        let environment = AppEnvironment(baseURL: URL(string: "\(serverURL)/api/v1/fleet/")!,
+                                         session: {
+            let configuration = URLSessionConfiguration.default
+            configuration.httpAdditionalHeaders = [
+                "Authorization": "Bearer \(apiToken)"
+            ]
+            return URLSession(configuration: configuration)
+        }())
+        
+        let networkManager = NetworkManager(environment: environment)
+        
+        do {
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            
+            return try await networkManager.fetch(.command, with: encoder.encode(command))
+        } catch {
+            print("Could not send command")
+            print(error.localizedDescription)
+            throw error
+        }
+    }
+    
     func getHost(hostID: Int) async throws -> Host {
         let endpoint = Endpoint.gethost(id: hostID)
         
@@ -184,6 +222,44 @@ class ViewModel: ObservableObject {
         } catch {
             print("here's the error")
             print(error.localizedDescription)
+            throw error
+        }
+    }
+    
+    func generatebase64EncodedPlistData<T: Encodable>(from object: T) throws -> String {
+        let encoder = PropertyListEncoder()
+        encoder.outputFormat = .xml
+        
+        do {
+            let plistData = try encoder.encode(object)
+            return plistData.base64EncodedString().replacingOccurrences(of: "=", with: "")
+        } catch {
+            print("Error generating plist data: \(error)")
+            return error.localizedDescription
+        }
+    }
+    
+    private func saveCommands() {
+        do {
+            let data = try JSONEncoder().encode(mdmCommands)
+            try data.write(to: commandsSavePath, options: [.atomic, .completeFileProtection])
+        } catch {
+            print("Unable to save data")
+            print(error.localizedDescription)
+        }
+    }
+    
+    func addCommand(_ command: MdmCommandResponse) {
+        mdmCommands.append(command)
+        saveCommands()
+    }
+    
+    private func loadCommands() throws -> [MdmCommandResponse] {
+        do {
+            let data = try Data(contentsOf: commandsSavePath)
+            return try JSONDecoder().decode([MdmCommandResponse].self, from: data)
+        } catch {
+            print("Unable to load commands")
             throw error
         }
     }
