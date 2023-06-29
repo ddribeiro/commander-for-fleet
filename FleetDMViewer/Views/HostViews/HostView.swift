@@ -167,35 +167,35 @@ struct HostView: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                if selectedView == "Policies" {
+                
+                switch selectedView {
+                case "Policies" :
                     if let policies = updatedHost?.policies {
                         PoliciesView(policies: policies)
                     } else {
                         ProgressView()
                     }
-                }
-                
-                if selectedView == "Software" {
+                case "Software":
                     if let software = updatedHost?.software {
                         SoftwareView(software: software)
                     } else {
                         ProgressView()
                     }
-                }
-                
-                if selectedView == "Profiles" {
+                case "Profiles":
                     if let profiles = updatedHost?.mdm?.profiles {
                         ProfilesView(profiles: profiles)
                     } else {
                         ProgressView()
                     }
+                default:
+                    Text("N/A")
                 }
             }
         }
         .sheet(isPresented: $showingCommandSheet) {
             CommandsView()
         }
-        
+    
         .onChange(of: viewModel.selectedHost) { _ in
             updatedHost = nil
             Task {
@@ -226,44 +226,99 @@ struct HostView: View {
         .navigationTitle("\(host.computerName)")
         .toolbar {
             Menu {
-                Button {
-                    Task {
-                        let deviceInformationCommand = DeviceInformationCommand(command: DeviceInformationCommand.Command(queries: ["UDID", "DeviceName", "ModelName", "SerialNumber"]))
+                Menu {
+                    Button {
+                        Task {
+                            let deviceInformationCommand = DeviceInformationCommand(command: DeviceInformationCommand.Command(queries: ["UDID", "DeviceName", "ModelName", "SerialNumber"]))
+                            
+                            print(deviceInformationCommand.commandUUID)
+                            
+                            let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: deviceInformationCommand), deviceIds: [host.uuid])
+                            
+                            try await viewModel.sendMDMCommand(command: mdmCommand)
+                        }
                         
-                        print(deviceInformationCommand.commandUUID)
-                        
-                        let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: deviceInformationCommand), deviceIds: [host.uuid])
-                        
-                        try await viewModel.sendMDMCommand(command: mdmCommand)
+                    } label: {
+                        Label("Get Device Information", systemImage: "info.circle")
                     }
                     
-                } label: {
-                    Label("Get Device Information", systemImage: "info.circle")
-                }
-                
-                Button {
-                    
-                } label: {
-                    Label("Install Software Updates", systemImage: "arrow.down.circle")
-                }
-                
-                Divider()
-                
-                Button(role: .destructive) {
-                    showingLockAlert.toggle()
-                } label: {
-                    Label("Lock Device", systemImage: "lock.laptopcomputer")
-                }
-                
-                Button(role: .destructive) {
-                    Task {
-                        let shutdownDeviceCommand = ShutDownDeviceCommand(command: ShutDownDeviceCommand.Command())
-                        let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: shutdownDeviceCommand), deviceIds: [host.uuid])
+                    Button {
                         
-                        try await viewModel.sendMDMCommand(command: mdmCommand)
+                    } label: {
+                        Label("Install Software Updates", systemImage: "arrow.down.circle")
+                    }
+                    
+                    Divider()
+                    
+                    Button(role: .destructive) {
+                        showingLockAlert.toggle()
+                    } label: {
+                        Label("Lock Device", systemImage: "lock.laptopcomputer")
+                    }
+                    
+                    Button(role: .destructive) {
+                        Task {
+                            let shutdownDeviceCommand = ShutDownDeviceCommand(command: ShutDownDeviceCommand.Command())
+                            let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: shutdownDeviceCommand), deviceIds: [host.uuid])
+                            
+                            try await viewModel.sendMDMCommand(command: mdmCommand)
+                        }
+                    } label: {
+                        Label("Shutdown Device", systemImage: "power")
+                    }
+                    
+                    Button(role: .destructive) {
+                        Task {
+                            let restartDeviceComand = RestartDeviceCommand(command: RestartDeviceCommand.Command())
+                            let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: restartDeviceComand), deviceIds: [host.uuid])
+                            
+                            try await viewModel.sendMDMCommand(command: mdmCommand)
+                        }
+                    } label: {
+                        Label("Restart Device", systemImage: "restart.circle")
                     }
                 } label: {
-                    Label("Shutdown Device", systemImage: "power")
+                    Label("Send MDM Commands", systemImage: "command")
+                }
+                
+                Menu {
+                    Button {
+                        Task {
+                            let installZoomCommand = InstallApplicationCommand(command: InstallApplicationCommand.Command(manifestUrl: "https://storage.googleapis.com/harmonize-public/Fleetd%20Installers/zoom.plist"))
+                            let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: installZoomCommand), deviceIds: [host.uuid])
+                            
+                            try await viewModel.sendMDMCommand(command: mdmCommand)
+                        }
+                        
+                    } label: {
+                        Label("Install Zoom", systemImage: "app.badge")
+                    }
+                    
+                    Button {
+                        Task {
+                            let installChromeCommand = InstallApplicationCommand(command: InstallApplicationCommand.Command(manifestUrl: "https://storage.googleapis.com/harmonize-public/Fleetd%20Installers/GoogleChrome-114.0.5735.198.plist"))
+                            let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: installChromeCommand), deviceIds: [host.uuid])
+                            
+                            try await viewModel.sendMDMCommand(command: mdmCommand)
+                        }
+                        
+                    } label: {
+                        Label("Install Google Chrome", systemImage: "app.badge")
+                    }
+                    
+                    Button {
+                        Task {
+                            let installSlackCommand = InstallApplicationCommand(command: InstallApplicationCommand.Command(manifestUrl: "https://storage.googleapis.com/harmonize-public/Fleetd%20Installers/Slack-4.33.73.plist"))
+                            let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: installSlackCommand), deviceIds: [host.uuid])
+                            
+                            try await viewModel.sendMDMCommand(command: mdmCommand)
+                        }
+                        
+                    } label: {
+                        Label("Install Slack", systemImage: "app.badge")
+                    }
+                } label: {
+                    Label("Install Apps", systemImage: "laptopcomputer.and.arrow.down")
                 }
                 
                 Divider()
@@ -278,17 +333,17 @@ struct HostView: View {
                 Label("MDM Commands", systemImage: "ellipsis.circle")
             }
         }
-    }
-    
-    private func updateHost() async {
-        do {
-            if let id = viewModel.selectedHost?.id {
-                updatedHost = try await viewModel.getHost(hostID: id)
-            }
-        } catch {
-            print(error.localizedDescription)
+}
+
+private func updateHost() async {
+    do {
+        if let id = viewModel.selectedHost?.id {
+            updatedHost = try await viewModel.getHost(hostID: id)
         }
+    } catch {
+        print(error.localizedDescription)
     }
+}
 }
 
 

@@ -12,23 +12,6 @@ import KeychainWrapper
 @MainActor
 class ViewModel: ObservableObject {
     
-    enum HostPickerOptions: String, CaseIterable {
-        case policies
-        case software
-        case profiles
-        
-        var readableValue: String {
-            switch self {
-            case .policies:
-                return "Policies"
-            case .software:
-                return "Software"
-            case .profiles:
-                return "Profiles"
-            }
-        }
-    }
-    
     @Published var selectedTeam: Team?
     
     @Published var selectedHost: Host?

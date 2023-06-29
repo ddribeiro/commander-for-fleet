@@ -12,9 +12,6 @@ struct CommandRow: View {
     
     var body: some View {
         HStack {
-            Image(systemName: "laptopcomputer.and.arrow.down")
-                .imageScale(.large)
-            
             VStack(alignment: .leading) {
                 Text(command.requestType)
                     .font(.headline)

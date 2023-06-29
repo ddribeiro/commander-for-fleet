@@ -95,3 +95,45 @@ struct ShutDownDeviceCommand: Codable {
         case commandUUID = "CommandUUID"
     }
 }
+
+// Struct for RestartDeviceCommand
+struct RestartDeviceCommand: Codable {
+    var command: Command
+    var commandUUID = UUID().uuidString
+    
+    struct Command: Codable {
+        var requestType = "RestartDevice"
+        
+        private enum CodingKeys: String, CodingKey {
+            case requestType = "RequestType"
+        }
+    }
+    
+    private enum CodingKeys: String, CodingKey {
+        case command = "Command"
+        case commandUUID = "CommandUUID"
+    }
+}
+
+// Struct for InstallApplicationCommand
+struct InstallApplicationCommand: Codable {
+    var command: Command
+    var commandUUID = UUID().uuidString
+    
+    struct Command: Codable {
+        var requestType = "InstallApplication"
+        var manifestUrl: String
+        var managementFlags = 0
+        
+        private enum CodingKeys: String, CodingKey {
+            case requestType = "RequestType"
+            case manifestUrl = "ManifestURL"
+            case managementFlags = "ManagementFlags"
+        }
+    }
+    
+    private enum CodingKeys: String, CodingKey {
+        case command = "Command"
+        case commandUUID = "CommandUUID"
+    }
+}
