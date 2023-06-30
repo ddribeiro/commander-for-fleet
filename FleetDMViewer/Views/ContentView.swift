@@ -12,6 +12,7 @@ struct ContentView: View {
     
     var body: some View {
         if viewModel.isAuthenticated {
+    
             List(selection: $viewModel.selectedHost) {
                 ForEach(viewModel.selectedTeam != nil ? viewModel.filteredHosts : viewModel.hosts) { host in
                     HostRow(host: host)
@@ -23,7 +24,7 @@ struct ContentView: View {
             .task {
                 await viewModel.fetchHosts()
             }
-            .navigationTitle("Hosts")
+            .navigationTitle(viewModel.selectedTeam?.name ?? "Hosts")
         } else {
             NoHostView()
                 .sheet(isPresented: $viewModel.isShowingSignInSheet) {

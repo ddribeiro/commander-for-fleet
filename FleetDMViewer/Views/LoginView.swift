@@ -17,11 +17,15 @@ struct LoginTextFieldStyle: TextFieldStyle {
     }
 }
 
+enum LoadingState {
+    case loading, loaded, failed
+}
+
 struct LoginView: View {
     @EnvironmentObject var viewModel: ViewModel
     @Environment(\.dismiss) var dismiss
     
-    @State private var showingProgressView = false
+    @State private var loadingState = LoadingState.loaded
     
     var body: some View {
         NavigationStack {
@@ -74,20 +78,40 @@ struct LoginView: View {
                 .padding(.bottom, 30)
                 
                 Button {
+                    loadingState = .loading
                     viewModel.saveCredentials()
                     
                     Task {
                         try? await viewModel.login(email: viewModel.emailAddress, password: viewModel.password)
+                        loadingState = .loaded
                     }
                 } label: {
-                    
-                    Text("Log in")
-                        .foregroundColor(.white)
-                        .font(.headline)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.blue)
-                        .cornerRadius(10)
+                    switch loadingState {
+                    case .loaded:
+                        Text("Log in")
+                            .foregroundColor(.white)
+                            .font(.headline)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                    case .loading:
+                        ProgressView()
+                            .foregroundColor(.white)
+                            .font(.headline)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                    case .failed:
+                        Text("Log in")
+                            .foregroundColor(.white)
+                            .font(.headline)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                    }
                 }
                 
             }

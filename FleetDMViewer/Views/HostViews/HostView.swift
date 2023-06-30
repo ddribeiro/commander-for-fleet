@@ -86,6 +86,48 @@ struct HostView: View {
                 Label("Device Information", systemImage: "laptopcomputer")
             }
             
+
+            if let mdm = updatedHost?.mdm {
+                if mdm.enrollmentStatus != nil {
+                    Section {
+                        HStack {
+                            Text("Enrollment Status")
+                            Spacer()
+                            Text(mdm.enrollmentStatus ?? "N/A")
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        HStack {
+                            Text("MDM Server URL")
+                            Spacer()
+                            Text(mdm.serverUrl ?? "N/A")
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        HStack {
+                            Text("MDM Name")
+                            Spacer()
+                            Text(mdm.name)
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        HStack {
+                            Text("Encryption Key Escrowed")
+                            Spacer()
+                            
+                            Text(mdm.encryptionKeyAvailable ? "Yes" : "No")
+                                .foregroundColor(mdm.encryptionKeyAvailable ? .secondary : .red)
+                            
+                            Image(systemName: mdm.encryptionKeyAvailable ? "checkmark.shield.fill": "exclamationmark.shield.fill")
+                                .imageScale(.large)
+                                .foregroundColor(mdm.encryptionKeyAvailable ? .green : .red)
+                        }
+                    } header: {
+                        Label("MDM Information", systemImage: "lock.laptopcomputer")
+                    }
+                }
+            }
+            
             Section {
                 
                 HStack {
@@ -151,8 +193,21 @@ struct HostView: View {
                             Text("1000")
                                 .foregroundStyle(.secondary)
                         }
+                        .tint(.green)
+                        
+                        HStack {
+                            Text("Battery Health")
+                            Spacer()
+                            Text(battery.health)
+                                .foregroundColor(battery.health == "Normal" ? .secondary : .red)
+                            if battery.health != "Normal" {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundColor(.red)
+                            }
+                        }
                     }
-                    .tint(.green)
+                    
+                    
                 } header: {
                     Label("Battery Health", systemImage: "battery.100")
                 } footer: {
@@ -195,7 +250,7 @@ struct HostView: View {
         .sheet(isPresented: $showingCommandSheet) {
             CommandsView()
         }
-    
+        
         .onChange(of: viewModel.selectedHost) { _ in
             updatedHost = nil
             Task {
@@ -333,17 +388,17 @@ struct HostView: View {
                 Label("MDM Commands", systemImage: "ellipsis.circle")
             }
         }
-}
-
-private func updateHost() async {
-    do {
-        if let id = viewModel.selectedHost?.id {
-            updatedHost = try await viewModel.getHost(hostID: id)
-        }
-    } catch {
-        print(error.localizedDescription)
     }
-}
+    
+    private func updateHost() async {
+        do {
+            if let id = viewModel.selectedHost?.id {
+                updatedHost = try await viewModel.getHost(hostID: id)
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
 }
 
 
