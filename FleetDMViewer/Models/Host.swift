@@ -33,8 +33,6 @@ struct Host: Codable, Identifiable, Hashable {
     var mdm: Mdm?
     var batteries: [Battery]?
     
-
-    
     static let example = Host(id: 1, lastEnrolledAt: .now, seenTime: .now, uuid: "6F6FADC0-6198-4FFB-8F5E-A8E8029754B4", osVersion: "macOS 13.4.0", uptime: 211905700000000, memory: 8589934592, cpuBrand: "Intel(R) Core(TM) i5-3230M CPU @ 2.60GHz", hardwareModel: "MacBookPro10,2", hardwareSerial: "C02ZW7EUMD6R", computerName: "Dale's iMac", publicIp: "67.245.225.133", primaryIp: "192.168.4.61", primaryMac: "54:26:96:ce:ec:c5", teamId: 9, gigsDiskSpaceAvailable: 202.66, percentDiskSpaceAvailable: 40, diskEncryptionEnabled: true, status: "Online", batteries: [.example])
 }
 

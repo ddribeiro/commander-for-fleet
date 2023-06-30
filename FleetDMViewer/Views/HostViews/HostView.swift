@@ -387,6 +387,7 @@ struct HostView: View {
             } label: {
                 Label("MDM Commands", systemImage: "ellipsis.circle")
             }
+            .disabled(updatedHost?.mdm?.enrollmentStatus == nil)
         }
     }
     
