@@ -14,8 +14,15 @@ struct CommandResponse: Codable {
     var requestType: String
     var status: String
     var hostname: String
-    
-    static let example = CommandResponse(deviceId: "A04F07D9-0AB0-5682-B99E-996F178A707E", commandUuid: "17269A1C-20F9-407F-9AD0-396B9DFA6596", updatedAt: .now, requestType: "DeviceLock", status: "Acknowledged", hostname: "Dalers-Super-Awesome-Vitual-Machine.local")
+
+    static let example = CommandResponse(
+        deviceId: "A04F07D9-0AB0-5682-B99E-996F178A707E",
+        commandUuid: "17269A1C-20F9-407F-9AD0-396B9DFA6596",
+        updatedAt: .now,
+        requestType: "DeviceLock",
+        status: "Acknowledged",
+        hostname: "Dalers-Super-Awesome-Vitual-Machine.local"
+    )
 }
 
 struct MdmCommand: Codable {
@@ -32,36 +39,36 @@ struct MdmCommandResponse: Codable {
 struct DeviceInformationCommand: Codable {
     var command: Command
     var commandUUID = UUID().uuidString
-    
+
     struct Command: Codable {
         var queries: [String]
         var requestType = "DeviceInformation"
-        
+
         private enum CodingKeys: String, CodingKey {
             case queries = "Queries"
             case requestType = "RequestType"
         }
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case command = "Command"
         case commandUUID = "CommandUUID"
     }
-    
+
 }
 
 // Struct for LockDeviceCommand
 struct LockDeviceCommand: Codable {
     var command: Command
     var commandUUID = UUID().uuidString
-    
+
     struct Command: Codable {
         var message: String?
         var phoneNumber: String?
         var pin: String?
         var requestRequiresNetworkTether: Bool?
         var requestType = "DeviceLock"
-        
+
         private enum CodingKeys: String, CodingKey {
             case message = "Message"
             case phoneNumber = "PhoneNumber"
@@ -70,7 +77,7 @@ struct LockDeviceCommand: Codable {
             case requestType = "RequestType"
         }
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case command = "Command"
         case commandUUID = "CommandUUID"
@@ -81,15 +88,15 @@ struct LockDeviceCommand: Codable {
 struct ShutDownDeviceCommand: Codable {
     var command: Command
     var commandUUID = UUID().uuidString
-    
+
     struct Command: Codable {
         var requestType = "ShutDownDevice"
-        
+
         private enum CodingKeys: String, CodingKey {
             case requestType = "RequestType"
         }
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case command = "Command"
         case commandUUID = "CommandUUID"
@@ -100,15 +107,15 @@ struct ShutDownDeviceCommand: Codable {
 struct RestartDeviceCommand: Codable {
     var command: Command
     var commandUUID = UUID().uuidString
-    
+
     struct Command: Codable {
         var requestType = "RestartDevice"
-        
+
         private enum CodingKeys: String, CodingKey {
             case requestType = "RequestType"
         }
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case command = "Command"
         case commandUUID = "CommandUUID"
@@ -119,19 +126,19 @@ struct RestartDeviceCommand: Codable {
 struct InstallApplicationCommand: Codable {
     var command: Command
     var commandUUID = UUID().uuidString
-    
+
     struct Command: Codable {
         var requestType = "InstallApplication"
         var manifestUrl: String
         var managementFlags = 0
-        
+
         private enum CodingKeys: String, CodingKey {
             case requestType = "RequestType"
             case manifestUrl = "ManifestURL"
             case managementFlags = "ManagementFlags"
         }
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case command = "Command"
         case commandUUID = "CommandUUID"

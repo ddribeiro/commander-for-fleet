@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CommandsView: View {
     @EnvironmentObject var viewModel: ViewModel
-    
+
     var body: some View {
         NavigationStack {
             if viewModel.sortedCommands.isEmpty {
@@ -22,7 +22,7 @@ struct CommandsView: View {
                         CommandRow(command: command)
                     }
                 }
-                
+
                 .navigationTitle("Command History for \(viewModel.selectedHost?.computerName ?? "N/A")")
                 .navigationBarTitleDisplayMode(.inline)
             }

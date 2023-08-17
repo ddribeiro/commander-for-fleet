@@ -12,46 +12,28 @@ struct SoftwareDetailView: View {
     var body: some View {
         Form {
             Section {
-                HStack {
-                    Text("Name")
-                    Spacer()
-                    Text(software.name)
-                        .foregroundStyle(.secondary)
-                }
-                
-                HStack {
-                    Text("Version")
-                    Spacer()
-                    Text(software.version)
-                        .foregroundStyle(.secondary)
-                }
+                LabeledContent("Name", value: software.name)
+                    .multilineTextAlignment(.trailing)
+
+                LabeledContent("Version", value: software.version)
+
                 if let bundleIdentifier = software.bundleIdentifier {
-                    HStack {
-                        Text("Bundle Identifier")
-                        Spacer()
-                        Text(bundleIdentifier)
-                            .foregroundColor(.secondary)
-                    }
+                    LabeledContent("Bundle Identifier", value: bundleIdentifier)
                 }
-                
+
                 if let installedAt = software.installedPaths {
-                    HStack {
-                        Text("Installation Location")
-                        Spacer()
+                    LabeledContent("Installation Location") {
                         ForEach(installedAt, id: \.self) { path in
                             Text(path)
                                 .foregroundStyle(.secondary)
                         }
                     }
+                    .multilineTextAlignment(.trailing)
                 }
-                
+
                 if let lastOpenedDate = software.lastOpenedAt {
-                    HStack {
-                        Text("Last Opened")
-                        Spacer()
-                        Text(lastOpenedDate.formatted(date: .abbreviated, time: .complete))
-                            .foregroundStyle(.secondary)
-                    }
+                    LabeledContent("Last Opened", value: lastOpenedDate.formatted(date: .abbreviated, time: .complete))
+                        .multilineTextAlignment(.trailing)
                 }
             } header: {
                 Label("Software Details", systemImage: "app.badge")
@@ -67,7 +49,7 @@ struct SoftwareDetailView: View {
                                         .foregroundStyle(.secondary)
                                         .font(.body.smallCaps())
                                 }
-                                
+
                                 Text("EPSS Probability: \(vulnerability.epssProbability.formatted(.percent))")
                                     .foregroundStyle(.secondary)
                                     .font(.body.smallCaps())
@@ -75,14 +57,14 @@ struct SoftwareDetailView: View {
                             Spacer()
                             VStack {
                                 Image(systemName: "exclamationmark.shield.fill")
-                                    
+
                                     .foregroundColor(.red)
                                 Text("Known Exploit")
                                     .font(.body.smallCaps())
                             }
                             .opacity(vulnerability.cisaKnownExploit ? 1 : 0)
                         }
-                        
+
                     }
                 } else {
                     Text("No Known Vulnerabilities")

@@ -9,10 +9,10 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: ViewModel
-    
+
     var body: some View {
         if viewModel.isAuthenticated {
-    
+
             List(selection: $viewModel.selectedHost) {
                 ForEach(viewModel.selectedTeam != nil ? viewModel.filteredHosts : viewModel.hosts) { host in
                     HostRow(host: host)

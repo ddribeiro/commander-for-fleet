@@ -5,9 +5,9 @@
 //  Created by Dale Ribeiro on 6/1/23.
 //
 
-//import SwiftUI
+// import SwiftUI
 //
-//struct HostsView: View {
+// struct HostsView: View {
 //    @StateObject var viewModel = ViewModel()
 //    var teamID: Int?
 //    var filteredHosts: [Host] {
@@ -40,10 +40,10 @@
 //            .navigationTitle("Hosts")
 //        }
 //    }
-//}
+// }
 //
-//struct HostsView_Previews: PreviewProvider {
+// struct HostsView_Previews: PreviewProvider {
 //    static var previews: some View {
 //        HostsView()
 //    }
-//}
+// }

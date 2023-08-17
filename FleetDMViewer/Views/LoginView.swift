@@ -8,15 +8,6 @@
 import SwiftUI
 import KeychainWrapper
 
-struct LoginTextFieldStyle: TextFieldStyle {
-    func _body(configuration: TextField<Self._Label>) -> some View {
-        configuration
-            .padding()
-            .background(Color(.secondarySystemBackground))
-            .cornerRadius(10)
-    }
-}
-
 enum LoadingState {
     case loading, loaded, failed
 }
@@ -24,121 +15,126 @@ enum LoadingState {
 struct LoginView: View {
     @EnvironmentObject var viewModel: ViewModel
     @Environment(\.dismiss) var dismiss
-    
+
+    @State private var serverURL = ""
+    @State private var emailAddress = ""
+    @State private var password = ""
     @State private var loadingState = LoadingState.loaded
-    
+
+    @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
+
     var body: some View {
-        NavigationStack {
-            Spacer()
-            VStack {
-                Text("Login")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.bottom)
-                
-                Text("Enter your Fleet Server URL and sign in with your Email Address and Password")
-                    .padding(.bottom)
-                
-                VStack {
-                    
-                    VStack (alignment: .leading) {
-                        Text("FleetDM Server URL")
-                            .font(.headline)
-                        TextField("Enter server URL", text: $viewModel.serverURL)
+        NavigationView {
+            Form {
+                Section {
+                    LabeledContent("Server URL") {
+                        TextField("FleetDM Server URL", text: $serverURL)
                             .textContentType(.URL)
-                            .autocorrectionDisabled()
+                            .multilineTextAlignment(.trailing)
+#if os(iOS)
+
                             .textInputAutocapitalization(.never)
                             .keyboardType(.URL)
-                            .textFieldStyle(LoginTextFieldStyle())
-                    }
-                    .padding(.bottom)
-                    
-                    Divider()
-                    
-                    VStack(alignment: .leading) {
-                        Text("Email Address and Password")
-                            .font(.headline)
-                        TextField("Enter email address", text: $viewModel.emailAddress)
-                            .textContentType(.emailAddress)
                             .autocorrectionDisabled()
+#endif
+                            .labelsHidden()
+                    }
+                } header: {
+                    Text("Sign in to your account")
+                }
+
+                Section {
+                    LabeledContent("Email Address") {
+                        TextField("Email Address", text: $emailAddress)
+                            .textContentType(.emailAddress)
+                            .multilineTextAlignment(.trailing)
+#if os(iOS)
+
                             .textInputAutocapitalization(.never)
                             .keyboardType(.emailAddress)
-                            .textFieldStyle(LoginTextFieldStyle())
+#endif
                     }
-                    .padding(.top)
-                    
-                    VStack(alignment: .leading) {
-                        
-                        SecureField("Enter password", text: $viewModel.password)
+
+                    LabeledContent("Password") {
+                        SecureField("Password", text: $password)
                             .textContentType(.password)
+                            .multilineTextAlignment(.trailing)
                             .autocorrectionDisabled()
-                            .textFieldStyle(LoginTextFieldStyle())
                     }
                 }
-                .padding(.bottom, 30)
-                
-                Button {
-                    loadingState = .loading
-                    viewModel.saveCredentials()
-                    
-                    Task {
-                        try? await viewModel.login(email: viewModel.emailAddress, password: viewModel.password)
-                        loadingState = .loaded
+            }
+            .formStyle(.grouped)
+            .navigationTitle("Sign In")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        Task {
+                            loadingState = .loading
+                            try await login(email: emailAddress, password: password)
+                        }
+                    } label: {
+                        switch loadingState {
+                        case .loading:
+                            ProgressView()
+                        case .loaded:
+                            Text("Sign In")
+                        case .failed:
+                            Text("Sign In")
+                        }
                     }
-                } label: {
-                    switch loadingState {
-                    case .loaded:
-                        Text("Log in")
-                            .foregroundColor(.white)
-                            .font(.headline)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                    case .loading:
-                        ProgressView()
-                            .foregroundColor(.white)
-                            .font(.headline)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                    case .failed:
-                        Text("Log in")
-                            .foregroundColor(.white)
-                            .font(.headline)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .cornerRadius(10)
+                    .disabled(!isFormValid)
+                }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", role: .cancel) {
+                        print("Canceled sign in.")
+                        dismiss()
                     }
                 }
-                
             }
-            .alert("Login Error", isPresented: $viewModel.showingAlert) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                Text("Incorrect username or password.")
-            }
-            .padding(.horizontal)
-            
-            Spacer()
         }
-        .padding()
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
-                    dismiss()
-                }
-            }
+        .alert("Login Error", isPresented: $viewModel.showingAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("Incorrect username or password.")
         }
     }
+
+    private func login(email: String, password: String) async throws {
+        let environment = AppEnvironment(
+            baseURL: URL(
+                string: "\(try viewModel.validateServerURL(serverURL))/api/v1/fleet/"
+            )!,
+            session: {
+            let configuration = URLSessionConfiguration.default
+            return URLSession(configuration: configuration)
+        }()
+        )
+
+        let networkManager = NetworkManager(environment: environment)
+
+        let credentials = LoginRequestBody(email: email, password: password)
+
+        do {
+            let response = try await networkManager.fetch(.loginResponse, with: JSONEncoder().encode(credentials))
+            KeychainWrapper.default.set(response.token, forKey: "apiToken")
+
+            loadingState = .loaded
+            isAuthenticated = true
+        } catch {
+            loadingState = .failed
+            print(error.localizedDescription)
+            viewModel.showingAlert.toggle()
+        }
+    }
+
+    private var isFormValid: Bool {
+        return !serverURL.isEmpty && !emailAddress.isEmpty && !password.isEmpty
+    }
 }
-
-
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
+            .environmentObject(ViewModel())
     }
 }

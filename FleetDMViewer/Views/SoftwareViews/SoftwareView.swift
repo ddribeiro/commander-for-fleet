@@ -14,10 +14,10 @@ struct SoftwareView: View {
             software.vulnerabilities != nil
         }
     }
-    
+
     @State var isShowingVulnerableSoftware = false
     @State private var searchText = ""
-    
+
     var body: some View {
         if software.isEmpty {
             Text("No software")

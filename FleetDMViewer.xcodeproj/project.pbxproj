@@ -37,6 +37,7 @@
 		5EDC180A2A3B961400691C2E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDC18092A3B961400691C2E /* ContentView.swift */; };
 		5EDC180C2A3B96D500691C2E /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDC180B2A3B96D500691C2E /* DetailView.swift */; };
 		5EDC180E2A409DB100691C2E /* PoliciesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDC180D2A409DB100691C2E /* PoliciesView.swift */; };
+		5EEA90932A8EA24200FEA5E4 /* MDMCommandMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90922A8EA24200FEA5E4 /* MDMCommandMenu.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +72,7 @@
 		5EDC18092A3B961400691C2E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5EDC180B2A3B96D500691C2E /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		5EDC180D2A409DB100691C2E /* PoliciesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoliciesView.swift; sourceTree = "<group>"; };
+		5EEA90922A8EA24200FEA5E4 /* MDMCommandMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDMCommandMenu.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 			children = (
 				5EDC18072A3B8FDF00691C2E /* HostRow.swift */,
 				5E9039312A45FC250077F3DC /* HostView.swift */,
+				5EEA90922A8EA24200FEA5E4 /* MDMCommandMenu.swift */,
 				5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */,
 			);
 			path = HostViews;
@@ -212,6 +215,7 @@
 				5EDA66B52A2A4955006706CD /* Sources */,
 				5EDA66B62A2A4955006706CD /* Frameworks */,
 				5EDA66B72A2A4955006706CD /* Resources */,
+				5E1710432A8E86170054C768 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -273,6 +277,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		5E1710432A8E86170054C768 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftlint > /dev/null; then\n  swiftlint --fix\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		5EDA66B52A2A4955006706CD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -299,6 +324,7 @@
 				5E9B94E82A32323300A7A0CE /* Endpoint.swift in Sources */,
 				5EDC180A2A3B961400691C2E /* ContentView.swift in Sources */,
 				5EDC180E2A409DB100691C2E /* PoliciesView.swift in Sources */,
+				5EEA90932A8EA24200FEA5E4 /* MDMCommandMenu.swift in Sources */,
 				5E028F512A4DE24400D90456 /* CommandRow.swift in Sources */,
 				5E9038DB2A43A0F60077F3DC /* ProfilesRow.swift in Sources */,
 				5EDC18042A3A506200691C2E /* User.swift in Sources */,

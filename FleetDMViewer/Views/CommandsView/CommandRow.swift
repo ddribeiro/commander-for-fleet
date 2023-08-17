@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CommandRow: View {
     var command: CommandResponse
-    
+
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -17,11 +17,11 @@ struct CommandRow: View {
                     .font(.headline)
                 Text("\(command.updatedAt.formatted(date: .numeric, time: .shortened))")
                     .foregroundStyle(.secondary)
-                
+
             }
-            
+
             Spacer()
-            
+
             VStack(alignment: .trailing) {
                 switch command.status {
                 case "Acknowledged":
@@ -30,15 +30,15 @@ struct CommandRow: View {
                     Text(command.status)
                         .foregroundStyle(.secondary)
                         .font(.body.smallCaps())
-                    
+
                 case "Pending":
                     Image(systemName: "clock.badge.questionmark.fill")
                         .foregroundColor(.secondary)
-                    
+
                     Text(command.status)
                         .foregroundStyle(.secondary)
                         .font(.body.smallCaps())
-                    
+
                 default:
                     Image(systemName: "xmark.icloud.fill")
                         .foregroundColor(.red)

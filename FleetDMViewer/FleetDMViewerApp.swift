@@ -11,7 +11,7 @@ import SwiftUI
 struct FleetDMViewerApp: App {
     @StateObject var viewModel = ViewModel()
     @State private var searchText = ""
-    
+
     var body: some Scene {
         WindowGroup {
             NavigationSplitView {

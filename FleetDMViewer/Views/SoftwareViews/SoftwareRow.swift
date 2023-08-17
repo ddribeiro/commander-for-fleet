@@ -14,18 +14,18 @@ struct SoftwareRow: View {
             HStack {
                 Image(systemName: "app.badge")
                     .imageScale(.large)
-                
+
                 VStack(alignment: .leading) {
                     Text(software.name)
                         .font(.headline)
                         .lineLimit(1)
-                    
+
                     Text("Version: \(software.version)")
                         .foregroundStyle(.secondary)
                 }
-                
+
                 Spacer()
-                
+
                 if let vulnerabilities = software.vulnerabilities {
                     VStack(alignment: .trailing) {
                         Image(systemName: "exclamationmark.shield.fill")
@@ -33,7 +33,7 @@ struct SoftwareRow: View {
                             Text(vulnerabilities.count != 1 ? "\(vulnerabilities.count) Vulnerabilities" : "\(vulnerabilities.count) Vulnerability")
                             .foregroundStyle(.secondary)
                             .font(.body.smallCaps())
-                            
+
                     }
                 }
             }

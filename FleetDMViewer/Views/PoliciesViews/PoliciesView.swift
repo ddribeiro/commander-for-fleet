@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PoliciesView: View {
     var policies: [Policy]
-    
+
     var body: some View {
         if policies.isEmpty {
             Text("No policies")

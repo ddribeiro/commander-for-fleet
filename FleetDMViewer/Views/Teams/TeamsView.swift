@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TeamsView: View {
     @EnvironmentObject var viewModel: ViewModel
-    
+
     var body: some View {
             List(selection: $viewModel.selectedTeam) {
                 Section("All Hosts") {
@@ -19,7 +19,7 @@ struct TeamsView: View {
                         Label("All Hosts", systemImage: "laptopcomputer")
                     }
                 }
-                
+
                 Section("Teams") {
                     ForEach(viewModel.teams) { team in
                         NavigationLink(value: team) {

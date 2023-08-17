@@ -15,7 +15,7 @@ struct ProfilesRow: View {
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(profile.status == "verified" ? .green : .red, .primary)
                 .imageScale(.large)
-            
+
             VStack(alignment: .leading) {
                 Text(profile.name)
                     .font(.headline)

@@ -15,28 +15,28 @@ struct HostRow: View {
             HStack {
                 Image(systemName: "laptopcomputer")
                     .imageScale(.large)
-                
+
                 VStack(alignment: .leading) {
                     Text(host.computerName)
                         .font(.headline)
                         .lineLimit(1)
-                    
+
                     Text(host.hardwareSerial)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
-                    
+
                     Text(host.hardwareModel)
                         .foregroundColor(.secondary)
                         .lineLimit(1)
                 }
-                
+
                 Spacer()
-                
+
                 VStack(alignment: .trailing) {
                     Image(systemName: "circle.fill")
                         .imageScale(.small)
                         .foregroundColor(host.status == "online" ? .green : .red)
-                    
+
                     Text(host.status)
                         .font(.body.smallCaps())
                         .foregroundStyle(.secondary)

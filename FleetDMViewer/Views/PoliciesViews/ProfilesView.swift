@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProfilesView: View {
     var profiles: [Profile]
-    
+
     var body: some View {
         if profiles.isEmpty {
             Text("No Profiles")
