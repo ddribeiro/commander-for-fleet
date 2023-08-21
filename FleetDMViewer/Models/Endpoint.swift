@@ -21,7 +21,7 @@ extension Endpoint where T == LoginRequestBody {
 }
 extension Endpoint where T == LoginResponse {
     static let loginResponse = Endpoint(
-        path: "login",
+        path: "/api/v1/fleet/login",
         type: LoginResponse.self,
         method: .post,
         headers: [
@@ -32,7 +32,7 @@ extension Endpoint where T == LoginResponse {
 
 extension Endpoint where T == [Team] {
     static let teams = Endpoint(
-        path: "teams",
+        path: "/api/v1/fleet/teams",
         type: [Team].self,
         keyPath: "teams"
     )
@@ -40,7 +40,7 @@ extension Endpoint where T == [Team] {
 
 extension Endpoint where T == [Host] {
     static let hosts = Endpoint(
-        path: "hosts",
+        path: "/api/v1/fleet/hosts",
         type: [Host].self,
         keyPath: "hosts"
     )
@@ -49,7 +49,7 @@ extension Endpoint where T == [Host] {
 extension Endpoint where T == Host {
     static func gethost(id: Int) -> Endpoint {
         return Endpoint(
-            path: "hosts/\(id)",
+            path: "/api/v1/fleet/hosts/\(id)",
             type: Host.self,
             keyPath: "host"
         )
@@ -59,14 +59,14 @@ extension Endpoint where T == Host {
 extension Endpoint where T == User {
     static func getUser(id: Int) -> Endpoint {
         return Endpoint(
-            path: "users/\(id)",
+            path: "/api/v1/fleet/users/\(id)",
             type: User.self,
             keyPath: "user"
         )
     }
 
     static let meEndpoint = Endpoint(
-        path: "me",
+        path: "/api/v1/fleet/me",
         type: User.self,
         keyPath: "user"
     )
@@ -74,7 +74,7 @@ extension Endpoint where T == User {
 
 extension Endpoint where T == MdmCommandResponse {
     static let mdmCommand = Endpoint(
-        path: "mdm/apple/enqueue",
+        path: "/api/v1/fleet/mdm/apple/enqueue",
         type: MdmCommandResponse.self,
         method: .post,
         headers: [
@@ -85,7 +85,7 @@ extension Endpoint where T == MdmCommandResponse {
 
 extension Endpoint where T == [CommandResponse] {
     static let commands = Endpoint(
-        path: "mdm/apple/commands",
+        path: "/api/v1/fleet/mdm/apple/commands",
         type: [CommandResponse].self,
         keyPath: "results"
     )

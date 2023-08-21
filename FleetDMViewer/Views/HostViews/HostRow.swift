@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct HostRow: View {
-    @EnvironmentObject var viewModel: ViewModel
     var host: Host
     var body: some View {
         NavigationLink(value: host) {

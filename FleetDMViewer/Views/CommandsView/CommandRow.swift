@@ -9,7 +9,6 @@ import SwiftUI
 
 struct CommandRow: View {
     var command: CommandResponse
-
     var body: some View {
         HStack {
             VStack(alignment: .leading) {

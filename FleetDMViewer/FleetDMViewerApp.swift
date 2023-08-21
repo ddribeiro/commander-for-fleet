@@ -9,8 +9,7 @@ import SwiftUI
 
 @main
 struct FleetDMViewerApp: App {
-    @StateObject var viewModel = ViewModel()
-    @State private var searchText = ""
+    @State var dataController = DataController()
 
     var body: some Scene {
         WindowGroup {
@@ -21,7 +20,7 @@ struct FleetDMViewerApp: App {
             } detail: {
                 DetailView()
             }
-            .environmentObject(viewModel)
+            .environmentObject(dataController)
         }
     }
 }

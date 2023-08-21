@@ -13,13 +13,14 @@ enum LoadingState {
 }
 
 struct LoginView: View {
-    @EnvironmentObject var viewModel: ViewModel
     @Environment(\.dismiss) var dismiss
 
     @State private var serverURL = ""
     @State private var emailAddress = ""
     @State private var password = ""
     @State private var loadingState = LoadingState.loaded
+
+    @State private var showingAlert = false
 
     @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
 
@@ -92,7 +93,7 @@ struct LoginView: View {
                 }
             }
         }
-        .alert("Login Error", isPresented: $viewModel.showingAlert) {
+        .alert("Login Error", isPresented: $showingAlert) {
             Button("OK", role: .cancel) { }
         } message: {
             Text("Incorrect username or password.")
@@ -102,12 +103,8 @@ struct LoginView: View {
     private func login(email: String, password: String) async throws {
         let environment = AppEnvironment(
             baseURL: URL(
-                string: "\(try viewModel.validateServerURL(serverURL))/api/v1/fleet/"
-            )!,
-            session: {
-            let configuration = URLSessionConfiguration.default
-            return URLSession(configuration: configuration)
-        }()
+                string: "\(try validateServerURL(serverURL))"
+            )!
         )
 
         let networkManager = NetworkManager(environment: environment)
@@ -123,8 +120,23 @@ struct LoginView: View {
         } catch {
             loadingState = .failed
             print(error.localizedDescription)
-            viewModel.showingAlert.toggle()
+            showingAlert.toggle()
         }
+    }
+
+    func validateServerURL(_ urlString: String) throws -> String {
+        guard !urlString.isEmpty else {
+            throw URLError(.badURL)
+        }
+
+        guard let url = URL(string: urlString), url.scheme != nil else {
+            let validatedURLString = "https://" + urlString
+            KeychainWrapper.default.set(validatedURLString, forKey: "serverURL")
+            return validatedURLString
+
+        }
+        KeychainWrapper.default.set(urlString, forKey: "serverURL")
+        return urlString
     }
 
     private var isFormValid: Bool {
@@ -135,6 +147,6 @@ struct LoginView: View {
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
-            .environmentObject(ViewModel())
+            .environmentObject(DataController())
     }
 }

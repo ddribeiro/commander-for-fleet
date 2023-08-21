@@ -6,9 +6,9 @@
 //
 
 import SwiftUI
+import KeychainWrapper
 
 struct MDMCommandMenu: View {
-    @EnvironmentObject var viewModel: ViewModel
     var host: Host
 
     @State private var lockCode: String = ""
@@ -34,11 +34,11 @@ struct MDMCommandMenu: View {
                         print(deviceInformationCommand.commandUUID)
 
                         let mdmCommand = MdmCommand(
-                            command: try viewModel.generatebase64EncodedPlistData(from: deviceInformationCommand),
+                            command: try generatebase64EncodedPlistData(from: deviceInformationCommand),
                             deviceIds: [host.uuid]
                         )
 
-                        try await viewModel.sendMDMCommand(command: mdmCommand)
+                        try await sendMDMCommand(command: mdmCommand)
                     }
 
                 } label: {
@@ -63,9 +63,9 @@ struct MDMCommandMenu: View {
                     Task {
                         let shutdownDeviceCommand = ShutDownDeviceCommand(command: ShutDownDeviceCommand.Command())
                         // swiftlint:disable:next line_length
-                        let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: shutdownDeviceCommand), deviceIds: [host.uuid])
+                        let mdmCommand = MdmCommand(command: try generatebase64EncodedPlistData(from: shutdownDeviceCommand), deviceIds: [host.uuid])
 
-                        try await viewModel.sendMDMCommand(command: mdmCommand)
+                        try await sendMDMCommand(command: mdmCommand)
                     }
                 } label: {
                     Label("Shutdown Device", systemImage: "power")
@@ -74,9 +74,9 @@ struct MDMCommandMenu: View {
                 Button(role: .destructive) {
                     Task {
                         let restartDeviceComand = RestartDeviceCommand(command: RestartDeviceCommand.Command())
-                        let mdmCommand = MdmCommand(command: try viewModel.generatebase64EncodedPlistData(from: restartDeviceComand), deviceIds: [host.uuid])
+                        let mdmCommand = MdmCommand(command: try generatebase64EncodedPlistData(from: restartDeviceComand), deviceIds: [host.uuid])
 
-                        try await viewModel.sendMDMCommand(command: mdmCommand)
+                        try await sendMDMCommand(command: mdmCommand)
                     }
                 } label: {
                     Label("Restart Device", systemImage: "restart.circle")
@@ -96,11 +96,11 @@ struct MDMCommandMenu: View {
                         )
 
                         let mdmCommand = MdmCommand(
-                            command: try viewModel.generatebase64EncodedPlistData(from: installZoomCommand),
+                            command: try generatebase64EncodedPlistData(from: installZoomCommand),
                             deviceIds: [host.uuid]
                         )
 
-                        try await viewModel.sendMDMCommand(command: mdmCommand)
+                        try await sendMDMCommand(command: mdmCommand)
                     }
 
                 } label: {
@@ -116,11 +116,11 @@ struct MDMCommandMenu: View {
                             )
                         )
                         let mdmCommand = MdmCommand(
-                            command: try viewModel.generatebase64EncodedPlistData(from: installChromeCommand),
+                            command: try generatebase64EncodedPlistData(from: installChromeCommand),
                             deviceIds: [host.uuid]
                         )
 
-                        try await viewModel.sendMDMCommand(command: mdmCommand)
+                        try await sendMDMCommand(command: mdmCommand)
                     }
 
                 } label: {
@@ -136,11 +136,11 @@ struct MDMCommandMenu: View {
                             )
                         )
                         let mdmCommand = MdmCommand(
-                            command: try viewModel.generatebase64EncodedPlistData(from: installSlackCommand),
+                            command: try generatebase64EncodedPlistData(from: installSlackCommand),
                             deviceIds: [host.uuid]
                         )
 
-                        try await viewModel.sendMDMCommand(command: mdmCommand)
+                        try await sendMDMCommand(command: mdmCommand)
                     }
 
                 } label: {
@@ -177,13 +177,47 @@ struct MDMCommandMenu: View {
                     )
 
                     let mdmCommand = MdmCommand(
-                        command: try viewModel.generatebase64EncodedPlistData(from: lockDeviceCommand),
+                        command: try generatebase64EncodedPlistData(from: lockDeviceCommand),
                         deviceIds: [host.uuid]
                     )
 
-                    try await viewModel.sendMDMCommand(command: mdmCommand)
+                    try await sendMDMCommand(command: mdmCommand)
                 }
             }
+        }
+    }
+
+    func generatebase64EncodedPlistData<T: Encodable>(from object: T) throws -> String {
+        let encoder = PropertyListEncoder()
+        encoder.outputFormat = .xml
+
+        do {
+            let plistData = try encoder.encode(object)
+            return plistData.base64EncodedString().replacingOccurrences(of: "=", with: "")
+        } catch {
+            print("Error generating plist data: \(error)")
+            return error.localizedDescription
+        }
+    }
+
+    func sendMDMCommand(command: MdmCommand) async throws {
+        guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
+            print("Could not get server URL")
+            throw URLError(.badURL)
+        }
+
+        let environment = AppEnvironment(baseURL: URL(string: "\(serverURL)")!)
+
+        let networkManager = NetworkManager(environment: environment)
+
+        do {
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+
+            _ = try await networkManager.fetch(.mdmCommand, with: encoder.encode(command))
+        } catch {
+            print("Could not send command")
+            print(error.localizedDescription)
         }
     }
 }
@@ -191,6 +225,6 @@ struct MDMCommandMenu: View {
 struct MDMCommandMenu_Previews: PreviewProvider {
     static var previews: some View {
         MDMCommandMenu(host: .example)
-            .environmentObject(ViewModel())
+            .environmentObject(DataController())
     }
 }

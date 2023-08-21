@@ -6,33 +6,61 @@
 //
 
 import SwiftUI
+import KeychainWrapper
 
 struct ContentView: View {
-    @EnvironmentObject var viewModel: ViewModel
+    @EnvironmentObject var dataController: DataController
+
+    @State private var isShowingSignInSheet = false
+    @State private var hosts = [Host]()
+    @State private var selectedHost: Host?
 
     var body: some View {
-        if viewModel.isAuthenticated {
+        if dataController.isAuthenticated {
 
-            List(selection: $viewModel.selectedHost) {
-                ForEach(viewModel.selectedTeam != nil ? viewModel.filteredHosts : viewModel.hosts) { host in
+            List(selection: $dataController.selectedHost) {
+                ForEach(dataController.selectedTeam != nil ? filteredHosts : hosts) { host in
                     HostRow(host: host)
                 }
             }
             .refreshable {
-                await viewModel.fetchHosts()
+                await fetchHosts()
             }
             .task {
-                await viewModel.fetchHosts()
+                await fetchHosts()
             }
-            .navigationTitle(viewModel.selectedTeam?.name ?? "Hosts")
+            .navigationTitle(dataController.selectedTeam?.name ?? "Hosts")
         } else {
             NoHostView()
-                .sheet(isPresented: $viewModel.isShowingSignInSheet) {
+                .sheet(isPresented: $isShowingSignInSheet) {
                     LoginView()
                 }
                 .onAppear {
-                    viewModel.isShowingSignInSheet = true
+                    isShowingSignInSheet = true
                 }
+        }
+    }
+
+    func fetchHosts() async {
+        guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
+            print("Could not get server URL")
+            return
+        }
+
+        let environment = AppEnvironment(baseURL: URL(string: "\(serverURL)")!)
+
+        let networkManager = NetworkManager(environment: environment)
+
+        do {
+            hosts = try await networkManager.fetch(.hosts)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
+    var filteredHosts: [Host] {
+        hosts.filter { host in
+            host.teamId == dataController.selectedTeam?.id
         }
     }
 }

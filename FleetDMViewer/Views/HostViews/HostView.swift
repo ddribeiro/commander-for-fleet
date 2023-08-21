@@ -9,7 +9,8 @@ import SwiftUI
 import KeychainWrapper
 
 struct HostView: View {
-    @EnvironmentObject var viewModel: ViewModel
+    @EnvironmentObject var dataController: DataController
+
     @State var updatedHost: Host?
     @State private var selectedView = "Policies"
     @State private var lockCode: String = ""
@@ -24,7 +25,7 @@ struct HostView: View {
 
                 LabeledContent("Serial Number", value: host.hardwareSerial)
 
-                LabeledContent("Model", value: host.hardwareSerial)
+                LabeledContent("Model", value: host.hardwareModel)
 
                 LabeledContent("OS Version", value: host.osVersion)
 
@@ -166,7 +167,7 @@ struct HostView: View {
             }
         }
 
-        .onChange(of: viewModel.selectedHost) { _ in
+        .onChange(of: dataController.selectedHost) { _ in
             updatedHost = nil
             Task {
                 await updateHost()
@@ -187,11 +188,33 @@ struct HostView: View {
 
     private func updateHost() async {
         do {
-            if let id = viewModel.selectedHost?.id {
-                updatedHost = try await viewModel.getHost(hostID: id)
+            if let id = dataController.selectedHost?.id {
+                updatedHost = try await getHost(hostID: id)
             }
         } catch {
             print(error.localizedDescription)
+        }
+    }
+
+    func getHost(hostID: Int) async throws -> Host {
+        let endpoint = Endpoint.gethost(id: hostID)
+
+        guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
+            print("Could not get server URL")
+            throw URLError(.badURL)
+        }
+
+        let environment = AppEnvironment(baseURL: URL(string: "\(serverURL)")!)
+
+        let networkManager = NetworkManager(environment: environment)
+
+        do {
+            let host = try await networkManager.fetch(endpoint)
+            return host
+        } catch {
+            print("here's the error")
+            print(error.localizedDescription)
+            throw error
         }
     }
 }
@@ -199,6 +222,6 @@ struct HostView: View {
  struct HostView_Previews: PreviewProvider {
     static var previews: some View {
         HostView(host: .example)
-            .environmentObject(ViewModel())
+            .environmentObject(DataController())
     }
  }

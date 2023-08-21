@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct DetailView: View {
-    @EnvironmentObject var viewModel: ViewModel
+    @EnvironmentObject var dataController: DataController
     var body: some View {
         VStack {
-            if let host = viewModel.selectedHost {
+            if let host = dataController.selectedHost {
                 HostView(host: host)
             } else {
                 NoHostView()

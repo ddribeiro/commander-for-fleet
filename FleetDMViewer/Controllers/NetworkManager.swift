@@ -9,17 +9,46 @@ import SwiftUI
 import Foundation
 import KeychainWrapper
 
-struct AppEnvironment {
+struct AppEnvironment: Codable {
     var name: String?
     var baseURL: URL
-    var session: URLSession
+    var apiToken: String?
+
+    enum CodingKeys: CodingKey {
+        case name, baseURL
+    }
+}
+
+@MainActor class AppEnvironments: ObservableObject {
+    @Published var environments: [AppEnvironment]
+    @Published var selectedEnvironment: AppEnvironment?
+
+    let savePath = FileManager.documentsDirectory.appendingPathComponent("FleetDMViewer")
+
+    init() {
+        do {
+            let data = try Data(contentsOf: savePath)
+            self.environments = try JSONDecoder().decode([AppEnvironment].self, from: data)
+        } catch {
+            debugPrint(String(describing: error))
+            self.environments = []
+        }
+    }
+
+    private func save() {
+        do {
+            let data = try JSONEncoder().encode(environments)
+            try data.write(to: savePath, options: [.atomicWrite, .completeFileProtection])
+        } catch {
+            debugPrint(String(describing: error))
+        }
+    }
 }
 
 struct NetworkManager {
     var environment: AppEnvironment
 
     func fetch<T>(_ resource: Endpoint<T>, with data: Data? = nil) async throws -> T {
-
         guard let url = URL(string: resource.path, relativeTo: environment.baseURL) else {
             throw URLError(.unsupportedURL)
         }
@@ -31,7 +60,14 @@ struct NetworkManager {
         request.httpBody = data
         request.allHTTPHeaderFields = resource.headers
 
-        var (data, _) = try await environment.session.data(for: request)
+        let configuration = URLSessionConfiguration.default
+        if let apiToken = KeychainWrapper.default.string(forKey: "apiToken") {
+            configuration.httpAdditionalHeaders = [
+                "Authorization": "Bearer \(apiToken)"
+            ]
+        }
+
+        var (data, _) = try await URLSession(configuration: configuration).data(for: request)
 
         if let keyPath = resource.keyPath {
             if let rootObject = try JSONSerialization.jsonObject(with: data) as? NSDictionary {
