@@ -10,6 +10,9 @@ import KeychainWrapper
 
 struct CommandsView: View {
     @EnvironmentObject var dataController: DataController
+
+    @Environment(\.dismiss) var dismiss
+
     @State private var commands = [CommandResponse]()
 
     var body: some View {
@@ -24,14 +27,24 @@ struct CommandsView: View {
                         CommandRow(command: command)
                     }
                 }
-
                 .navigationTitle("Command History for \(dataController.selectedHost?.computerName ?? "N/A")")
+#if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
+#endif
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done", role: .cancel) {
+                            dismiss()
+
+                        }
+                    }
+                }
             }
         }
         .task {
             await fetchCommands()
         }
+
     }
 
     func fetchCommands() async {

@@ -5,15 +5,16 @@
 //  Created by Dale Ribeiro on 5/22/23.
 //
 
-import SwiftUI
 import KeychainWrapper
+import SwiftUI
 
-enum LoadingState {
+    enum LoadingState {
     case loading, loaded, failed
 }
 
 struct LoginView: View {
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var dataController: DataController
 
     @State private var serverURL = ""
     @State private var emailAddress = ""
@@ -62,6 +63,20 @@ struct LoginView: View {
                             .multilineTextAlignment(.trailing)
                             .autocorrectionDisabled()
                     }
+                }
+
+                Section {
+                    LabeledContent("Sign In") {
+                        Button("Sign In") {
+                            Task {
+                                loadingState = .loading
+                                try await login(email: emailAddress, password: password)
+                            }
+                        }
+                        .disabled(!isFormValid)
+                        .frame(maxWidth: .infinity)
+                    }
+                    .labelsHidden()
                 }
             }
             .formStyle(.grouped)
@@ -114,9 +129,14 @@ struct LoginView: View {
         do {
             let response = try await networkManager.fetch(.loginResponse, with: JSONEncoder().encode(credentials))
             KeychainWrapper.default.set(response.token, forKey: "apiToken")
+            dataController.currentUser = response.user
+            dataController.currentUser?.teams = response.availableTeams
 
             loadingState = .loaded
             isAuthenticated = true
+            AppEnvironments().addEnvironment(environment)
+            dataController.activeEnvironment = environment
+            dismiss()
         } catch {
             loadingState = .failed
             print(error.localizedDescription)

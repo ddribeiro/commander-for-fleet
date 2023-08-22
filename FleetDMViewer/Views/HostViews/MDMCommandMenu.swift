@@ -31,8 +31,6 @@ struct MDMCommandMenu: View {
                             )
                         )
 
-                        print(deviceInformationCommand.commandUUID)
-
                         let mdmCommand = MdmCommand(
                             command: try generatebase64EncodedPlistData(from: deviceInformationCommand),
                             deviceIds: [host.uuid]
@@ -166,7 +164,9 @@ struct MDMCommandMenu: View {
         }
         .alert("Enter Lock Code", isPresented: $showingLockAlert) {
             TextField("Enter your code", text: $lockCode)
+            #if os(iOS)
                 .keyboardType(.numberPad)
+            #endif
             Button("Cancel", role: .cancel) { }
             Button("Lock", role: .destructive) {
                 Task {

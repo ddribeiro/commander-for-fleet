@@ -11,5 +11,12 @@ struct Team: Codable, Identifiable, Hashable {
     var id: Int
     var name: String
     var description: String
-    var hostCount: Int
+    var hostCount: Int?
+
+    static let example = Team(
+        id: 2,
+        name: "Harmonize - Engineering",
+        description: "",
+        hostCount: 0
+    )
 }

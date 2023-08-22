@@ -13,5 +13,7 @@ struct LoginRequestBody: Codable {
 }
 
 struct LoginResponse: Codable {
+    var user: User
+    var availableTeams: [Team]
     var token: String
 }

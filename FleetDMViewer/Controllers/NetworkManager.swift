@@ -4,12 +4,11 @@
 //
 //  Created by Dale Ribeiro on 5/25/23.
 //
-
-import SwiftUI
 import Foundation
 import KeychainWrapper
+import SwiftUI
 
-struct AppEnvironment: Codable {
+struct AppEnvironment: Codable, Hashable {
     var name: String?
     var baseURL: URL
     var apiToken: String?
@@ -19,9 +18,8 @@ struct AppEnvironment: Codable {
     }
 }
 
-@MainActor class AppEnvironments: ObservableObject {
+class AppEnvironments: ObservableObject {
     @Published var environments: [AppEnvironment]
-    @Published var selectedEnvironment: AppEnvironment?
 
     let savePath = FileManager.documentsDirectory.appendingPathComponent("FleetDMViewer")
 
@@ -43,13 +41,18 @@ struct AppEnvironment: Codable {
             debugPrint(String(describing: error))
         }
     }
+
+    func addEnvironment(_ environment: AppEnvironment) {
+        self.environments.append(environment)
+        save()
+    }
 }
 
 struct NetworkManager {
-    var environment: AppEnvironment
+    var environment = DataController().activeEnvironment
 
     func fetch<T>(_ resource: Endpoint<T>, with data: Data? = nil) async throws -> T {
-        guard let url = URL(string: resource.path, relativeTo: environment.baseURL) else {
+        guard let url = URL(string: resource.path, relativeTo: environment?.baseURL) else {
             throw URLError(.unsupportedURL)
         }
 

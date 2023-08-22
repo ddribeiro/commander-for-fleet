@@ -33,8 +33,11 @@ struct HostView: View {
                     .multilineTextAlignment(.trailing)
 
                 LabeledContent("Memory", value: "\(host.memory / 1073741824) GB")
-
-                if let updatedHost = updatedHost {
+            } header: {
+                Label("Device Information", systemImage: "laptopcomputer")
+            }
+            if let updatedHost = updatedHost {
+                Section {
                     let driveCapacity = ((updatedHost.gigsDiskSpaceAvailable) / Double((updatedHost.percentDiskSpaceAvailable)) * 100.0)
                     let gigsSpaceConsumed = (driveCapacity - updatedHost.gigsDiskSpaceAvailable)
 
@@ -51,8 +54,6 @@ struct HostView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-            } header: {
-                Label("Device Information", systemImage: "laptopcomputer")
             }
 
             if let mdm = updatedHost?.mdm {
@@ -182,7 +183,7 @@ struct HostView: View {
         .navigationTitle("\(host.computerName)")
         .toolbar {
             MDMCommandMenu(host: host)
-            .disabled(updatedHost?.mdm?.enrollmentStatus == nil)
+                .disabled(updatedHost?.mdm?.enrollmentStatus == nil)
         }
     }
 
@@ -219,9 +220,9 @@ struct HostView: View {
     }
 }
 
- struct HostView_Previews: PreviewProvider {
+struct HostView_Previews: PreviewProvider {
     static var previews: some View {
         HostView(host: .example)
             .environmentObject(DataController())
     }
- }
+}
