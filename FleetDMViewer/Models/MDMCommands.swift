@@ -43,7 +43,7 @@ struct DeviceInformationCommand: Codable {
     struct Command: Codable {
         var queries: [String]
         var requestType = "DeviceInformation"
-
+        // swiftlint:disable:next nesting
         private enum CodingKeys: String, CodingKey {
             case queries = "Queries"
             case requestType = "RequestType"
@@ -69,6 +69,7 @@ struct LockDeviceCommand: Codable {
         var requestRequiresNetworkTether: Bool?
         var requestType = "DeviceLock"
 
+        // swiftlint:disable:next nesting
         private enum CodingKeys: String, CodingKey {
             case message = "Message"
             case phoneNumber = "PhoneNumber"
@@ -92,6 +93,7 @@ struct ShutDownDeviceCommand: Codable {
     struct Command: Codable {
         var requestType = "ShutDownDevice"
 
+        // swiftlint:disable:next nesting
         private enum CodingKeys: String, CodingKey {
             case requestType = "RequestType"
         }
@@ -111,6 +113,7 @@ struct RestartDeviceCommand: Codable {
     struct Command: Codable {
         var requestType = "RestartDevice"
 
+        // swiftlint:disable:next nesting
         private enum CodingKeys: String, CodingKey {
             case requestType = "RequestType"
         }
@@ -132,6 +135,7 @@ struct InstallApplicationCommand: Codable {
         var manifestUrl: String
         var managementFlags = 0
 
+        // swiftlint:disable:next nesting
         private enum CodingKeys: String, CodingKey {
             case requestType = "RequestType"
             case manifestUrl = "ManifestURL"

@@ -21,6 +21,7 @@ struct FleetDMViewerApp: App {
                 DetailView()
             }
             .environmentObject(dataController)
+            .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }
 }

@@ -40,6 +40,11 @@
 		5EEA90982A93E9D800FEA5E4 /* ServerSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90972A93E9D800FEA5E4 /* ServerSelectionView.swift */; };
 		5EEA909A2A94FEF700FEA5E4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90992A94FEF700FEA5E4 /* SettingsView.swift */; };
 		5EEA909C2A95126400FEA5E4 /* MeViewV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA909B2A95126400FEA5E4 /* MeViewV2.swift */; };
+		5EEA909F2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA909D2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld */; };
+		5EEA90AC2A96948E00FEA5E4 /* CachedUser+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90A82A96948E00FEA5E4 /* CachedUser+CoreDataClass.swift */; };
+		5EEA90AD2A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90A92A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift */; };
+		5EEA90AE2A96948E00FEA5E4 /* CachedTeam+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90AA2A96948E00FEA5E4 /* CachedTeam+CoreDataClass.swift */; };
+		5EEA90AF2A96948E00FEA5E4 /* CachedTeam+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90AB2A96948E00FEA5E4 /* CachedTeam+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,6 +82,11 @@
 		5EEA90972A93E9D800FEA5E4 /* ServerSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectionView.swift; sourceTree = "<group>"; };
 		5EEA90992A94FEF700FEA5E4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5EEA909B2A95126400FEA5E4 /* MeViewV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeViewV2.swift; sourceTree = "<group>"; };
+		5EEA909E2A96701500FEA5E4 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		5EEA90A82A96948E00FEA5E4 /* CachedUser+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CachedUser+CoreDataClass.swift"; path = "FleetDMViewer/CachedUser+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5EEA90A92A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CachedUser+CoreDataProperties.swift"; path = "FleetDMViewer/CachedUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5EEA90AA2A96948E00FEA5E4 /* CachedTeam+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CachedTeam+CoreDataClass.swift"; path = "FleetDMViewer/CachedTeam+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5EEA90AB2A96948E00FEA5E4 /* CachedTeam+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CachedTeam+CoreDataProperties.swift"; path = "FleetDMViewer/CachedTeam+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +106,7 @@
 			children = (
 				5EDC18072A3B8FDF00691C2E /* HostRow.swift */,
 				5E9039312A45FC250077F3DC /* HostView.swift */,
+				5EEA909D2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld */,
 				5EEA90922A8EA24200FEA5E4 /* MDMCommandMenu.swift */,
 				5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */,
 			);
@@ -156,6 +167,10 @@
 		5EDA66B02A2A4955006706CD = {
 			isa = PBXGroup;
 			children = (
+				5EEA90A82A96948E00FEA5E4 /* CachedUser+CoreDataClass.swift */,
+				5EEA90A92A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift */,
+				5EEA90AA2A96948E00FEA5E4 /* CachedTeam+CoreDataClass.swift */,
+				5EEA90AB2A96948E00FEA5E4 /* CachedTeam+CoreDataProperties.swift */,
 				5EDA66BB2A2A4955006706CD /* FleetDMViewer */,
 				5EDA66BA2A2A4955006706CD /* Products */,
 			);
@@ -330,22 +345,27 @@
 				5EEA909C2A95126400FEA5E4 /* MeViewV2.swift in Sources */,
 				5E9038D72A4387670077F3DC /* SoftwareRow.swift in Sources */,
 				5EDC180C2A3B96D500691C2E /* DetailView.swift in Sources */,
+				5EEA90AD2A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift in Sources */,
 				5E9039322A45FC250077F3DC /* HostView.swift in Sources */,
 				5EEA90952A93C37100FEA5E4 /* DataController.swift in Sources */,
 				5EDA66D82A2A4979006706CD /* LoginView.swift in Sources */,
 				5E9B94E62A32321D00A7A0CE /* Team.swift in Sources */,
+				5EEA90AF2A96948E00FEA5E4 /* CachedTeam+CoreDataProperties.swift in Sources */,
 				5E7DAB0D2A339C7F00DDFAFC /* NoHostView.swift in Sources */,
 				5E9B94E22A3231F900A7A0CE /* LoginRequestBody.swift in Sources */,
 				5E028F452A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift in Sources */,
+				5EEA90AC2A96948E00FEA5E4 /* CachedUser+CoreDataClass.swift in Sources */,
 				5E9B94E82A32323300A7A0CE /* Endpoint.swift in Sources */,
 				5EDC180A2A3B961400691C2E /* ContentView.swift in Sources */,
 				5EDC180E2A409DB100691C2E /* PoliciesView.swift in Sources */,
 				5EEA90932A8EA24200FEA5E4 /* MDMCommandMenu.swift in Sources */,
 				5E028F512A4DE24400D90456 /* CommandRow.swift in Sources */,
+				5EEA909F2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld in Sources */,
 				5E9038DB2A43A0F60077F3DC /* ProfilesRow.swift in Sources */,
 				5EDC18042A3A506200691C2E /* User.swift in Sources */,
 				5EDC18082A3B8FDF00691C2E /* HostRow.swift in Sources */,
 				5E9038DD2A43A3AE0077F3DC /* ProfilesView.swift in Sources */,
+				5EEA90AE2A96948E00FEA5E4 /* CachedTeam+CoreDataClass.swift in Sources */,
 				5E9038D52A4384F50077F3DC /* SoftwareView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -579,6 +599,19 @@
 			productName = KeychainWrapper;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		5EEA909D2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				5EEA909E2A96701500FEA5E4 /* DataModel.xcdatamodel */,
+			);
+			currentVersion = 5EEA909E2A96701500FEA5E4 /* DataModel.xcdatamodel */;
+			path = FleetDMViewer.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 5EDA66B12A2A4955006706CD /* Project object */;
 }

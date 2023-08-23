@@ -72,6 +72,8 @@ struct MDMCommandMenu: View {
                 Button(role: .destructive) {
                     Task {
                         let restartDeviceComand = RestartDeviceCommand(command: RestartDeviceCommand.Command())
+
+                        // swiftlint:disable:next line_length
                         let mdmCommand = MdmCommand(command: try generatebase64EncodedPlistData(from: restartDeviceComand), deviceIds: [host.uuid])
 
                         try await sendMDMCommand(command: mdmCommand)

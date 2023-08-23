@@ -19,6 +19,7 @@ struct PoliciesView: View {
                     HStack {
                         Text(policy.name)
                         Spacer()
+                        // swiftlint:disable:next line_length
                         Image(systemName: policy.response == "pass" ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
                             .foregroundStyle(policy.response == "pass" ? .green : .red)
                             .imageScale(.large)

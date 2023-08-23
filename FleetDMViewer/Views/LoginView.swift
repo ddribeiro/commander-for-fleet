@@ -13,6 +13,7 @@ import SwiftUI
 }
 
 struct LoginView: View {
+    @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var dataController: DataController
 
@@ -129,8 +130,12 @@ struct LoginView: View {
         do {
             let response = try await networkManager.fetch(.loginResponse, with: JSONEncoder().encode(credentials))
             KeychainWrapper.default.set(response.token, forKey: "apiToken")
-            dataController.currentUser = response.user
+            let user = response.user
             dataController.currentUser?.teams = response.availableTeams
+
+            await MainActor.run {
+                updateCache(with: user)
+            }
 
             loadingState = .loaded
             isAuthenticated = true
@@ -142,6 +147,22 @@ struct LoginView: View {
             print(error.localizedDescription)
             showingAlert.toggle()
         }
+    }
+
+    func updateCache(with downloadedUser: User) {
+        let cachedUser = CachedUser(context: moc)
+
+        cachedUser.createdAt = downloadedUser.createdAt
+        cachedUser.updatedAt = downloadedUser.updatedAt
+        cachedUser.id = Int16(downloadedUser.id)
+        cachedUser.name = downloadedUser.name
+        cachedUser.email = downloadedUser.email
+        cachedUser.globalRole = downloadedUser.globalRole
+        cachedUser.gravatarUrl = downloadedUser.gravatarUrl
+        cachedUser.ssoEnabled = downloadedUser.ssoEnabled
+        cachedUser.apiOnly = downloadedUser.apiOnly
+
+        try? moc.save()
     }
 
     func validateServerURL(_ urlString: String) throws -> String {

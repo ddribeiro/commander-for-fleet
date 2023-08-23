@@ -38,6 +38,7 @@ struct HostView: View {
             }
             if let updatedHost = updatedHost {
                 Section {
+                    // swiftlint:disable:next line_length
                     let driveCapacity = ((updatedHost.gigsDiskSpaceAvailable) / Double((updatedHost.percentDiskSpaceAvailable)) * 100.0)
                     let gigsSpaceConsumed = (driveCapacity - updatedHost.gigsDiskSpaceAvailable)
 
@@ -71,6 +72,7 @@ struct HostView: View {
                             Text(mdm.encryptionKeyAvailable ? "Yes" : "No")
                                 .foregroundColor(mdm.encryptionKeyAvailable ? .secondary : .red)
 
+                            // swiftlint:disable:next line_length
                             Image(systemName: mdm.encryptionKeyAvailable ? "checkmark.shield.fill": "exclamationmark.shield.fill")
                                 .imageScale(.large)
                                 .foregroundColor(mdm.encryptionKeyAvailable ? .green : .red)
@@ -82,6 +84,8 @@ struct HostView: View {
             }
 
             Section {
+
+                // swiftlint:disable:next line_length
                 LabeledContent("Enrolled", value: "\(host.lastEnrolledAt.formatted(date: .abbreviated, time: .shortened))")
                     .multilineTextAlignment(.trailing)
 

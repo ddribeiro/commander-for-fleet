@@ -8,16 +8,19 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @EnvironmentObject var dataContoller: DataController
+    //    @EnvironmentObject var dataContoller: DataController
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
     @Environment(\.dismiss) var dismiss
     @State private var isSignOutAlertPresented = false
+
     var body: some View {
         NavigationView {
-            if let user = dataContoller.currentUser {
+            if let user = users.first {
                 Form {
                     Section {
                         HStack {
-                            if user.gravatarUrl.isEmpty {
+                            if user.wrappedGravatarUrl.isEmpty {
                                 Image(systemName: "person.fill")
                                     .font(.system(.largeTitle, design: .rounded))
                                     .fontWeight(.semibold)
@@ -25,7 +28,7 @@ struct SettingsView: View {
                                     .frame(width: 60, height: 60)
                                     .background(Color.accentColor.gradient, in: Circle())
                             } else {
-                                AsyncImage(url: URL(string: "\(user.gravatarUrl)?s=240")) { image in
+                                AsyncImage(url: URL(string: "\(user.wrappedGravatarUrl)?s=240")) { image in
                                     image
                                         .resizable()
                                         .scaledToFit()
@@ -44,11 +47,11 @@ struct SettingsView: View {
                             }
 
                             VStack(alignment: .leading) {
-                                Text(user.name)
+                                Text(user.wrappedName)
                                     .font(.system(.title3, design: .rounded))
                                     .fontWeight(.medium)
 
-                                Text(user.email)
+                                Text(user.wrappedEmail)
                                     .font(.system(.subheadline, design: .rounded))
                                     .fontWeight(.medium)
                                     .foregroundStyle(.secondary)
@@ -57,18 +60,18 @@ struct SettingsView: View {
                     }
 
                     Section {
-                        LabeledContent("Role", value: user.globalRole.capitalized)
-
-                        LabeledContent("Created On", value: user.createdAt.formatted(date: .abbreviated, time: .omitted))
+                        LabeledContent("Role", value: user.wrappedGlobalRole.capitalized)
+                        // swiftlint:disable:next line_length
+                        LabeledContent("Created On", value: user.wrappedCreatedAt.formatted(date: .abbreviated, time: .omitted))
                     }
 
-                    Section {
-                        ForEach(user.teams) { team in
-                            Text(team.name)
-                        }
-                    } header: {
-                        Text("Available Teams")
-                    }
+                                    Section {
+                                        ForEach(user.teamsArray) { team in
+                                            Text(team.wrappedName)
+                                        }
+                                    } header: {
+                                        Text("Available Teams")
+                                    }
 
                     Section {
                         LabeledContent("Sign Out") {
@@ -81,9 +84,7 @@ struct SettingsView: View {
                     }
                 }
                 .formStyle(.grouped)
-                .alert(isPresented: $isSignOutAlertPresented) {
-                    signOutAlert
-                }
+                .navigationTitle("Account")
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Done") {
@@ -91,11 +92,13 @@ struct SettingsView: View {
                         }
                     }
                 }
-                .navigationTitle("Account")
-            } else {
-                Text("No user found")
+                .alert(isPresented: $isSignOutAlertPresented) {
+                    signOutAlert
+                }
             }
+
         }
+
     }
 
     private var signOutAlert: Alert {
@@ -113,6 +116,5 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
-            .environmentObject(DataController())
     }
 }
