@@ -131,10 +131,10 @@ struct LoginView: View {
             let response = try await networkManager.fetch(.loginResponse, with: JSONEncoder().encode(credentials))
             KeychainWrapper.default.set(response.token, forKey: "apiToken")
             let user = response.user
-            dataController.currentUser?.teams = response.availableTeams
+            let teams = response.availableTeams
 
             await MainActor.run {
-                updateCache(with: user)
+                updateCache(with: user, downloadedTeams: teams)
             }
 
             loadingState = .loaded
@@ -149,7 +149,7 @@ struct LoginView: View {
         }
     }
 
-    func updateCache(with downloadedUser: User) {
+    func updateCache(with downloadedUser: User, downloadedTeams: [Team]) {
         let cachedUser = CachedUser(context: moc)
 
         cachedUser.createdAt = downloadedUser.createdAt
@@ -161,6 +161,14 @@ struct LoginView: View {
         cachedUser.gravatarUrl = downloadedUser.gravatarUrl
         cachedUser.ssoEnabled = downloadedUser.ssoEnabled
         cachedUser.apiOnly = downloadedUser.apiOnly
+
+        for team in downloadedTeams {
+            let cachedTeam = CachedTeam(context: moc)
+            cachedTeam.id = Int16(team.id)
+            cachedTeam.hostCount = Int16(team.hostCount ?? 0)
+            cachedTeam.name = team.name
+            cachedUser.addToTeams(cachedTeam)
+        }
 
         try? moc.save()
     }
