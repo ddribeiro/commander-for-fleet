@@ -50,8 +50,8 @@ extension CachedUser {
         updatedAt ?? Date.now
     }
 
-    var teamsArray: [CachedTeam] {
-        let set = teams as? Set<CachedTeam> ?? []
+    var teamsArray: [CachedUserTeam] {
+        let set = teams as? Set<CachedUserTeam> ?? []
 
         return set.sorted {
             $0.wrappedName < $1.wrappedName
@@ -64,16 +64,16 @@ extension CachedUser {
 extension CachedUser {
 
     @objc(addTeamsObject:)
-    @NSManaged public func addToTeams(_ value: CachedTeam)
+    @NSManaged public func addToUserTeams(_ value: CachedUserTeam)
 
     @objc(removeTeamsObject:)
-    @NSManaged public func removeFromTeams(_ value: CachedTeam)
+    @NSManaged public func removeFromUserTeams(_ value: CachedUserTeam)
 
     @objc(addTeams:)
-    @NSManaged public func addToTeams(_ values: NSSet)
+    @NSManaged public func addToUserTeams(_ values: NSSet)
 
     @objc(removeTeams:)
-    @NSManaged public func removeFromTeams(_ values: NSSet)
+    @NSManaged public func removeFromUserTeams(_ values: NSSet)
 
 }
 

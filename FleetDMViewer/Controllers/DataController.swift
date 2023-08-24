@@ -22,9 +22,8 @@ class DataController: ObservableObject {
         }
     }
 
-    @Published var selectedTeam: Team?
+    @Published var selectedTeam: CachedTeam?
     @Published var selectedHost: Host?
-    @Published var currentUser: User?
 
     @Published var activeEnvironment: AppEnvironment? {
         didSet {

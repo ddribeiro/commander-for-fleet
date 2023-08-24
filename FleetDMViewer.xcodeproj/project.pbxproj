@@ -43,8 +43,24 @@
 		5EEA909F2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA909D2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld */; };
 		5EEA90AC2A96948E00FEA5E4 /* CachedUser+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90A82A96948E00FEA5E4 /* CachedUser+CoreDataClass.swift */; };
 		5EEA90AD2A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90A92A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift */; };
-		5EEA90AE2A96948E00FEA5E4 /* CachedTeam+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90AA2A96948E00FEA5E4 /* CachedTeam+CoreDataClass.swift */; };
-		5EEA90AF2A96948E00FEA5E4 /* CachedTeam+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90AB2A96948E00FEA5E4 /* CachedTeam+CoreDataProperties.swift */; };
+		5EEA90E42A97DA0300FEA5E4 /* CachedTeam+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90D42A97DA0300FEA5E4 /* CachedTeam+CoreDataClass.swift */; };
+		5EEA90E52A97DA0300FEA5E4 /* CachedTeam+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90D52A97DA0300FEA5E4 /* CachedTeam+CoreDataProperties.swift */; };
+		5EEA90E62A97DA0300FEA5E4 /* CachedSoftware+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90D62A97DA0300FEA5E4 /* CachedSoftware+CoreDataClass.swift */; };
+		5EEA90E72A97DA0300FEA5E4 /* CachedSoftware+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90D72A97DA0300FEA5E4 /* CachedSoftware+CoreDataProperties.swift */; };
+		5EEA90E82A97DA0300FEA5E4 /* CachedVulnerability+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90D82A97DA0300FEA5E4 /* CachedVulnerability+CoreDataClass.swift */; };
+		5EEA90E92A97DA0300FEA5E4 /* CachedVulnerability+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90D92A97DA0300FEA5E4 /* CachedVulnerability+CoreDataProperties.swift */; };
+		5EEA90EA2A97DA0300FEA5E4 /* CachedBattery+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90DA2A97DA0300FEA5E4 /* CachedBattery+CoreDataClass.swift */; };
+		5EEA90EB2A97DA0300FEA5E4 /* CachedBattery+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90DB2A97DA0300FEA5E4 /* CachedBattery+CoreDataProperties.swift */; };
+		5EEA90EC2A97DA0300FEA5E4 /* CachedProfile+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90DC2A97DA0300FEA5E4 /* CachedProfile+CoreDataClass.swift */; };
+		5EEA90ED2A97DA0300FEA5E4 /* CachedProfile+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90DD2A97DA0300FEA5E4 /* CachedProfile+CoreDataProperties.swift */; };
+		5EEA90EE2A97DA0300FEA5E4 /* CachedHost+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90DE2A97DA0300FEA5E4 /* CachedHost+CoreDataClass.swift */; };
+		5EEA90EF2A97DA0300FEA5E4 /* CachedHost+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90DF2A97DA0300FEA5E4 /* CachedHost+CoreDataProperties.swift */; };
+		5EEA90F72A97DAF900FEA5E4 /* CachedPolicy+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90F52A97DAF900FEA5E4 /* CachedPolicy+CoreDataClass.swift */; };
+		5EEA90F82A97DAF900FEA5E4 /* CachedPolicy+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90F62A97DAF900FEA5E4 /* CachedPolicy+CoreDataProperties.swift */; };
+		5EEA90FB2A97DB8B00FEA5E4 /* CachedMdm+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90F92A97DB8B00FEA5E4 /* CachedMdm+CoreDataClass.swift */; };
+		5EEA90FC2A97DB8B00FEA5E4 /* CachedMdm+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90FA2A97DB8B00FEA5E4 /* CachedMdm+CoreDataProperties.swift */; };
+		5EEA91032A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA91012A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataClass.swift */; };
+		5EEA91042A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA91022A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,10 +99,26 @@
 		5EEA90992A94FEF700FEA5E4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5EEA909B2A95126400FEA5E4 /* MeViewV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeViewV2.swift; sourceTree = "<group>"; };
 		5EEA909E2A96701500FEA5E4 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
-		5EEA90A82A96948E00FEA5E4 /* CachedUser+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CachedUser+CoreDataClass.swift"; path = "FleetDMViewer/CachedUser+CoreDataClass.swift"; sourceTree = "<group>"; };
-		5EEA90A92A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CachedUser+CoreDataProperties.swift"; path = "FleetDMViewer/CachedUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		5EEA90AA2A96948E00FEA5E4 /* CachedTeam+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CachedTeam+CoreDataClass.swift"; path = "FleetDMViewer/CachedTeam+CoreDataClass.swift"; sourceTree = "<group>"; };
-		5EEA90AB2A96948E00FEA5E4 /* CachedTeam+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CachedTeam+CoreDataProperties.swift"; path = "FleetDMViewer/CachedTeam+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5EEA90A82A96948E00FEA5E4 /* CachedUser+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedUser+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5EEA90A92A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5EEA90D42A97DA0300FEA5E4 /* CachedTeam+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedTeam+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5EEA90D52A97DA0300FEA5E4 /* CachedTeam+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedTeam+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5EEA90D62A97DA0300FEA5E4 /* CachedSoftware+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedSoftware+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5EEA90D72A97DA0300FEA5E4 /* CachedSoftware+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedSoftware+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5EEA90D82A97DA0300FEA5E4 /* CachedVulnerability+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedVulnerability+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5EEA90D92A97DA0300FEA5E4 /* CachedVulnerability+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedVulnerability+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5EEA90DA2A97DA0300FEA5E4 /* CachedBattery+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedBattery+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5EEA90DB2A97DA0300FEA5E4 /* CachedBattery+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedBattery+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5EEA90DC2A97DA0300FEA5E4 /* CachedProfile+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedProfile+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5EEA90DD2A97DA0300FEA5E4 /* CachedProfile+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedProfile+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5EEA90DE2A97DA0300FEA5E4 /* CachedHost+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedHost+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5EEA90DF2A97DA0300FEA5E4 /* CachedHost+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedHost+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5EEA90F52A97DAF900FEA5E4 /* CachedPolicy+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedPolicy+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5EEA90F62A97DAF900FEA5E4 /* CachedPolicy+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedPolicy+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5EEA90F92A97DB8B00FEA5E4 /* CachedMdm+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedMdm+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5EEA90FA2A97DB8B00FEA5E4 /* CachedMdm+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedMdm+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5EEA91012A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedUserTeam+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5EEA91022A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedUserTeam+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,7 +138,6 @@
 			children = (
 				5EDC18072A3B8FDF00691C2E /* HostRow.swift */,
 				5E9039312A45FC250077F3DC /* HostView.swift */,
-				5EEA909D2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld */,
 				5EEA90922A8EA24200FEA5E4 /* MDMCommandMenu.swift */,
 				5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */,
 			);
@@ -154,6 +185,8 @@
 		5E9B94E02A3231E600A7A0CE /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5EEA90F22A97DA3500FEA5E4 /* Core Data */,
+				5EEA909D2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld */,
 				5E9B94E72A32323300A7A0CE /* Endpoint.swift */,
 				5E9B94E32A32320D00A7A0CE /* Host.swift */,
 				5E9B94E12A3231F900A7A0CE /* LoginRequestBody.swift */,
@@ -167,10 +200,6 @@
 		5EDA66B02A2A4955006706CD = {
 			isa = PBXGroup;
 			children = (
-				5EEA90A82A96948E00FEA5E4 /* CachedUser+CoreDataClass.swift */,
-				5EEA90A92A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift */,
-				5EEA90AA2A96948E00FEA5E4 /* CachedTeam+CoreDataClass.swift */,
-				5EEA90AB2A96948E00FEA5E4 /* CachedTeam+CoreDataProperties.swift */,
 				5EDA66BB2A2A4955006706CD /* FleetDMViewer */,
 				5EDA66BA2A2A4955006706CD /* Products */,
 			);
@@ -232,6 +261,33 @@
 				5EEA90972A93E9D800FEA5E4 /* ServerSelectionView.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		5EEA90F22A97DA3500FEA5E4 /* Core Data */ = {
+			isa = PBXGroup;
+			children = (
+				5EEA91012A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataClass.swift */,
+				5EEA91022A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataProperties.swift */,
+				5EEA90F92A97DB8B00FEA5E4 /* CachedMdm+CoreDataClass.swift */,
+				5EEA90FA2A97DB8B00FEA5E4 /* CachedMdm+CoreDataProperties.swift */,
+				5EEA90F52A97DAF900FEA5E4 /* CachedPolicy+CoreDataClass.swift */,
+				5EEA90F62A97DAF900FEA5E4 /* CachedPolicy+CoreDataProperties.swift */,
+				5EEA90D42A97DA0300FEA5E4 /* CachedTeam+CoreDataClass.swift */,
+				5EEA90D52A97DA0300FEA5E4 /* CachedTeam+CoreDataProperties.swift */,
+				5EEA90D62A97DA0300FEA5E4 /* CachedSoftware+CoreDataClass.swift */,
+				5EEA90D72A97DA0300FEA5E4 /* CachedSoftware+CoreDataProperties.swift */,
+				5EEA90D82A97DA0300FEA5E4 /* CachedVulnerability+CoreDataClass.swift */,
+				5EEA90D92A97DA0300FEA5E4 /* CachedVulnerability+CoreDataProperties.swift */,
+				5EEA90DA2A97DA0300FEA5E4 /* CachedBattery+CoreDataClass.swift */,
+				5EEA90DB2A97DA0300FEA5E4 /* CachedBattery+CoreDataProperties.swift */,
+				5EEA90DC2A97DA0300FEA5E4 /* CachedProfile+CoreDataClass.swift */,
+				5EEA90DD2A97DA0300FEA5E4 /* CachedProfile+CoreDataProperties.swift */,
+				5EEA90DE2A97DA0300FEA5E4 /* CachedHost+CoreDataClass.swift */,
+				5EEA90DF2A97DA0300FEA5E4 /* CachedHost+CoreDataProperties.swift */,
+				5EEA90A82A96948E00FEA5E4 /* CachedUser+CoreDataClass.swift */,
+				5EEA90A92A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift */,
+			);
+			path = "Core Data";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -332,40 +388,56 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5EEA90EB2A97DA0300FEA5E4 /* CachedBattery+CoreDataProperties.swift in Sources */,
+				5EEA90E82A97DA0300FEA5E4 /* CachedVulnerability+CoreDataClass.swift in Sources */,
 				5E9B94E42A32320D00A7A0CE /* Host.swift in Sources */,
 				5EDA66BD2A2A4955006706CD /* FleetDMViewerApp.swift in Sources */,
 				5EEA90982A93E9D800FEA5E4 /* ServerSelectionView.swift in Sources */,
+				5EEA90E72A97DA0300FEA5E4 /* CachedSoftware+CoreDataProperties.swift in Sources */,
 				5E9038D92A43944B0077F3DC /* SoftwareDetailView.swift in Sources */,
+				5EEA90E52A97DA0300FEA5E4 /* CachedTeam+CoreDataProperties.swift in Sources */,
 				5E9038DF2A44AF6F0077F3DC /* MDMCommands.swift in Sources */,
+				5EEA90EA2A97DA0300FEA5E4 /* CachedBattery+CoreDataClass.swift in Sources */,
 				5EDA66D52A2A4979006706CD /* TeamsView.swift in Sources */,
 				5E028F4E2A4DCEF300D90456 /* CommandsView.swift in Sources */,
 				5EDA66DA2A2A4979006706CD /* NetworkManager.swift in Sources */,
+				5EEA90F72A97DAF900FEA5E4 /* CachedPolicy+CoreDataClass.swift in Sources */,
 				5E028F532A4E26AD00D90456 /* NoHostsView.swift in Sources */,
+				5EEA90E62A97DA0300FEA5E4 /* CachedSoftware+CoreDataClass.swift in Sources */,
 				5EEA909A2A94FEF700FEA5E4 /* SettingsView.swift in Sources */,
 				5EEA909C2A95126400FEA5E4 /* MeViewV2.swift in Sources */,
 				5E9038D72A4387670077F3DC /* SoftwareRow.swift in Sources */,
 				5EDC180C2A3B96D500691C2E /* DetailView.swift in Sources */,
 				5EEA90AD2A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift in Sources */,
 				5E9039322A45FC250077F3DC /* HostView.swift in Sources */,
+				5EEA90ED2A97DA0300FEA5E4 /* CachedProfile+CoreDataProperties.swift in Sources */,
 				5EEA90952A93C37100FEA5E4 /* DataController.swift in Sources */,
+				5EEA90E92A97DA0300FEA5E4 /* CachedVulnerability+CoreDataProperties.swift in Sources */,
 				5EDA66D82A2A4979006706CD /* LoginView.swift in Sources */,
 				5E9B94E62A32321D00A7A0CE /* Team.swift in Sources */,
-				5EEA90AF2A96948E00FEA5E4 /* CachedTeam+CoreDataProperties.swift in Sources */,
 				5E7DAB0D2A339C7F00DDFAFC /* NoHostView.swift in Sources */,
 				5E9B94E22A3231F900A7A0CE /* LoginRequestBody.swift in Sources */,
 				5E028F452A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift in Sources */,
 				5EEA90AC2A96948E00FEA5E4 /* CachedUser+CoreDataClass.swift in Sources */,
+				5EEA91042A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataProperties.swift in Sources */,
+				5EEA90FC2A97DB8B00FEA5E4 /* CachedMdm+CoreDataProperties.swift in Sources */,
 				5E9B94E82A32323300A7A0CE /* Endpoint.swift in Sources */,
+				5EEA90EE2A97DA0300FEA5E4 /* CachedHost+CoreDataClass.swift in Sources */,
 				5EDC180A2A3B961400691C2E /* ContentView.swift in Sources */,
+				5EEA91032A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataClass.swift in Sources */,
 				5EDC180E2A409DB100691C2E /* PoliciesView.swift in Sources */,
 				5EEA90932A8EA24200FEA5E4 /* MDMCommandMenu.swift in Sources */,
 				5E028F512A4DE24400D90456 /* CommandRow.swift in Sources */,
 				5EEA909F2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld in Sources */,
+				5EEA90E42A97DA0300FEA5E4 /* CachedTeam+CoreDataClass.swift in Sources */,
 				5E9038DB2A43A0F60077F3DC /* ProfilesRow.swift in Sources */,
+				5EEA90FB2A97DB8B00FEA5E4 /* CachedMdm+CoreDataClass.swift in Sources */,
+				5EEA90F82A97DAF900FEA5E4 /* CachedPolicy+CoreDataProperties.swift in Sources */,
 				5EDC18042A3A506200691C2E /* User.swift in Sources */,
 				5EDC18082A3B8FDF00691C2E /* HostRow.swift in Sources */,
+				5EEA90EC2A97DA0300FEA5E4 /* CachedProfile+CoreDataClass.swift in Sources */,
 				5E9038DD2A43A3AE0077F3DC /* ProfilesView.swift in Sources */,
-				5EEA90AE2A96948E00FEA5E4 /* CachedTeam+CoreDataClass.swift in Sources */,
+				5EEA90EF2A97DA0300FEA5E4 /* CachedHost+CoreDataProperties.swift in Sources */,
 				5E9038D52A4384F50077F3DC /* SoftwareView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

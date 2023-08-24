@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct SettingsView: View {
-    //    @EnvironmentObject var dataContoller: DataController
-    @Environment(\.managedObjectContext) var moc
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
+    @EnvironmentObject var dataContoller: DataController
     @Environment(\.dismiss) var dismiss
+
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
+
     @State private var isSignOutAlertPresented = false
 
     var body: some View {
@@ -95,6 +96,10 @@ struct SettingsView: View {
                 .alert(isPresented: $isSignOutAlertPresented) {
                     signOutAlert
                 }
+            } else {
+                Text("No user found")
+                    .font(.title)
+                    .foregroundColor(.secondary)
             }
 
         }

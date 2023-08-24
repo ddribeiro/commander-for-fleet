@@ -9,8 +9,11 @@ import SwiftUI
 import KeychainWrapper
 
 struct TeamsView: View {
+    @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
-    @State private var teams = [Team]()
+
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
+//    @State private var teams = [Team]()
     @StateObject var appEnvironments = AppEnvironments()
 
     @State private var showingSettings = false
@@ -29,8 +32,8 @@ struct TeamsView: View {
             Section("Teams") {
                 ForEach(teams) { team in
                     NavigationLink(value: team) {
-                        Label(team.name, systemImage: "person.3")
-                            .badge(team.hostCount ?? 0)
+                        Label(team.wrappedName, systemImage: "person.3")
+                            .badge(Int(team.hostCount))
                             .lineLimit(1)
                     }
                 }
@@ -41,13 +44,13 @@ struct TeamsView: View {
                 await fetchTeams()
             }
         }
+        .refreshable {
+            await fetchTeams()
+        }
         .sheet(isPresented: $showingSettings) {
             SettingsView()
         }
         .sheet(isPresented: $showingLogin, content: LoginView.init)
-        .refreshable {
-            await fetchTeams()
-        }
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Button {
@@ -77,10 +80,24 @@ struct TeamsView: View {
         let networkManager = NetworkManager(environment: environment)
 
         do {
-            teams = try await networkManager.fetch(.teams)
+            let teams = try await networkManager.fetch(.teams)
+            let hosts = try await networkManager.fetch(.hosts)
+            updateCache(with: teams, hosts)
         } catch {
             print(error.localizedDescription)
         }
+    }
+
+    func updateCache(with downloadedTeams: [Team], _ downloadedHosts: [Host]) {
+        for downloadedTeam in downloadedTeams {
+            let cachedTeam = CachedTeam(context: moc)
+
+            cachedTeam.hostCount = Int16(downloadedTeam.hostCount ?? 0)
+            cachedTeam.id = Int16(downloadedTeam.id)
+            cachedTeam.name = downloadedTeam.name
+        }
+
+        try? moc.save()
     }
 }
 

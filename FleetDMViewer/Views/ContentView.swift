@@ -60,7 +60,7 @@ struct ContentView: View {
 
     var filteredHosts: [Host] {
         hosts.filter { host in
-            host.teamId == dataController.selectedTeam?.id
+            Int16(host.teamId ?? 0) == dataController.selectedTeam?.id
         }
     }
 }

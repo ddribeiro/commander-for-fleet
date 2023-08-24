@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22G90" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CachedBattery" representedClassName="CachedBattery" syncable="YES">
+        <attribute name="cycleCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="health" optional="YES" attributeType="String"/>
+        <relationship name="host" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedHost" inverseName="battery" inverseEntity="CachedHost"/>
+    </entity>
+    <entity name="CachedHost" representedClassName="CachedHost" syncable="YES">
+        <attribute name="computerName" optional="YES" attributeType="String"/>
+        <attribute name="cpuBrand" optional="YES" attributeType="String"/>
+        <attribute name="diskEncryptionEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="gigsDiskSpaceAvailable" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="hardwareModel" optional="YES" attributeType="String"/>
+        <attribute name="hardwareSerial" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="lastEnrolledAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="memory" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="osVersion" optional="YES" attributeType="String"/>
+        <attribute name="percentDiskSpaceAvailable" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="primaryIp" optional="YES" attributeType="String"/>
+        <attribute name="primaryMac" optional="YES" attributeType="String"/>
+        <attribute name="publicIp" optional="YES" attributeType="String"/>
+        <attribute name="seenTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="teamId" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="uptime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String"/>
+        <relationship name="battery" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedBattery" inverseName="host" inverseEntity="CachedBattery"/>
+        <relationship name="mdm" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedMdm" inverseName="host" inverseEntity="CachedMdm"/>
+        <relationship name="policies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedPolicy" inverseName="host" inverseEntity="CachedPolicy"/>
+        <relationship name="software" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedSoftware" inverseName="host" inverseEntity="CachedSoftware"/>
+        <relationship name="team" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedTeam" inverseName="hosts" inverseEntity="CachedTeam"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CachedMdm" representedClassName="CachedMdm" syncable="YES">
+        <attribute name="encryptionKeyAvailable" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="enrollmentStatus" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="serverUrl" optional="YES" attributeType="String"/>
+        <relationship name="host" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedHost" inverseName="mdm" inverseEntity="CachedHost"/>
+        <relationship name="profiles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedProfile" inverseName="mdm" inverseEntity="CachedProfile"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="serverUrl"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CachedPolicy" representedClassName="CachedPolicy" syncable="YES">
+        <attribute name="critical" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="response" optional="YES" attributeType="String"/>
+        <relationship name="host" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedHost" inverseName="policies" inverseEntity="CachedHost"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CachedProfile" representedClassName="CachedProfile" syncable="YES">
+        <attribute name="detail" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="operationType" optional="YES" attributeType="String"/>
+        <attribute name="profileId" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <relationship name="mdm" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedMdm" inverseName="profiles" inverseEntity="CachedMdm"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="profileId"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CachedSoftware" representedClassName="CachedSoftware" syncable="YES">
+        <attribute name="bundleIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="installedPaths" optional="YES" attributeType="String"/>
+        <attribute name="lastOpenedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="version" optional="YES" attributeType="String"/>
+        <relationship name="host" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedHost" inverseName="software" inverseEntity="CachedHost"/>
+        <relationship name="vulnerabilities" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedVulnerability" inverseName="software" inverseEntity="CachedVulnerability"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CachedTeam" representedClassName="CachedTeam" syncable="YES">
+        <attribute name="hostCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="hosts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedHost" inverseName="team" inverseEntity="CachedHost"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CachedUser" representedClassName="CachedUser" syncable="YES">
+        <attribute name="apiOnly" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="globalRole" optional="YES" attributeType="String"/>
+        <attribute name="gravatarUrl" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="ssoEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="teams" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedUserTeam" inverseName="user" inverseEntity="CachedUserTeam"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CachedUserTeam" representedClassName="CachedUserTeam" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="teamDescription" optional="YES" attributeType="String"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedUser" inverseName="teams" inverseEntity="CachedUser"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CachedVulnerability" representedClassName="CachedVulnerability" syncable="YES">
+        <attribute name="cisaKnownExploit" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="cve" optional="YES" attributeType="String"/>
+        <attribute name="cvePublished" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="cvssScore" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="detailsLink" optional="YES" attributeType="String"/>
+        <attribute name="epssProbability" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="software" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedSoftware" inverseName="vulnerabilities" inverseEntity="CachedSoftware"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="cve"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+</model>

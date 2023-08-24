@@ -163,11 +163,12 @@ struct LoginView: View {
         cachedUser.apiOnly = downloadedUser.apiOnly
 
         for team in downloadedTeams {
-            let cachedTeam = CachedTeam(context: moc)
+            let cachedTeam = CachedUserTeam(context: moc)
             cachedTeam.id = Int16(team.id)
-            cachedTeam.hostCount = Int16(team.hostCount ?? 0)
             cachedTeam.name = team.name
-            cachedUser.addToTeams(cachedTeam)
+            cachedTeam.teamDescription = team.description
+
+            cachedUser.addToUserTeams(cachedTeam)
         }
 
         try? moc.save()
