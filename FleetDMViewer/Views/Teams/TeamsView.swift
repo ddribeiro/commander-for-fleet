@@ -13,7 +13,7 @@ struct TeamsView: View {
     @EnvironmentObject var dataController: DataController
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
-//    @State private var teams = [Team]()
+    //    @State private var teams = [Team]()
     @StateObject var appEnvironments = AppEnvironments()
 
     @State private var showingSettings = false
@@ -40,9 +40,8 @@ struct TeamsView: View {
             }
         }
         .task {
-            if teams.isEmpty {
-                await fetchTeams()
-            }
+            guard teams.isEmpty else { return }
+            await fetchTeams()
         }
         .refreshable {
             await fetchTeams()
@@ -71,6 +70,7 @@ struct TeamsView: View {
     }
 
     func fetchTeams() async {
+
         guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
             print("Could not get server URL")
             return

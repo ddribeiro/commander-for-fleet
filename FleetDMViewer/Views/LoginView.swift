@@ -32,10 +32,10 @@ struct LoginView: View {
                 Section {
                     LabeledContent("Server URL") {
                         TextField("FleetDM Server URL", text: $serverURL)
-                            .textContentType(.URL)
+
                             .multilineTextAlignment(.trailing)
 #if os(iOS)
-
+                            .textContentType(.URL)
                             .textInputAutocapitalization(.never)
                             .keyboardType(.URL)
                             .autocorrectionDisabled()
@@ -49,10 +49,9 @@ struct LoginView: View {
                 Section {
                     LabeledContent("Email Address") {
                         TextField("Email Address", text: $emailAddress)
-                            .textContentType(.emailAddress)
                             .multilineTextAlignment(.trailing)
 #if os(iOS)
-
+                            .textContentType(.emailAddress)
                             .textInputAutocapitalization(.never)
                             .keyboardType(.emailAddress)
 #endif
@@ -60,9 +59,11 @@ struct LoginView: View {
 
                     LabeledContent("Password") {
                         SecureField("Password", text: $password)
-                            .textContentType(.password)
                             .multilineTextAlignment(.trailing)
+                        #if os(iOS)
+                            .textContentType(.password)
                             .autocorrectionDisabled()
+                        #endif
                     }
                 }
 

@@ -216,9 +216,9 @@
 		5EDA66BB2A2A4955006706CD /* FleetDMViewer */ = {
 			isa = PBXGroup;
 			children = (
-				5EEA90962A93C37D00FEA5E4 /* Controllers */,
 				5EDA66BC2A2A4955006706CD /* FleetDMViewerApp.swift */,
 				5E028F442A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift */,
+				5EEA90962A93C37D00FEA5E4 /* Controllers */,
 				5E9B94E02A3231E600A7A0CE /* Models */,
 				5EDA66E22A2A4A13006706CD /* Views */,
 				5EDA66C02A2A4955006706CD /* Assets.xcassets */,

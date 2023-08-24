@@ -27,6 +27,7 @@ struct ContentView: View {
                 await fetchHosts()
             }
             .task {
+                guard hosts.isEmpty else { return }
                 await fetchHosts()
             }
             .navigationTitle(dataController.selectedTeam?.name ?? "Hosts")
