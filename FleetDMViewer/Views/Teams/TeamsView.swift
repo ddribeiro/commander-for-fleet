@@ -82,7 +82,10 @@ struct TeamsView: View {
         do {
             let teams = try await networkManager.fetch(.teams)
             let hosts = try await networkManager.fetch(.hosts)
-            updateCache(with: teams, hosts)
+
+            await MainActor.run {
+                updateCache(with: teams, hosts)
+            }
         } catch {
             print(error.localizedDescription)
         }
