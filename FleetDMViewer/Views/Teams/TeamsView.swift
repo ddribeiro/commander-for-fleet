@@ -12,6 +12,8 @@ struct TeamsView: View {
     @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
 
+    let smartFilters: [Filter] = [.all]
+
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
     //    @State private var teams = [Team]()
     @StateObject var appEnvironments = AppEnvironments()
@@ -19,21 +21,27 @@ struct TeamsView: View {
     @State private var showingSettings = false
     @State private var showingLogin = false
 
+    var teamFilters: [Filter] {
+        teams.map { team in
+            Filter(id: UUID(), name: team.wrappedName, icon: "person.3", team: team)
+        }
+    }
+
     var body: some View {
-        List(selection: $dataController.selectedTeam) {
+        List(selection: $dataController.selectedFilter) {
             Section("All Hosts") {
-                NavigationLink {
-                    ContentView()
-                } label: {
-                    Label("All Hosts", systemImage: "laptopcomputer")
+                ForEach(smartFilters) { filter in
+                    NavigationLink(value: filter) {
+                        Label(filter.name, systemImage: "laptopcomputer")
+                    }
                 }
             }
 
             Section("Teams") {
-                ForEach(teams) { team in
-                    NavigationLink(value: team) {
-                        Label(team.wrappedName, systemImage: "person.3")
-                            .badge(Int(team.hostCount))
+                ForEach(teamFilters) { filter in
+                    NavigationLink(value: filter) {
+                        Label(filter.team?.wrappedName ?? "", systemImage: "person.3")
+                            .badge(filter.hostCount)
                             .lineLimit(1)
                     }
                 }

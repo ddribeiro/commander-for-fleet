@@ -15,21 +15,21 @@ struct HostView: View {
     @State private var selectedView = "Policies"
     @State private var lockCode: String = ""
 
-    var host: Host
+    var host: CachedHost
     var views = ["Policies", "Software", "Profiles"]
 
     var body: some View {
         Form {
             Section {
-                LabeledContent("Device Name", value: host.computerName)
+                LabeledContent("Device Name", value: host.wrappedComputerName)
 
-                LabeledContent("Serial Number", value: host.hardwareSerial)
+                LabeledContent("Serial Number", value: host.wrappedHardwareSerial)
 
-                LabeledContent("Model", value: host.hardwareModel)
+                LabeledContent("Model", value: host.wrappedHardwareModel)
 
-                LabeledContent("OS Version", value: host.osVersion)
+                LabeledContent("OS Version", value: host.wrappedOsVersion)
 
-                LabeledContent("Processor", value: host.cpuBrand)
+                LabeledContent("Processor", value: host.wrappedCpuBrand)
                     .multilineTextAlignment(.trailing)
 
                 LabeledContent("Memory", value: "\(host.memory / 1073741824) GB")
@@ -86,21 +86,21 @@ struct HostView: View {
             Section {
 
                 // swiftlint:disable:next line_length
-                LabeledContent("Enrolled", value: "\(host.lastEnrolledAt.formatted(date: .abbreviated, time: .shortened))")
+                LabeledContent("Enrolled", value: "\(host.wrappedLastEnrolledAt.formatted(date: .abbreviated, time: .shortened))")
                     .multilineTextAlignment(.trailing)
 
-                LabeledContent("Last Seen", value: "\(host.seenTime.formatted(date: .abbreviated, time: .shortened))")
+                LabeledContent("Last Seen", value: "\(host.wrappedSeenTime.formatted(date: .abbreviated, time: .shortened))")
                     .multilineTextAlignment(.trailing)
 
                 LabeledContent("Uptime", value: "\(host.uptime / 86491509803921) days")
             }
 
             Section {
-                LabeledContent("IP Address", value: host.publicIp)
+                LabeledContent("IP Address", value: host.wrappedPublicIp)
 
-                LabeledContent("Private IP Address", value: host.primaryIp)
+                LabeledContent("Private IP Address", value: host.wrappedPrimaryIp)
 
-                LabeledContent("MAC Address", value: host.primaryMac)
+                LabeledContent("MAC Address", value: host.wrappedPrimaryMac)
             } header: {
                 Label("Network Information", systemImage: "network")
             }
@@ -184,7 +184,7 @@ struct HostView: View {
         .task {
             await updateHost()
         }
-        .navigationTitle("\(host.computerName)")
+        .navigationTitle("\(host.wrappedComputerName)")
         .toolbar {
             MDMCommandMenu(host: host)
                 .disabled(updatedHost?.mdm?.enrollmentStatus == nil)
@@ -194,7 +194,7 @@ struct HostView: View {
     private func updateHost() async {
         do {
             if let id = dataController.selectedHost?.id {
-                updatedHost = try await getHost(hostID: id)
+                updatedHost = try await getHost(hostID: Int(id))
             }
         } catch {
             print(error.localizedDescription)
@@ -221,12 +221,5 @@ struct HostView: View {
             print(error.localizedDescription)
             throw error
         }
-    }
-}
-
-struct HostView_Previews: PreviewProvider {
-    static var previews: some View {
-        HostView(host: .example)
-            .environmentObject(DataController())
     }
 }

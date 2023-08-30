@@ -134,6 +134,8 @@ struct LoginView: View {
             let user = response.user
             let teams = response.availableTeams
 
+            dataController.deleteAll()
+
             await MainActor.run {
                 updateCache(with: user, downloadedTeams: teams)
             }

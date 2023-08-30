@@ -61,6 +61,7 @@
 		5EEA90FC2A97DB8B00FEA5E4 /* CachedMdm+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90FA2A97DB8B00FEA5E4 /* CachedMdm+CoreDataProperties.swift */; };
 		5EEA91032A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA91012A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataClass.swift */; };
 		5EEA91042A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA91022A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataProperties.swift */; };
+		5EFC7ADF2A9E8F9A00C2ED06 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFC7ADE2A9E8F9A00C2ED06 /* Filter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -119,6 +120,7 @@
 		5EEA90FA2A97DB8B00FEA5E4 /* CachedMdm+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedMdm+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		5EEA91012A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedUserTeam+CoreDataClass.swift"; sourceTree = "<group>"; };
 		5EEA91022A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedUserTeam+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5EFC7ADE2A9E8F9A00C2ED06 /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,6 +195,7 @@
 				5E9038DE2A44AF6F0077F3DC /* MDMCommands.swift */,
 				5E9B94E52A32321D00A7A0CE /* Team.swift */,
 				5EDC18032A3A506200691C2E /* User.swift */,
+				5EFC7ADE2A9E8F9A00C2ED06 /* Filter.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -437,6 +440,7 @@
 				5EDC18082A3B8FDF00691C2E /* HostRow.swift in Sources */,
 				5EEA90EC2A97DA0300FEA5E4 /* CachedProfile+CoreDataClass.swift in Sources */,
 				5E9038DD2A43A3AE0077F3DC /* ProfilesView.swift in Sources */,
+				5EFC7ADF2A9E8F9A00C2ED06 /* Filter.swift in Sources */,
 				5EEA90EF2A97DA0300FEA5E4 /* CachedHost+CoreDataProperties.swift in Sources */,
 				5E9038D52A4384F50077F3DC /* SoftwareView.swift in Sources */,
 			);

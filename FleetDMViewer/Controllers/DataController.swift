@@ -9,8 +9,23 @@ import CoreData
 import Foundation
 import SwiftUI
 
+enum SortType: String {
+    case com
+}
+
 class DataController: ObservableObject {
     let container = NSPersistentContainer(name: "FleetDMViewer")
+
+    @Published var selectedFilter: Filter? = Filter.all
+    @Published var filterText = ""
+
+    @Published var selectedTeam: CachedTeam?
+    @Published var selectedHost: CachedHost?
+    @Published var activeEnvironment: AppEnvironment?
+
+    private var saveTask: Task<Void, Error>?
+
+    @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
 
     init() {
         container.loadPersistentStores { _, error in
@@ -22,15 +37,77 @@ class DataController: ObservableObject {
         }
     }
 
-    @Published var selectedTeam: CachedTeam?
-    @Published var selectedHost: Host?
+    func save() {
+        saveTask?.cancel()
 
-    @Published var activeEnvironment: AppEnvironment? {
-        didSet {
-            print(String(describing: activeEnvironment))
+        if container.viewContext.hasChanges {
+            try? container.viewContext.save()
         }
     }
 
-    @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
+    func queueSave() {
+        saveTask?.cancel()
+
+        saveTask = Task { @MainActor in
+            try await Task.sleep(for: .seconds(3))
+            save()
+        }
+    }
+
+    func delete(_ object: NSManagedObject) {
+        container.viewContext.delete(object)
+        save()
+    }
+
+    private func delete(_ fetchRequest: NSFetchRequest<NSFetchRequestResult>) {
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        batchDeleteRequest.resultType = .resultTypeObjectIDs
+
+        if let delete = try? container.viewContext.execute(batchDeleteRequest) as? NSBatchDeleteResult {
+            let changes = [NSDeletedObjectsKey: delete.result as? [NSManagedObjectID] ?? []]
+            NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [container.viewContext])
+        }
+    }
+
+    func deleteAll() {
+        let request1: NSFetchRequest<NSFetchRequestResult> = CachedTeam.fetchRequest()
+        delete(request1)
+
+        let request2: NSFetchRequest<NSFetchRequestResult> = CachedUser.fetchRequest()
+        delete(request2)
+
+        let request3: NSFetchRequest<NSFetchRequestResult> = CachedUserTeam.fetchRequest()
+        delete(request3)
+
+        let request4: NSFetchRequest<NSFetchRequestResult> = CachedHost.fetchRequest()
+        delete(request4)
+
+    }
+
+    func hostsForSelectedFilter() -> [CachedHost] {
+        let filter = selectedFilter ?? .all
+        var predicates = [NSPredicate]()
+
+        if let team = filter.team {
+            let teamPredicate = NSPredicate(format: "teamId CONTAINS %@", "\(team.id)")
+            predicates.append(teamPredicate)
+        }
+
+//        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
+//
+//        if trimmedFilterText.isEmpty == false {
+//            let hostNamePredicate = NSPredicate(format: "computerName CONTAINS %@", filterText)
+//            let combinedPredicate = NSCompoundPredicate(
+//                orPredicateWithSubpredicates: [hostNamePredicate]
+//            )
+//
+//            predicates.append(combinedPredicate)
+//        }
+
+        let request = CachedHost.fetchRequest()
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        let allHosts = (try? container.viewContext.fetch(request)) ?? []
+        return allHosts
+    }
 
 }

@@ -40,7 +40,7 @@ extension CachedHost {
     @NSManaged public var software: NSSet?
     @NSManaged public var team: CachedTeam?
 
-    var wrappedlastEnrolledAt: Date {
+    var wrappedLastEnrolledAt: Date {
         lastEnrolledAt ?? Date.now
     }
 
