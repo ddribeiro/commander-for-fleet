@@ -11,8 +11,8 @@ struct DetailView: View {
     @EnvironmentObject var dataController: DataController
     var body: some View {
         VStack {
-            if let host = dataController.selectedHost {
-                HostView(host: host)
+            if dataController.selectedHost != nil {
+                HostView()
             } else {
                 NoHostView()
             }

@@ -11,184 +11,199 @@ import KeychainWrapper
 struct HostView: View {
     @EnvironmentObject var dataController: DataController
 
-    @State var updatedHost: Host?
+    @State private var updatedHost: Host?
     @State private var selectedView = "Policies"
     @State private var lockCode: String = ""
 
-    var host: CachedHost
+    var host: CachedHost?
     var views = ["Policies", "Software", "Profiles"]
 
     var body: some View {
-        Form {
-            Section {
-                LabeledContent("Device Name", value: host.wrappedComputerName)
-
-                LabeledContent("Serial Number", value: host.wrappedHardwareSerial)
-
-                LabeledContent("Model", value: host.wrappedHardwareModel)
-
-                LabeledContent("OS Version", value: host.wrappedOsVersion)
-
-                LabeledContent("Processor", value: host.wrappedCpuBrand)
-                    .multilineTextAlignment(.trailing)
-
-                LabeledContent("Memory", value: "\(host.memory / 1073741824) GB")
-            } header: {
-                Label("Device Information", systemImage: "laptopcomputer")
-            }
-            if let updatedHost = updatedHost {
+        if let host = updatedHost {
+            Form {
                 Section {
-                    // swiftlint:disable:next line_length
-                    let driveCapacity = ((updatedHost.gigsDiskSpaceAvailable) / Double((updatedHost.percentDiskSpaceAvailable)) * 100.0)
-                    let gigsSpaceConsumed = (driveCapacity - updatedHost.gigsDiskSpaceAvailable)
+                    LabeledContent("Device Name", value: host.computerName)
 
-                    Gauge(value: Double(gigsSpaceConsumed), in: 0...Double(driveCapacity)) {
-                        Text("Available Storage")
-                    } currentValueLabel: {
-                        Text("\(Int(gigsSpaceConsumed)) GB of \(Int(driveCapacity)) GB used")
-                            .foregroundStyle(.secondary)
-                    } minimumValueLabel: {
-                        Text("0 GB")
-                            .foregroundStyle(.secondary)
-                    } maximumValueLabel: {
-                        Text("\(Int(driveCapacity)) GB")
-                            .foregroundStyle(.secondary)
-                    }
+                    LabeledContent("Serial Number", value: host.hardwareSerial)
+
+                    LabeledContent("Model", value: host.hardwareModel)
+
+                    LabeledContent("OS Version", value: host.osVersion)
+
+                    LabeledContent("Processor", value: host.cpuBrand)
+                        .multilineTextAlignment(.trailing)
+
+                    LabeledContent("Memory", value: "\(host.memory / 1073741824) GB")
+                } header: {
+                    Label("Device Information", systemImage: "laptopcomputer")
                 }
-            }
 
-            if let mdm = updatedHost?.mdm {
-                if mdm.enrollmentStatus != nil {
                     Section {
-                        LabeledContent("Enrollment Status", value: mdm.enrollmentStatus ?? "N/A")
+                        // swiftlint:disable:next line_length
+                        let driveCapacity = ((host.gigsDiskSpaceAvailable) / Double((host.percentDiskSpaceAvailable)) * 100.0)
+                        let gigsSpaceConsumed = (driveCapacity - host.gigsDiskSpaceAvailable)
 
-                        LabeledContent("MDM Server URL", value: mdm.serverUrl ?? "N/A")
-                            .multilineTextAlignment(.trailing)
-
-                        LabeledContent("MDM Name", value: mdm.name)
-                            .multilineTextAlignment(.trailing)
-
-                        LabeledContent("Encryption Key Escrowed") {
-                            Text(mdm.encryptionKeyAvailable ? "Yes" : "No")
-                                .foregroundColor(mdm.encryptionKeyAvailable ? .secondary : .red)
-
-                            // swiftlint:disable:next line_length
-                            Image(systemName: mdm.encryptionKeyAvailable ? "checkmark.shield.fill": "exclamationmark.shield.fill")
-                                .imageScale(.large)
-                                .foregroundColor(mdm.encryptionKeyAvailable ? .green : .red)
-                        }
-                    } header: {
-                        Label("MDM Information", systemImage: "lock.laptopcomputer")
-                    }
-                }
-            }
-
-            Section {
-
-                // swiftlint:disable:next line_length
-                LabeledContent("Enrolled", value: "\(host.wrappedLastEnrolledAt.formatted(date: .abbreviated, time: .shortened))")
-                    .multilineTextAlignment(.trailing)
-
-                LabeledContent("Last Seen", value: "\(host.wrappedSeenTime.formatted(date: .abbreviated, time: .shortened))")
-                    .multilineTextAlignment(.trailing)
-
-                LabeledContent("Uptime", value: "\(host.uptime / 86491509803921) days")
-            }
-
-            Section {
-                LabeledContent("IP Address", value: host.wrappedPublicIp)
-
-                LabeledContent("Private IP Address", value: host.wrappedPrimaryIp)
-
-                LabeledContent("MAC Address", value: host.wrappedPrimaryMac)
-            } header: {
-                Label("Network Information", systemImage: "network")
-            }
-
-            if let batteries = updatedHost?.batteries {
-                Section {
-                    ForEach(batteries, id: \.self) { battery in
-                        Gauge(value: Double(battery.cycleCount), in: 0...1000) {
-                            Text("Cycle Counts")
+                        Gauge(value: Double(gigsSpaceConsumed), in: 0...Double(driveCapacity)) {
+                            Text("Available Storage")
                         } currentValueLabel: {
-                            Text("\(battery.cycleCount)")
+                            Text("\(Int(gigsSpaceConsumed)) GB of \(Int(driveCapacity)) GB used")
                                 .foregroundStyle(.secondary)
                         } minimumValueLabel: {
-                            Text("0")
+                            Text("0 GB")
                                 .foregroundStyle(.secondary)
                         } maximumValueLabel: {
-                            Text("1000")
+                            Text("\(Int(driveCapacity)) GB")
                                 .foregroundStyle(.secondary)
                         }
-                        .tint(.green)
+                    }
 
-                        LabeledContent("Battery Health") {
-                            Text(battery.health)
-                                .foregroundColor(battery.health == "Normal" ? .secondary : .red)
-                            if battery.health != "Normal" {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundColor(.red)
+                if let mdm = host.mdm {
+                    if mdm.enrollmentStatus != nil {
+                        Section {
+                            LabeledContent("Enrollment Status", value: mdm.enrollmentStatus ?? "N/A")
+
+                            LabeledContent("MDM Server URL", value: mdm.serverUrl ?? "N/A")
+                                .multilineTextAlignment(.trailing)
+
+                            LabeledContent("MDM Name", value: mdm.name)
+                                .multilineTextAlignment(.trailing)
+
+                            LabeledContent("Encryption Key Escrowed") {
+                                Text(mdm.encryptionKeyAvailable ? "Yes" : "No")
+                                    .foregroundColor(mdm.encryptionKeyAvailable ? .secondary : .red)
+
+                                // swiftlint:disable:next line_length
+                                Image(systemName: mdm.encryptionKeyAvailable ? "checkmark.shield.fill": "exclamationmark.shield.fill")
+                                    .imageScale(.large)
+                                    .foregroundColor(mdm.encryptionKeyAvailable ? .green : .red)
                             }
+                        } header: {
+                            Label("MDM Information", systemImage: "lock.laptopcomputer")
                         }
                     }
-                } header: {
-                    Label("Battery Health", systemImage: "battery.100")
-                } footer: {
+                }
+
+                Section {
+
                     // swiftlint:disable:next line_length
-                    Text("Batteries have a limited amount of charge cycles before their performance is expected to diminish. Once the cycle count is reached, a replacement battery is recommended to maintain performance. A modern Mac laptop batteries are rated for 1000 charge cycles until it is considered consumed.")
+                    LabeledContent("Enrolled", value: "\(host.lastEnrolledAt.formatted(date: .abbreviated, time: .shortened))")
+                        .multilineTextAlignment(.trailing)
+
+                    // swiftlint:disable:next line_length
+                    LabeledContent("Last Seen", value: "\(host.seenTime.formatted(date: .abbreviated, time: .shortened))")
+                        .multilineTextAlignment(.trailing)
+
+                    LabeledContent("Uptime", value: "\(host.uptime / 86491509803921) days")
+                }
+
+                Section {
+                    LabeledContent("IP Address", value: host.publicIp)
+
+                    LabeledContent("Private IP Address", value: host.primaryIp)
+
+                    LabeledContent("MAC Address", value: host.primaryMac)
+                } header: {
+                    Label("Network Information", systemImage: "network")
+                }
+
+                if let batteries = host.batteries {
+                    Section {
+                        ForEach(batteries, id: \.self) { battery in
+                            Gauge(value: Double(battery.cycleCount), in: 0...1000) {
+                                Text("Cycle Counts")
+                            } currentValueLabel: {
+                                Text("\(battery.cycleCount)")
+                                    .foregroundStyle(.secondary)
+                            } minimumValueLabel: {
+                                Text("0")
+                                    .foregroundStyle(.secondary)
+                            } maximumValueLabel: {
+                                Text("1000")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .tint(.green)
+
+                            LabeledContent("Battery Health") {
+                                Text(battery.health)
+                                    .foregroundColor(battery.health == "Normal" ? .secondary : .red)
+                                if battery.health != "Normal" {
+                                    Image(systemName: "exclamationmark.triangle.fill")
+                                        .foregroundColor(.red)
+                                }
+                            }
+                        }
+                    } header: {
+                        Label("Battery Health", systemImage: "battery.100")
+                    } footer: {
+                        // swiftlint:disable:next line_length
+                        Text("Batteries have a limited amount of charge cycles before their performance is expected to diminish. Once the cycle count is reached, a replacement battery is recommended to maintain performance. A modern Mac laptop batteries are rated for 1000 charge cycles until it is considered consumed.")
+                    }
+                }
+
+                Section {
+                    Picker("Select a view", selection: $selectedView) {
+                        ForEach(views, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+
+                    switch selectedView {
+                    case "Policies":
+                        if let policies = host.policies {
+                            PoliciesView(policies: policies)
+                        } else {
+                            ProgressView()
+                        }
+                    case "Software":
+                        if let software = host.software {
+                            SoftwareView(software: software)
+                        } else {
+                            ProgressView()
+                        }
+                    case "Profiles":
+                        if let profiles = host.mdm?.profiles {
+                            ProfilesView(profiles: profiles)
+                        } else {
+                            ProgressView()
+                        }
+                    default:
+                        Text("N/A")
+                    }
+                }
+            }
+            .onChange(of: dataController.selectedHost) { _ in
+                updatedHost = nil
+                Task {
+                    await updateHost()
                 }
             }
 
-            Section {
-                Picker("Select a view", selection: $selectedView) {
-                    ForEach(views, id: \.self) {
-                        Text($0)
-                    }
-                }
-                .pickerStyle(.segmented)
-
-                switch selectedView {
-                case "Policies":
-                    if let policies = updatedHost?.policies {
-                        PoliciesView(policies: policies)
-                    } else {
-                        ProgressView()
-                    }
-                case "Software":
-                    if let software = updatedHost?.software {
-                        SoftwareView(software: software)
-                    } else {
-                        ProgressView()
-                    }
-                case "Profiles":
-                    if let profiles = updatedHost?.mdm?.profiles {
-                        ProfilesView(profiles: profiles)
-                    } else {
-                        ProgressView()
-                    }
-                default:
-                    Text("N/A")
-                }
+            .refreshable {
+                await updateHost()
             }
-        }
 
-        .onChange(of: dataController.selectedHost) { _ in
-            updatedHost = nil
-            Task {
+            .toolbar {
+                MDMCommandMenu(host: host)
+                    .disabled(host.mdm?.enrollmentStatus == nil)
+            }
+            .task {
+                await updateHost()
+            }
+            .navigationTitle("\(host.computerName)")
+        } else {
+            VStack {
+                ProgressView()
+                Text("Loading")
+                    .font(.body.smallCaps())
+                    .foregroundColor(.secondary)
+
+            }
+            .task {
                 await updateHost()
             }
         }
-        .refreshable {
-            await updateHost()
-        }
-        .task {
-            await updateHost()
-        }
-        .navigationTitle("\(host.wrappedComputerName)")
-        .toolbar {
-            MDMCommandMenu(host: host)
-                .disabled(updatedHost?.mdm?.enrollmentStatus == nil)
-        }
+
     }
 
     private func updateHost() async {

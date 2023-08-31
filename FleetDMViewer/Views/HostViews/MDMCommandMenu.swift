@@ -9,7 +9,7 @@ import SwiftUI
 import KeychainWrapper
 
 struct MDMCommandMenu: View {
-    var host: CachedHost
+    var host: Host
 
     @State private var lockCode: String = ""
     @State private var showingLockAlert = false
@@ -33,7 +33,7 @@ struct MDMCommandMenu: View {
 
                         let mdmCommand = MdmCommand(
                             command: try generatebase64EncodedPlistData(from: deviceInformationCommand),
-                            deviceIds: [host.wrappedUuid]
+                            deviceIds: [host.uuid]
                         )
 
                         try await sendMDMCommand(command: mdmCommand)
@@ -61,7 +61,7 @@ struct MDMCommandMenu: View {
                     Task {
                         let shutdownDeviceCommand = ShutDownDeviceCommand(command: ShutDownDeviceCommand.Command())
                         // swiftlint:disable:next line_length
-                        let mdmCommand = MdmCommand(command: try generatebase64EncodedPlistData(from: shutdownDeviceCommand), deviceIds: [host.wrappedUuid])
+                        let mdmCommand = MdmCommand(command: try generatebase64EncodedPlistData(from: shutdownDeviceCommand), deviceIds: [host.uuid])
 
                         try await sendMDMCommand(command: mdmCommand)
                     }
@@ -74,7 +74,7 @@ struct MDMCommandMenu: View {
                         let restartDeviceComand = RestartDeviceCommand(command: RestartDeviceCommand.Command())
 
                         // swiftlint:disable:next line_length
-                        let mdmCommand = MdmCommand(command: try generatebase64EncodedPlistData(from: restartDeviceComand), deviceIds: [host.wrappedUuid])
+                        let mdmCommand = MdmCommand(command: try generatebase64EncodedPlistData(from: restartDeviceComand), deviceIds: [host.uuid])
 
                         try await sendMDMCommand(command: mdmCommand)
                     }
@@ -97,7 +97,7 @@ struct MDMCommandMenu: View {
 
                         let mdmCommand = MdmCommand(
                             command: try generatebase64EncodedPlistData(from: installZoomCommand),
-                            deviceIds: [host.wrappedUuid]
+                            deviceIds: [host.uuid]
                         )
 
                         try await sendMDMCommand(command: mdmCommand)
@@ -117,7 +117,7 @@ struct MDMCommandMenu: View {
                         )
                         let mdmCommand = MdmCommand(
                             command: try generatebase64EncodedPlistData(from: installChromeCommand),
-                            deviceIds: [host.wrappedUuid]
+                            deviceIds: [host.uuid]
                         )
 
                         try await sendMDMCommand(command: mdmCommand)
@@ -137,7 +137,7 @@ struct MDMCommandMenu: View {
                         )
                         let mdmCommand = MdmCommand(
                             command: try generatebase64EncodedPlistData(from: installSlackCommand),
-                            deviceIds: [host.wrappedUuid]
+                            deviceIds: [host.uuid]
                         )
 
                         try await sendMDMCommand(command: mdmCommand)
@@ -180,7 +180,7 @@ struct MDMCommandMenu: View {
 
                     let mdmCommand = MdmCommand(
                         command: try generatebase64EncodedPlistData(from: lockDeviceCommand),
-                        deviceIds: [host.wrappedUuid]
+                        deviceIds: [host.uuid]
                     )
 
                     try await sendMDMCommand(command: mdmCommand)

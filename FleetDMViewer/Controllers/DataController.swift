@@ -93,16 +93,17 @@ class DataController: ObservableObject {
             predicates.append(teamPredicate)
         }
 
-//        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
-//
-//        if trimmedFilterText.isEmpty == false {
-//            let hostNamePredicate = NSPredicate(format: "computerName CONTAINS %@", filterText)
-//            let combinedPredicate = NSCompoundPredicate(
-//                orPredicateWithSubpredicates: [hostNamePredicate]
-//            )
-//
-//            predicates.append(combinedPredicate)
-//        }
+        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
+
+        if trimmedFilterText.isEmpty == false {
+            let hostNamePredicate = NSPredicate(format: "computerName CONTAINS %@", trimmedFilterText)
+            let serialNumberPredicate = NSPredicate(format: "hardwareSerial CONTAINS[c] %@", trimmedFilterText)
+            let combinedPredicate = NSCompoundPredicate(
+                orPredicateWithSubpredicates: [hostNamePredicate, serialNumberPredicate]
+            )
+
+            predicates.append(combinedPredicate)
+        }
 
         let request = CachedHost.fetchRequest()
         request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)

@@ -13,7 +13,6 @@ struct ContentView: View {
     @EnvironmentObject var dataController: DataController
 
     @State private var isShowingSignInSheet = false
-    @State private var selectedHost: Host?
     @FetchRequest(sortDescriptors: [SortDescriptor(\.computerName)]) var hosts: FetchedResults<CachedHost>
 
     var body: some View {
@@ -24,6 +23,7 @@ struct ContentView: View {
                     HostRow(host: host)
                 }
             }
+            .searchable(text: $dataController.filterText)
             .refreshable {
                 await fetchHosts()
             }
