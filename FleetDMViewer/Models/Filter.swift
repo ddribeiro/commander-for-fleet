@@ -8,7 +8,7 @@
 import Foundation
 
 struct Filter: Identifiable, Hashable {
-    var id: UUID
+    var id: Int
     var name: String
     var icon: String
     var minModificationDate = Date.distantPast
@@ -19,9 +19,10 @@ struct Filter: Identifiable, Hashable {
     }
 
     static var all = Filter(
-        id: UUID(),
+        id: 0,
         name: "All Hosts",
-        icon: "laptopcomputer")
+        icon: "laptopcomputer"
+    )
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)

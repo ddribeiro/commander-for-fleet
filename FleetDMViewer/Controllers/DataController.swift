@@ -16,7 +16,7 @@ enum SortType: String {
 class DataController: ObservableObject {
     let container = NSPersistentContainer(name: "FleetDMViewer")
 
-    @Published var selectedFilter: Filter? = Filter.all
+    @Published var selectedFilter: Filter?
     @Published var filterText = ""
 
     @Published var selectedTeam: CachedTeam?

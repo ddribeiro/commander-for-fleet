@@ -187,9 +187,6 @@ struct HostView: View {
                 MDMCommandMenu(host: host)
                     .disabled(host.mdm?.enrollmentStatus == nil)
             }
-            .task {
-                await updateHost()
-            }
             .navigationTitle("\(host.computerName)")
         } else {
             VStack {

@@ -15,32 +15,30 @@ struct TeamsView: View {
     let smartFilters: [Filter] = [.all]
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
-    //    @State private var teams = [Team]()
+
     @StateObject var appEnvironments = AppEnvironments()
 
     @State private var showingSettings = false
     @State private var showingLogin = false
 
+    @State private var teamsLastUpdatedAt: Date?
+
     var teamFilters: [Filter] {
         teams.map { team in
-            Filter(id: UUID(), name: team.wrappedName, icon: "person.3", team: team)
+            Filter(id: Int(team.id), name: team.wrappedName, icon: "person.3", team: team)
         }
     }
 
     var body: some View {
         List(selection: $dataController.selectedFilter) {
-            Section("All Hosts") {
-                ForEach(smartFilters) { filter in
-                    NavigationLink(value: filter) {
-                        Label(filter.name, systemImage: "laptopcomputer")
-                    }
-                }
+            Section("Smart Filters") {
+                ForEach(smartFilters, content: SmartFilterRow.init)
             }
 
             Section("Teams") {
                 ForEach(teamFilters) { filter in
                     NavigationLink(value: filter) {
-                        Label(filter.team?.wrappedName ?? "", systemImage: "person.3")
+                        Label(filter.name, systemImage: filter.icon)
                             .badge(filter.hostCount)
                             .lineLimit(1)
                     }
@@ -49,6 +47,9 @@ struct TeamsView: View {
         }
         .task {
             guard teams.isEmpty else { return }
+            if let teamsLastUpdatedAt = teamsLastUpdatedAt {
+                guard teamsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
+            }
             await fetchTeams()
         }
         .refreshable {
@@ -93,6 +94,7 @@ struct TeamsView: View {
 
             await MainActor.run {
                 updateCache(with: teams, hosts)
+                teamsLastUpdatedAt = Date.now
             }
         } catch {
             print(error.localizedDescription)
