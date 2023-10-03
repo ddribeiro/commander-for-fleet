@@ -48,6 +48,17 @@ class AppEnvironments: ObservableObject {
     }
 }
 
+struct NetworkManagerKey: EnvironmentKey {
+    static var defaultValue = NetworkManager(environment: DataController().activeEnvironment)
+}
+
+extension EnvironmentValues {
+    var networkManager: NetworkManager {
+        get { self[NetworkManagerKey.self] }
+        set { self[NetworkManagerKey.self] = newValue }
+    }
+}
+
 struct NetworkManager {
     var environment = DataController().activeEnvironment
 
@@ -75,7 +86,9 @@ struct NetworkManager {
         if let keyPath = resource.keyPath {
             if let rootObject = try JSONSerialization.jsonObject(with: data) as? NSDictionary {
                 if let nestedObject = rootObject.value(forKeyPath: keyPath) {
-                    data = try JSONSerialization.data(withJSONObject: nestedObject, options: .fragmentsAllowed)
+
+                    // swiftlint:disable:next line_length
+                    data = try JSONSerialization.data(withJSONObject: nestedObject, options: [.fragmentsAllowed, .prettyPrinted])
                 }
             }
         }

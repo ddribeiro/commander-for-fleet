@@ -10,6 +10,7 @@ import KeychainWrapper
 
 struct TeamsView: View {
     @Environment(\.managedObjectContext) var moc
+    @Environment(\.networkManager) var networkManager
     @EnvironmentObject var dataController: DataController
 
     let smartFilters: [Filter] = [.all]
@@ -79,15 +80,6 @@ struct TeamsView: View {
     }
 
     func fetchTeams() async {
-
-        guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
-            print("Could not get server URL")
-            return
-        }
-
-        let environment = AppEnvironment(baseURL: URL(string: "\(serverURL)")!)
-        let networkManager = NetworkManager(environment: environment)
-
         do {
             let teams = try await networkManager.fetch(.teams)
             let hosts = try await networkManager.fetch(.hosts)

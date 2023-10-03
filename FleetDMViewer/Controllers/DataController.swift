@@ -21,7 +21,11 @@ class DataController: ObservableObject {
 
     @Published var selectedTeam: CachedTeam?
     @Published var selectedHost: CachedHost?
-    @Published var activeEnvironment: AppEnvironment?
+    @Published var activeEnvironment: AppEnvironment? {
+        didSet {
+            print(String(describing: activeEnvironment))
+        }
+    }
 
     private var saveTask: Task<Void, Error>?
 
@@ -35,6 +39,7 @@ class DataController: ObservableObject {
 
             self.container.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         }
+
     }
 
     func save() {
