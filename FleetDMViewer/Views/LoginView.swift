@@ -124,6 +124,9 @@ struct LoginView: View {
             )!
         )
 
+        let encoded = try JSONEncoder().encode(environment)
+        UserDefaults.standard.set(encoded, forKey: "activeEnvironment")
+
         let networkManager = NetworkManager(environment: environment)
 
         let credentials = LoginRequestBody(email: email, password: password)

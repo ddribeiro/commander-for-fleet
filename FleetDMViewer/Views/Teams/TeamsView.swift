@@ -10,7 +10,6 @@ import KeychainWrapper
 
 struct TeamsView: View {
     @Environment(\.managedObjectContext) var moc
-    @Environment(\.networkManager) var networkManager
     @EnvironmentObject var dataController: DataController
 
     let smartFilters: [Filter] = [.all]
@@ -81,8 +80,8 @@ struct TeamsView: View {
 
     func fetchTeams() async {
         do {
-            let teams = try await networkManager.fetch(.teams)
-            let hosts = try await networkManager.fetch(.hosts)
+            let teams = try await NetworkManager(environment: dataController.activeEnvironment).fetch(.teams)
+            let hosts = try await NetworkManager(environment: dataController.activeEnvironment).fetch(.hosts)
 
             await MainActor.run {
                 updateCache(with: teams, hosts)

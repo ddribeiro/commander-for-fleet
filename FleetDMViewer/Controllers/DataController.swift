@@ -23,7 +23,7 @@ class DataController: ObservableObject {
     @Published var selectedHost: CachedHost?
     @Published var activeEnvironment: AppEnvironment? {
         didSet {
-            print(String(describing: activeEnvironment))
+            print("Active environment has been changed to \(String(describing: activeEnvironment?.baseURL))")
         }
     }
 
@@ -40,6 +40,10 @@ class DataController: ObservableObject {
             self.container.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         }
 
+        if let data = UserDefaults.standard.data(forKey: "activeEnvironment") {
+            let decoded = try? JSONDecoder().decode(AppEnvironment.self, from: data)
+            self.activeEnvironment = decoded
+        }
     }
 
     func save() {
