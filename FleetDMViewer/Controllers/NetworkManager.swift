@@ -95,7 +95,7 @@ struct NetworkManager {
     // swiftlint:disable:next line_length
     func fetch<T>(_ resource: Endpoint<T>, with data: Data? = nil, attempts: Int, retryDelay: Double = 1) async throws -> T {
         do {
-            print("Attempting to fetch (Attempts remaining: \(attempts)")
+            print("Attempting to fetch (Attempts remaining: \(attempts))")
             return try await fetch(resource, with: data)
         } catch {
             if attempts > 1 {

@@ -47,7 +47,6 @@ struct TeamsView: View {
             }
         }
         .task {
-            guard teams.isEmpty else { return }
             if let teamsLastUpdatedAt = teamsLastUpdatedAt {
                 guard teamsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
             }
@@ -81,8 +80,8 @@ struct TeamsView: View {
 
     func fetchTeams() async {
         do {
-            let teams = try await NetworkManager(environment: dataController.activeEnvironment).fetch(.teams)
-            
+            let teams = try await NetworkManager(environment: dataController.activeEnvironment).fetch(.teams, attempts: 5)
+
             await MainActor.run {
                 updateCache(with: teams)
                 teamsLastUpdatedAt = Date.now
