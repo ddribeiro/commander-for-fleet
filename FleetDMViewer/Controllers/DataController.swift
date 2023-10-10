@@ -21,11 +21,7 @@ class DataController: ObservableObject {
 
     @Published var selectedTeam: CachedTeam?
     @Published var selectedHost: CachedHost?
-    @Published var activeEnvironment: AppEnvironment? {
-        didSet {
-            print("Active environment has been changed to \(String(describing: activeEnvironment?.baseURL))")
-        }
-    }
+    @Published var activeEnvironment: AppEnvironment?
 
     private var saveTask: Task<Void, Error>?
 
@@ -44,6 +40,11 @@ class DataController: ObservableObject {
             let decoded = try? JSONDecoder().decode(AppEnvironment.self, from: data)
             self.activeEnvironment = decoded
         }
+    }
+
+    func saveActiveEnvironment(environment: AppEnvironment) {
+        let encoded = try? JSONEncoder().encode(environment)
+        UserDefaults.standard.set(encoded, forKey: "activeEnvironment")
     }
 
     func save() {

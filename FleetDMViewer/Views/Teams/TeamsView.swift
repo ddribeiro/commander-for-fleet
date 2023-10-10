@@ -11,6 +11,7 @@ import KeychainWrapper
 struct TeamsView: View {
     @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
+    @Environment(\.scenePhase) var scenePhase
 
     let smartFilters: [Filter] = [.all]
 
@@ -81,10 +82,9 @@ struct TeamsView: View {
     func fetchTeams() async {
         do {
             let teams = try await NetworkManager(environment: dataController.activeEnvironment).fetch(.teams)
-            let hosts = try await NetworkManager(environment: dataController.activeEnvironment).fetch(.hosts)
-
+            
             await MainActor.run {
-                updateCache(with: teams, hosts)
+                updateCache(with: teams)
                 teamsLastUpdatedAt = Date.now
             }
         } catch {
@@ -92,7 +92,7 @@ struct TeamsView: View {
         }
     }
 
-    func updateCache(with downloadedTeams: [Team], _ downloadedHosts: [Host]) {
+    func updateCache(with downloadedTeams: [Team]) {
         for downloadedTeam in downloadedTeams {
             let cachedTeam = CachedTeam(context: moc)
 
