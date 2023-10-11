@@ -192,11 +192,9 @@ struct LoginView: View {
 
         guard let url = URL(string: urlString), url.scheme != nil else {
             let validatedURLString = "https://" + urlString
-            KeychainWrapper.default.set(validatedURLString, forKey: "serverURL")
             return validatedURLString
 
         }
-        KeychainWrapper.default.set(urlString, forKey: "serverURL")
         return urlString
     }
 
