@@ -10,6 +10,7 @@ import KeychainWrapper
 
 struct CommandsView: View {
     @EnvironmentObject var dataController: DataController
+    @Environment(\.networkManager) var networkManager
 
     @Environment(\.dismiss) var dismiss
 
@@ -48,17 +49,8 @@ struct CommandsView: View {
     }
 
     func fetchCommands() async {
-        guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
-            print("Could not get server URL")
-            return
-        }
-
-        let environment = AppEnvironment(baseURL: URL(string: "\(serverURL)")!)
-
-        let networkManager = NetworkManager(environment: environment)
-
         do {
-            commands = try await networkManager.fetch(.commands)
+            commands = try await networkManager.fetch(.commands, attempts: 5)
         } catch {
             print("Unable to fetch commands")
         }

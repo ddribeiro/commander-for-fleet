@@ -12,17 +12,16 @@ struct TeamsView: View {
     @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
     @Environment(\.scenePhase) var scenePhase
+    @Environment(\.networkManager) var networkManager
 
     let smartFilters: [Filter] = [.all]
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
-    @StateObject var appEnvironments = AppEnvironments()
-
     @State private var showingSettings = false
     @State private var showingLogin = false
 
-    @State private var teamsLastUpdatedAt: Date?
+    
 
     var teamFilters: [Filter] {
         teams.map { team in
@@ -47,7 +46,7 @@ struct TeamsView: View {
             }
         }
         .task {
-            if let teamsLastUpdatedAt = teamsLastUpdatedAt {
+            if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
                 guard teamsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
             }
             await fetchTeams()
@@ -79,12 +78,14 @@ struct TeamsView: View {
     }
 
     func fetchTeams() async {
+        guard dataController.activeEnvironment != nil else { return }
+        
         do {
-            let teams = try await NetworkManager(environment: dataController.activeEnvironment).fetch(.teams, attempts: 5)
+            let teams = try await networkManager.fetch(.teams, attempts: 5)
 
             await MainActor.run {
                 updateCache(with: teams)
-                teamsLastUpdatedAt = Date.now
+                dataController.teamsLastUpdatedAt = .now
             }
         } catch {
             print(error.localizedDescription)

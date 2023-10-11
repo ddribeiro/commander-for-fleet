@@ -22,6 +22,9 @@ class DataController: ObservableObject {
     @Published var selectedTeam: CachedTeam?
     @Published var selectedHost: CachedHost?
     @Published var activeEnvironment: AppEnvironment?
+    
+    @Published var teamsLastUpdatedAt: Date?
+    @Published var hostsLastUpdatedAt: Date?
 
     private var saveTask: Task<Void, Error>?
 
@@ -106,7 +109,7 @@ class DataController: ObservableObject {
         let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
 
         if trimmedFilterText.isEmpty == false {
-            let hostNamePredicate = NSPredicate(format: "computerName CONTAINS %@", trimmedFilterText)
+            let hostNamePredicate = NSPredicate(format: "computerName CONTAINS[c] %@", trimmedFilterText)
             let serialNumberPredicate = NSPredicate(format: "hardwareSerial CONTAINS[c] %@", trimmedFilterText)
             let combinedPredicate = NSCompoundPredicate(
                 orPredicateWithSubpredicates: [hostNamePredicate, serialNumberPredicate]

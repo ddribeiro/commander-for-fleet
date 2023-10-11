@@ -49,7 +49,13 @@ class AppEnvironments: ObservableObject {
 }
 
 struct NetworkManager {
-    var environment: AppEnvironment?
+    var environment: AppEnvironment? {
+        if let data = UserDefaults.standard.data(forKey: "activeEnvironment") {
+            let decoded = try? JSONDecoder().decode(AppEnvironment.self, from: data)
+            return decoded
+        }
+        return nil
+    }
 
     func fetch<T>(_ resource: Endpoint<T>, with data: Data? = nil) async throws -> T {
         guard let url = URL(string: resource.path, relativeTo: environment?.baseURL) else {
@@ -113,5 +119,16 @@ struct NetworkManager {
         } catch {
             return defaultValue
         }
+    }
+}
+
+struct NetworkManagerKey: EnvironmentKey {
+    static var defaultValue = NetworkManager()
+}
+
+extension EnvironmentValues {
+    var networkManager: NetworkManager {
+        get { self[NetworkManagerKey.self] }
+        set { self[NetworkManagerKey.self] = newValue }
     }
 }

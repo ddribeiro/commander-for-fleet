@@ -132,7 +132,7 @@ struct LoginView: View {
 
         dataController.saveActiveEnvironment(environment: environment)
 
-        let networkManager = NetworkManager(environment: environment)
+        let networkManager = NetworkManager()
 
         let credentials = LoginRequestBody(email: email, password: password)
 
