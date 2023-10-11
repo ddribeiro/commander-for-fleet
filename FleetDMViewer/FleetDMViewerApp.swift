@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct FleetDMViewerApp: App {
     @State var dataController = DataController()
+    @State var networkManager = NetworkManager()
 
     var body: some Scene {
         WindowGroup {
@@ -21,6 +22,7 @@ struct FleetDMViewerApp: App {
                 DetailView()
             }
             .environmentObject(dataController)
+            .environment(\.networkManager, networkManager)
             .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }

@@ -10,10 +10,13 @@ import KeychainWrapper
 
 struct HostView: View {
     @EnvironmentObject var dataController: DataController
+    @Environment(\.networkManager) var networkManager
 
     @State private var updatedHost: Host?
     @State private var selectedView = "Policies"
     @State private var lockCode: String = ""
+    
+    
 
     var host: CachedHost?
     var views = ["Policies", "Software", "Profiles"]
@@ -204,6 +207,8 @@ struct HostView: View {
     }
 
     private func updateHost() async {
+        guard dataController.activeEnvironment != nil else { return }
+        
         do {
             if let id = dataController.selectedHost?.id {
                 updatedHost = try await getHost(hostID: Int(id))
@@ -216,17 +221,8 @@ struct HostView: View {
     func getHost(hostID: Int) async throws -> Host {
         let endpoint = Endpoint.gethost(id: hostID)
 
-        guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
-            print("Could not get server URL")
-            throw URLError(.badURL)
-        }
-
-        let environment = AppEnvironment(baseURL: URL(string: "\(serverURL)")!)
-
-        let networkManager = NetworkManager(environment: environment)
-
         do {
-            let host = try await networkManager.fetch(endpoint)
+            let host = try await networkManager.fetch(endpoint, attempts: 5)
             return host
         } catch {
             print("here's the error")

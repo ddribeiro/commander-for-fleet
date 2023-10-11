@@ -69,10 +69,16 @@ struct LoginView: View {
 
                 Section {
                     LabeledContent("Sign In") {
-                        Button("Sign In") {
+                        Button {
                             Task {
                                 loadingState = .loading
                                 try await login(email: emailAddress, password: password)
+                            }
+                        } label: {
+                            if loadingState == .loading {
+                                ProgressView()
+                            } else {
+                                Text("Sign In")
                             }
                         }
                         .disabled(!isFormValid)
@@ -124,7 +130,9 @@ struct LoginView: View {
             )!
         )
 
-        let networkManager = NetworkManager(environment: environment)
+        dataController.saveActiveEnvironment(environment: environment)
+
+        let networkManager = NetworkManager()
 
         let credentials = LoginRequestBody(email: email, password: password)
 
@@ -141,10 +149,10 @@ struct LoginView: View {
             }
 
             loadingState = .loaded
-            isAuthenticated = true
             AppEnvironments().addEnvironment(environment)
             dataController.activeEnvironment = environment
             dismiss()
+            isAuthenticated = true
         } catch {
             loadingState = .failed
             print(error.localizedDescription)

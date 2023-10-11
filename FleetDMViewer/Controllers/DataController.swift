@@ -22,6 +22,9 @@ class DataController: ObservableObject {
     @Published var selectedTeam: CachedTeam?
     @Published var selectedHost: CachedHost?
     @Published var activeEnvironment: AppEnvironment?
+    
+    @Published var teamsLastUpdatedAt: Date?
+    @Published var hostsLastUpdatedAt: Date?
 
     private var saveTask: Task<Void, Error>?
 
@@ -35,6 +38,16 @@ class DataController: ObservableObject {
 
             self.container.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         }
+
+        if let data = UserDefaults.standard.data(forKey: "activeEnvironment") {
+            let decoded = try? JSONDecoder().decode(AppEnvironment.self, from: data)
+            self.activeEnvironment = decoded
+        }
+    }
+
+    func saveActiveEnvironment(environment: AppEnvironment) {
+        let encoded = try? JSONEncoder().encode(environment)
+        UserDefaults.standard.set(encoded, forKey: "activeEnvironment")
     }
 
     func save() {
@@ -96,7 +109,7 @@ class DataController: ObservableObject {
         let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
 
         if trimmedFilterText.isEmpty == false {
-            let hostNamePredicate = NSPredicate(format: "computerName CONTAINS %@", trimmedFilterText)
+            let hostNamePredicate = NSPredicate(format: "computerName CONTAINS[c] %@", trimmedFilterText)
             let serialNumberPredicate = NSPredicate(format: "hardwareSerial CONTAINS[c] %@", trimmedFilterText)
             let combinedPredicate = NSCompoundPredicate(
                 orPredicateWithSubpredicates: [hostNamePredicate, serialNumberPredicate]

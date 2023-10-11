@@ -11,6 +11,7 @@ import KeychainWrapper
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
+    @Environment(\.networkManager) var networkManager
 
     @State private var isShowingSignInSheet = false
     @FetchRequest(sortDescriptors: [SortDescriptor(\.computerName)]) var hosts: FetchedResults<CachedHost>
@@ -28,7 +29,10 @@ struct ContentView: View {
                 await fetchHosts()
             }
             .task {
-                guard hosts.isEmpty else { return }
+                if let hostsLastUpdatedAt = dataController.hostsLastUpdatedAt {
+                    guard hostsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
+                }
+                
                 await fetchHosts()
             }
             .navigationTitle(dataController.selectedFilter?.team?.wrappedName ?? "Hosts")
@@ -44,20 +48,14 @@ struct ContentView: View {
     }
 
     func fetchHosts() async {
-        guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
-            print("Could not get server URL")
-            return
-        }
-
-        let environment = AppEnvironment(baseURL: URL(string: "\(serverURL)")!)
-
-        let networkManager = NetworkManager(environment: environment)
-
+        guard dataController.activeEnvironment != nil else { return }
+        
         do {
             let hosts = try await networkManager.fetch(.hosts)
 
             await MainActor.run {
                 updateCache(with: hosts)
+                dataController.hostsLastUpdatedAt = .now
             }
         } catch {
             print(error.localizedDescription)
@@ -91,12 +89,6 @@ struct ContentView: View {
 
         try? moc.save()
     }
-
-//    var filteredHosts: [Host] {
-//        hosts.filter { host in
-//            Int16(host.teamId ?? 0) == dataController.selectedTeam?.id
-//        }
-//    }
 }
 
 struct ContentView_Previews: PreviewProvider {

@@ -11,17 +11,17 @@ import KeychainWrapper
 struct TeamsView: View {
     @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
+    @Environment(\.scenePhase) var scenePhase
+    @Environment(\.networkManager) var networkManager
 
     let smartFilters: [Filter] = [.all]
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
-    @StateObject var appEnvironments = AppEnvironments()
-
     @State private var showingSettings = false
     @State private var showingLogin = false
 
-    @State private var teamsLastUpdatedAt: Date?
+    
 
     var teamFilters: [Filter] {
         teams.map { team in
@@ -46,8 +46,7 @@ struct TeamsView: View {
             }
         }
         .task {
-            guard teams.isEmpty else { return }
-            if let teamsLastUpdatedAt = teamsLastUpdatedAt {
+            if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
                 guard teamsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
             }
             await fetchTeams()
@@ -79,29 +78,21 @@ struct TeamsView: View {
     }
 
     func fetchTeams() async {
-
-        guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
-            print("Could not get server URL")
-            return
-        }
-
-        let environment = AppEnvironment(baseURL: URL(string: "\(serverURL)")!)
-        let networkManager = NetworkManager(environment: environment)
-
+        guard dataController.activeEnvironment != nil else { return }
+        
         do {
-            let teams = try await networkManager.fetch(.teams)
-            let hosts = try await networkManager.fetch(.hosts)
+            let teams = try await networkManager.fetch(.teams, attempts: 5)
 
             await MainActor.run {
-                updateCache(with: teams, hosts)
-                teamsLastUpdatedAt = Date.now
+                updateCache(with: teams)
+                dataController.teamsLastUpdatedAt = .now
             }
         } catch {
             print(error.localizedDescription)
         }
     }
 
-    func updateCache(with downloadedTeams: [Team], _ downloadedHosts: [Host]) {
+    func updateCache(with downloadedTeams: [Team]) {
         for downloadedTeam in downloadedTeams {
             let cachedTeam = CachedTeam(context: moc)
 

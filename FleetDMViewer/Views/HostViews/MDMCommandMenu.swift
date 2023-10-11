@@ -14,6 +14,7 @@ struct MDMCommandMenu: View {
     @State private var lockCode: String = ""
     @State private var showingLockAlert = false
     @State private var showingCommandSheet = false
+    @Environment(\.networkManager) var networkManager
 
     var body: some View {
         Menu {
@@ -203,15 +204,6 @@ struct MDMCommandMenu: View {
     }
 
     func sendMDMCommand(command: MdmCommand) async throws {
-        guard let serverURL = KeychainWrapper.default.string(forKey: "serverURL") else {
-            print("Could not get server URL")
-            throw URLError(.badURL)
-        }
-
-        let environment = AppEnvironment(baseURL: URL(string: "\(serverURL)")!)
-
-        let networkManager = NetworkManager(environment: environment)
-
         do {
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
