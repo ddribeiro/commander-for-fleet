@@ -21,8 +21,6 @@ struct TeamsView: View {
     @State private var showingSettings = false
     @State private var showingLogin = false
 
-    
-
     var teamFilters: [Filter] {
         teams.map { team in
             Filter(id: Int(team.id), name: team.wrappedName, icon: "person.3", team: team)
@@ -89,7 +87,7 @@ struct TeamsView: View {
 
     func fetchTeams() async {
         guard dataController.activeEnvironment != nil else { return }
-        
+
         do {
             let teams = try await networkManager.fetch(.teams, attempts: 5)
 
