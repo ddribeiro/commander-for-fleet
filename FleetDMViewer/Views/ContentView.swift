@@ -24,6 +24,16 @@ struct ContentView: View {
                     HostRow(host: host)
                 }
             }
+            .overlay(alignment: .bottom) {
+                if let hostsLastUpdatedAt = dataController.hostsLastUpdatedAt {
+                    Text("Last Updated: \(hostsLastUpdatedAt.formatted(date: .abbreviated, time: .standard))")
+                        .font(.footnote)
+                        .padding()
+                        .background(Color.primary.colorInvert())
+                        .clipShape(Capsule())
+                        .shadow(radius: 3)
+                }
+            }
             .searchable(text: $dataController.filterText)
             .refreshable {
                 await fetchHosts()

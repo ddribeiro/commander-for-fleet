@@ -74,6 +74,16 @@ struct TeamsView: View {
                 }
             }
         }
+        .overlay(alignment: .bottom) {
+            if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
+                Text("Last Updated: \(teamsLastUpdatedAt.formatted(date: .abbreviated, time: .standard))")
+                    .font(.footnote)
+                    .padding()
+                    .background(Color.primary.colorInvert())
+                    .clipShape(Capsule())
+                    .shadow(radius: 3)
+            }
+        }
         .navigationTitle("Teams")
     }
 
