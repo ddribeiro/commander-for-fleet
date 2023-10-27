@@ -46,7 +46,7 @@ struct ContentView: View {
                 if let hostsLastUpdatedAt = dataController.hostsLastUpdatedAt {
                     guard hostsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
                 }
-                
+
                 await fetchHosts()
             }
             .navigationTitle(dataController.selectedFilter?.team?.wrappedName ?? "Hosts")
@@ -63,7 +63,7 @@ struct ContentView: View {
 
     func fetchHosts() async {
         guard dataController.activeEnvironment != nil else { return }
-        
+
         do {
             let hosts = try await networkManager.fetch(.hosts)
 

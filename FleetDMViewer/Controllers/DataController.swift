@@ -23,7 +23,7 @@ class DataController: ObservableObject {
     @Published var selectedTeam: CachedTeam?
     @Published var selectedHost: CachedHost?
     @Published var activeEnvironment: AppEnvironment?
-    
+
     @Published var teamsLastUpdatedAt: Date?
     @Published var hostsLastUpdatedAt: Date?
     

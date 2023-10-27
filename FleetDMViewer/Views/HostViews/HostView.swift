@@ -15,8 +15,6 @@ struct HostView: View {
     @State private var updatedHost: Host?
     @State private var selectedView = "Policies"
     @State private var lockCode: String = ""
-    
-    
 
     var host: CachedHost?
     var views = ["Policies", "Software", "Profiles"]
@@ -175,7 +173,7 @@ struct HostView: View {
                     }
                 }
             }
-            .onChange(of: dataController.selectedHost) { _ in
+            .onChange(of: dataController.selectedHost) {
                 updatedHost = nil
                 Task {
                     await updateHost()
@@ -208,7 +206,7 @@ struct HostView: View {
 
     private func updateHost() async {
         guard dataController.activeEnvironment != nil else { return }
-        
+
         do {
             if let id = dataController.selectedHost?.id {
                 updatedHost = try await getHost(hostID: Int(id))

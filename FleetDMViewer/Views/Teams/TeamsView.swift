@@ -42,6 +42,14 @@ struct TeamsView: View {
                     }
                 }
             }
+
+            if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
+                Text("Last Updated: \(teamsLastUpdatedAt.formatted(date: .abbreviated, time: .standard))")
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .font(.footnote)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary)
+            }
         }
         .task {
             if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
@@ -77,7 +85,7 @@ struct TeamsView: View {
 
     func fetchTeams() async {
         guard dataController.activeEnvironment != nil else { return }
-        
+
         do {
             let teams = try await networkManager.fetch(.teams, attempts: 5)
 
