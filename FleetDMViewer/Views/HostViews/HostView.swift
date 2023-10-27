@@ -173,7 +173,7 @@ struct HostView: View {
                     }
                 }
             }
-            .onChange(of: dataController.selectedHost) { _ in
+            .onChange(of: dataController.selectedHost) {
                 updatedHost = nil
                 Task {
                     await updateHost()
