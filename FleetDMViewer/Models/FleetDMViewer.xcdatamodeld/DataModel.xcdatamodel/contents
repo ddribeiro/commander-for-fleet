@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22G90" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="23A344" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CachedBattery" representedClassName="CachedBattery" syncable="YES">
         <attribute name="cycleCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="health" optional="YES" attributeType="String"/>
@@ -17,6 +17,7 @@
         <attribute name="memory" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="osVersion" optional="YES" attributeType="String"/>
         <attribute name="percentDiskSpaceAvailable" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="platform" optional="YES" attributeType="String"/>
         <attribute name="primaryIp" optional="YES" attributeType="String"/>
         <attribute name="primaryMac" optional="YES" attributeType="String"/>
         <attribute name="publicIp" optional="YES" attributeType="String"/>

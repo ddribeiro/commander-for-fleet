@@ -15,6 +15,14 @@ struct ContentView: View {
 
     @State private var isShowingSignInSheet = false
     @FetchRequest(sortDescriptors: [SortDescriptor(\.computerName)]) var hosts: FetchedResults<CachedHost>
+    
+    var suggestedTokens: [Token] {
+        if dataController.filterText.starts(with: "#") {
+            return dataController.allTokens
+        } else {
+            return []
+        }
+    }
 
     var body: some View {
         if dataController.isAuthenticated {
@@ -24,7 +32,13 @@ struct ContentView: View {
                     HostRow(host: host)
                 }
             }
-            .searchable(text: $dataController.filterText)
+            .searchable(
+                text: $dataController.filterText,
+                tokens: $dataController.filterTokens,
+                suggestedTokens: $dataController.allTokens
+            ) { token in
+                Text(token.name)
+            }
             .refreshable {
                 await fetchHosts()
             }
@@ -67,6 +81,7 @@ struct ContentView: View {
             let cachedHost = CachedHost(context: moc)
 
             cachedHost.id = Int16(downloadedHost.id)
+            cachedHost.platform = downloadedHost.platform
             cachedHost.lastEnrolledAt = downloadedHost.lastEnrolledAt
             cachedHost.seenTime = downloadedHost.seenTime
             cachedHost.uuid = downloadedHost.uuid

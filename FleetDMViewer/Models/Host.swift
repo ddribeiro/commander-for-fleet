@@ -10,6 +10,7 @@ import Foundation
 struct Host: Codable, Identifiable, Hashable {
 
     var software: [Software]?
+    var platform: String
     var id: Int
     var lastEnrolledAt: Date
     var seenTime: Date
@@ -34,6 +35,7 @@ struct Host: Codable, Identifiable, Hashable {
     var batteries: [Battery]?
 
     static let example = Host(
+        platform: "darwin",
         id: 1,
         lastEnrolledAt: .now,
         seenTime: .now,
@@ -153,4 +155,10 @@ struct Mdm: Codable, Hashable {
         encryptionKeyAvailable: true,
         profiles: [.example]
     )
+}
+
+struct Token: Identifiable {
+    var id: String { name }
+    var name: String
+    var platform: [String]
 }

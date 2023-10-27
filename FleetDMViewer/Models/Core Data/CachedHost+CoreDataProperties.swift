@@ -26,6 +26,7 @@ extension CachedHost {
     @NSManaged public var hardwareModel: String?
     @NSManaged public var hardwareSerial: String?
     @NSManaged public var computerName: String?
+    @NSManaged public var platform: String?
     @NSManaged public var publicIp: String?
     @NSManaged public var primaryIp: String?
     @NSManaged public var primaryMac: String?
@@ -71,6 +72,10 @@ extension CachedHost {
     var wrappedComputerName: String {
         computerName ?? ""
     }
+    
+    var wrappedPlatform: String {
+        platform ?? ""
+    }
 
     var wrappedPublicIp: String {
         publicIp ?? ""
@@ -103,7 +108,19 @@ extension CachedHost {
             $0.wrappedName < $1.wrappedName
         }
     }
+}
 
+extension CachedHost: Comparable {
+    public static func <(lhs: CachedHost, rhs: CachedHost) -> Bool {
+        let left = lhs.wrappedComputerName.localizedLowercase
+        let right = rhs.wrappedComputerName.localizedLowercase
+        
+        if left == right {
+            return lhs.wrappedUuid < rhs.wrappedUuid
+        } else {
+            return left < right
+        }
+    }
 }
 
 // MARK: Generated accessors for policies
