@@ -42,6 +42,14 @@ struct TeamsView: View {
                     }
                 }
             }
+
+            if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
+                Text("Last Updated: \(teamsLastUpdatedAt.formatted(date: .abbreviated, time: .standard))")
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .font(.footnote)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary)
+            }
         }
         .task {
             if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
@@ -70,16 +78,6 @@ struct TeamsView: View {
                 } label: {
                     Label("Login", systemImage: "network")
                 }
-            }
-        }
-        .overlay(alignment: .bottom) {
-            if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
-                Text("Last Updated: \(teamsLastUpdatedAt.formatted(date: .abbreviated, time: .standard))")
-                    .font(.footnote)
-                    .padding()
-                    .background(Color.primary.colorInvert())
-                    .clipShape(Capsule())
-                    .shadow(radius: 3)
             }
         }
         .navigationTitle("Teams")
