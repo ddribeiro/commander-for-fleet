@@ -223,7 +223,6 @@ struct HostView: View {
             let host = try await networkManager.fetch(endpoint, attempts: 5)
             return host
         } catch {
-            print("here's the error")
             print(error.localizedDescription)
             throw error
         }

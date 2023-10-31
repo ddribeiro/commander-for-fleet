@@ -16,6 +16,7 @@ struct LoginView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var dataController: DataController
+    @Environment(\.networkManager) var networkManager
 
     @State private var serverURL = ""
     @State private var emailAddress = ""
@@ -131,8 +132,6 @@ struct LoginView: View {
         )
 
         dataController.saveActiveEnvironment(environment: environment)
-
-        let networkManager = NetworkManager()
 
         let credentials = LoginRequestBody(email: email, password: password)
 

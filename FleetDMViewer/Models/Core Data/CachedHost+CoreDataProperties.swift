@@ -72,7 +72,7 @@ extension CachedHost {
     var wrappedComputerName: String {
         computerName ?? ""
     }
-    
+
     var wrappedPlatform: String {
         platform ?? ""
     }
@@ -114,7 +114,7 @@ extension CachedHost: Comparable {
     public static func <(lhs: CachedHost, rhs: CachedHost) -> Bool {
         let left = lhs.wrappedComputerName.localizedLowercase
         let right = rhs.wrappedComputerName.localizedLowercase
-        
+
         if left == right {
             return lhs.wrappedUuid < rhs.wrappedUuid
         } else {

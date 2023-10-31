@@ -15,7 +15,7 @@ struct ContentView: View {
 
     @State private var isShowingSignInSheet = false
     @FetchRequest(sortDescriptors: [SortDescriptor(\.computerName)]) var hosts: FetchedResults<CachedHost>
-    
+
     var suggestedTokens: [Token] {
         if dataController.filterText.starts(with: "#") {
             return dataController.allTokens

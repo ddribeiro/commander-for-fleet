@@ -45,10 +45,10 @@ struct TeamsView: View {
 
             if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
                 Text("Last Updated: \(teamsLastUpdatedAt.formatted(date: .abbreviated, time: .standard))")
-                    .frame(maxWidth: .infinity, alignment: .center)
                     .font(.footnote)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
         }
         .task {

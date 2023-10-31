@@ -12,7 +12,11 @@ struct PoliciesView: View {
 
     var body: some View {
         if policies.isEmpty {
-            ContentUnavailableView("No Policies", systemImage: "exclamationmark.triangle", description: Text("This host has no policies assigned to it."))
+            ContentUnavailableView(
+                "No Policies",
+                systemImage: "exclamationmark.triangle",
+                description: Text("This host has no policies assigned to it.")
+            )
         } else {
             List {
                 ForEach(policies) { policy in
