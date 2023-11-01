@@ -21,6 +21,9 @@ struct TeamsView: View {
     @State private var showingSettings = false
     @State private var showingLogin = false
 
+    @State private var smartFiltersExpanded = true
+    @State private var teamsFilterExpanded = true
+
     var teamFilters: [Filter] {
         teams.map { team in
             Filter(id: Int(team.id), name: team.wrappedName, icon: "person.3", team: team)
@@ -29,11 +32,11 @@ struct TeamsView: View {
 
     var body: some View {
         List(selection: $dataController.selectedFilter) {
-            Section("Smart Filters") {
+            Section("Smart Filters", isExpanded: $smartFiltersExpanded) {
                 ForEach(smartFilters, content: SmartFilterRow.init)
             }
 
-            Section("Teams") {
+            Section("Teams", isExpanded: $teamsFilterExpanded) {
                 ForEach(teamFilters) { filter in
                     NavigationLink(value: filter) {
                         Label(filter.name, systemImage: filter.icon)

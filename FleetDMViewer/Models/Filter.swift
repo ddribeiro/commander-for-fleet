@@ -11,7 +11,7 @@ struct Filter: Identifiable, Hashable {
     var id: Int
     var name: String
     var icon: String
-    var minModificationDate = Date.distantPast
+    var minEnrollmentDate = Date.distantPast
     var team: CachedTeam?
 
     var hostCount: Int {
@@ -28,7 +28,7 @@ struct Filter: Identifiable, Hashable {
         id: 134331,
         name: "Recently Enrolled",
         icon: "clock",
-        minModificationDate: .now.addingTimeInterval(86400 * -7)
+        minEnrollmentDate: .now.addingTimeInterval(86400 * -7)
     )
 
     func hash(into hasher: inout Hasher) {

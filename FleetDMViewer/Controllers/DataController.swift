@@ -125,7 +125,7 @@ class DataController: ObservableObject {
             let teamPredicate = NSPredicate(format: "teamId CONTAINS %@", "\(team.id)")
             predicates.append(teamPredicate)
         } else {
-            let datePredicate = NSPredicate(format: "lastEnrolledAt > %@", filter.minModificationDate as NSDate)
+            let datePredicate = NSPredicate(format: "lastEnrolledAt > %@", filter.minEnrollmentDate as NSDate)
             predicates.append(datePredicate)
         }
 
@@ -193,6 +193,15 @@ class DataController: ObservableObject {
             print(error.localizedDescription)
             showingAlert.toggle()
         }
+    }
+
+    func signOut() {
+        deleteAll()
+        activeEnvironment = nil
+        isAuthenticated = false
+        teamsLastUpdatedAt = nil
+        selectedHost = nil
+        selectedTeam = nil
     }
 
     func updateCache(with downloadedUser: User, downloadedTeams: [Team]) {
