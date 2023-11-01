@@ -10,7 +10,7 @@ import SwiftUI
 struct NoHostView: View {
     var body: some View {
         ContentUnavailableView(
-            "No Hosts Selected",
+            "No Host Selected",
             systemImage: "laptopcomputer.slash",
             description: Text("Select a host in the list to see its details.")
         )
