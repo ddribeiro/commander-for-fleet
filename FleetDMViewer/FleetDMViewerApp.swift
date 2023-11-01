@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct FleetDMViewerApp: App {
-    @State var dataController = DataController()
+    @StateObject var dataController = DataController()
     @State var networkManager = NetworkManager()
 
     var body: some Scene {

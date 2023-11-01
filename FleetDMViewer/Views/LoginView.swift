@@ -8,22 +8,16 @@
 import KeychainWrapper
 import SwiftUI
 
-    enum LoadingState {
-    case loading, loaded, failed
-}
-
 struct LoginView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
+
     @EnvironmentObject var dataController: DataController
     @Environment(\.networkManager) var networkManager
 
     @State private var serverURL = ""
     @State private var emailAddress = ""
     @State private var password = ""
-    @State private var loadingState = LoadingState.loaded
-
-    @State private var showingAlert = false
 
     @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
 
@@ -61,22 +55,31 @@ struct LoginView: View {
                     LabeledContent("Password") {
                         SecureField("Password", text: $password)
                             .multilineTextAlignment(.trailing)
-                        #if os(iOS)
+#if os(iOS)
                             .textContentType(.password)
                             .autocorrectionDisabled()
-                        #endif
+#endif
                     }
                 }
 
                 Section {
                     LabeledContent("Sign In") {
                         Button {
-                            Task {
-                                loadingState = .loading
-                                try await login(email: emailAddress, password: password)
+                            Task { @MainActor in
+                                dataController.loadingState = .loading
+                                try? await dataController.login(
+                                    email: emailAddress,
+                                    password: password,
+                                    serverURL: serverURL,
+                                    networkManager: networkManager
+                                )
+
+                                if dataController.loadingState == .loaded {
+                                    dismiss()
+                                }
                             }
                         } label: {
-                            if loadingState == .loading {
+                            if dataController.loadingState == .loading {
                                 ProgressView()
                             } else {
                                 Text("Sign In")
@@ -94,11 +97,20 @@ struct LoginView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         Task {
-                            loadingState = .loading
-                            try await login(email: emailAddress, password: password)
+                            dataController.loadingState = .loading
+                            try await dataController.login(
+                                email: emailAddress,
+                                password: password,
+                                serverURL: serverURL,
+                                networkManager: networkManager
+                            )
+
+                            if dataController.loadingState == .loaded {
+                                dismiss()
+                            }
                         }
                     } label: {
-                        switch loadingState {
+                        switch dataController.loadingState {
                         case .loading:
                             ProgressView()
                         case .loaded:
@@ -117,84 +129,11 @@ struct LoginView: View {
                 }
             }
         }
-        .alert("Login Error", isPresented: $showingAlert) {
+        .alert("Login Error", isPresented: $dataController.showingAlert) {
             Button("OK", role: .cancel) { }
         } message: {
             Text("Incorrect username or password.")
         }
-    }
-
-    private func login(email: String, password: String) async throws {
-        let environment = AppEnvironment(
-            baseURL: URL(
-                string: "\(try validateServerURL(serverURL))"
-            )!
-        )
-
-        dataController.saveActiveEnvironment(environment: environment)
-
-        let credentials = LoginRequestBody(email: email, password: password)
-
-        do {
-            let response = try await networkManager.fetch(.loginResponse, with: JSONEncoder().encode(credentials))
-            KeychainWrapper.default.set(response.token, forKey: "apiToken")
-            let user = response.user
-            let teams = response.availableTeams
-
-            dataController.deleteAll()
-
-            await MainActor.run {
-                updateCache(with: user, downloadedTeams: teams)
-            }
-
-            loadingState = .loaded
-            AppEnvironments().addEnvironment(environment)
-            dataController.activeEnvironment = environment
-            dismiss()
-            isAuthenticated = true
-        } catch {
-            loadingState = .failed
-            print(error.localizedDescription)
-            showingAlert.toggle()
-        }
-    }
-
-    func updateCache(with downloadedUser: User, downloadedTeams: [Team]) {
-        let cachedUser = CachedUser(context: moc)
-
-        cachedUser.createdAt = downloadedUser.createdAt
-        cachedUser.updatedAt = downloadedUser.updatedAt
-        cachedUser.id = Int16(downloadedUser.id)
-        cachedUser.name = downloadedUser.name
-        cachedUser.email = downloadedUser.email
-        cachedUser.globalRole = downloadedUser.globalRole
-        cachedUser.gravatarUrl = downloadedUser.gravatarUrl
-        cachedUser.ssoEnabled = downloadedUser.ssoEnabled
-        cachedUser.apiOnly = downloadedUser.apiOnly
-
-        for team in downloadedTeams {
-            let cachedTeam = CachedUserTeam(context: moc)
-            cachedTeam.id = Int16(team.id)
-            cachedTeam.name = team.name
-            cachedTeam.teamDescription = team.description
-
-            cachedUser.addToUserTeams(cachedTeam)
-        }
-
-        try? moc.save()
-    }
-
-    func validateServerURL(_ urlString: String) throws -> String {
-        guard !urlString.isEmpty else {
-            throw URLError(.badURL)
-        }
-
-        guard let url = URL(string: urlString), url.scheme != nil else {
-            let validatedURLString = "https://" + urlString
-            return validatedURLString
-
-        }
-        return urlString
     }
 
     private var isFormValid: Bool {
