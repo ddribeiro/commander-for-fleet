@@ -40,6 +40,7 @@ extension CachedHost {
     @NSManaged public var mdm: CachedMdm?
     @NSManaged public var software: NSSet?
     @NSManaged public var team: CachedTeam?
+    @NSManaged public var teamName: String?
 
     var wrappedLastEnrolledAt: Date {
         lastEnrolledAt ?? Date.now
@@ -99,6 +100,10 @@ extension CachedHost {
         return set.sorted {
             $0.wrappedName < $1.wrappedName
         }
+    }
+
+    var wrappedTeamName: String {
+        teamName ?? ""
     }
 
     var softwareArray: [CachedSoftware] {

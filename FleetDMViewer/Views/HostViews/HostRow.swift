@@ -20,6 +20,11 @@ struct HostRow: View {
                         .font(.headline)
                         .lineLimit(1)
 
+                    Text(host.wrappedTeamName)
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+
                     Text(host.wrappedHardwareSerial)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)

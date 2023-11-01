@@ -33,6 +33,7 @@ struct Host: Codable, Identifiable, Hashable {
     var policies: [Policy]?
     var mdm: Mdm?
     var batteries: [Battery]?
+    var teamName: String
 
     static let example = Host(
         platform: "darwin",
@@ -55,7 +56,8 @@ struct Host: Codable, Identifiable, Hashable {
         percentDiskSpaceAvailable: 40,
         diskEncryptionEnabled: true,
         status: "Online",
-        batteries: [.example]
+        batteries: [.example],
+        teamName: "Example Team Name"
     )
 }
 

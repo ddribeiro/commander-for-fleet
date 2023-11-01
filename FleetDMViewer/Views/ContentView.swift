@@ -96,6 +96,7 @@ struct ContentView: View {
             cachedHost.percentDiskSpaceAvailable = Double(downloadedHost.percentDiskSpaceAvailable)
             cachedHost.diskEncryptionEnabled = downloadedHost.diskEncryptionEnabled ?? false
             cachedHost.status = downloadedHost.status
+            cachedHost.teamName = downloadedHost.teamName
         }
 
         try? moc.save()
