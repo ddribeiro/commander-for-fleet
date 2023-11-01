@@ -16,14 +16,6 @@ struct ContentView: View {
     @State private var isShowingSignInSheet = false
     @FetchRequest(sortDescriptors: [SortDescriptor(\.computerName)]) var hosts: FetchedResults<CachedHost>
 
-    var suggestedTokens: [Token] {
-        if dataController.filterText.starts(with: "#") {
-            return dataController.allTokens
-        } else {
-            return []
-        }
-    }
-
     var body: some View {
         if dataController.isAuthenticated {
 
@@ -38,6 +30,11 @@ struct ContentView: View {
                 suggestedTokens: $dataController.allTokens
             ) { token in
                 Text(token.name)
+            }
+            .overlay {
+                if dataController.hostsForSelectedFilter().isEmpty {
+                    ContentUnavailableView.search
+                }
             }
             .refreshable {
                 await fetchHosts()
