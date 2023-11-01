@@ -111,6 +111,7 @@ extension CachedHost {
 }
 
 extension CachedHost: Comparable {
+// swiftlint:disable:next operator_whitespace
     public static func <(lhs: CachedHost, rhs: CachedHost) -> Bool {
         let left = lhs.wrappedComputerName.localizedLowercase
         let right = rhs.wrappedComputerName.localizedLowercase

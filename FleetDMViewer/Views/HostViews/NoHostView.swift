@@ -9,9 +9,11 @@ import SwiftUI
 
 struct NoHostView: View {
     var body: some View {
-        Text("No Host Selected")
-            .font(.title)
-            .foregroundStyle(.secondary)
+        ContentUnavailableView(
+            "No Hosts Selected",
+            systemImage: "laptopcomputer.slash",
+            description: Text("Select a host in the list to see details about it.")
+        )
     }
 }
 
