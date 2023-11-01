@@ -12,7 +12,7 @@ struct NoHostView: View {
         ContentUnavailableView(
             "No Hosts Selected",
             systemImage: "laptopcomputer.slash",
-            description: Text("Select a host in the list to see details about it.")
+            description: Text("Select a host in the list to see its details.")
         )
     }
 }
