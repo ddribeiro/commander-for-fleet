@@ -18,7 +18,6 @@ struct ContentView: View {
 
     var body: some View {
         if dataController.isAuthenticated {
-
             List(selection: $dataController.selectedHost) {
                 ForEach(dataController.hostsForSelectedFilter()) { host in
                     HostRow(host: host)

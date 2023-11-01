@@ -24,6 +24,13 @@ struct Filter: Identifiable, Hashable {
         icon: "laptopcomputer"
     )
 
+    static var recentlyEnrolled = Filter(
+        id: 134331,
+        name: "Recently Enrolled",
+        icon: "clock",
+        minModificationDate: .now.addingTimeInterval(86400 * -7)
+    )
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

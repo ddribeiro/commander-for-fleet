@@ -14,7 +14,7 @@ struct TeamsView: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.networkManager) var networkManager
 
-    let smartFilters: [Filter] = [.all]
+    let smartFilters: [Filter] = [.all, .recentlyEnrolled]
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
@@ -51,6 +51,7 @@ struct TeamsView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
             }
         }
+        .listStyle(.sidebar)
         .task {
             if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
                 guard teamsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
@@ -62,6 +63,13 @@ struct TeamsView: View {
         }
         .sheet(isPresented: $showingSettings) {
             SettingsView()
+        }
+        .onChange(of: dataController.isAuthenticated) {
+            if dataController.isAuthenticated {
+                Task {
+                    await fetchTeams()
+                }
+            }
         }
         .sheet(isPresented: $showingLogin, content: LoginView.init)
         .toolbar {

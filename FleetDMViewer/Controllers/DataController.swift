@@ -124,6 +124,9 @@ class DataController: ObservableObject {
         if let team = filter.team {
             let teamPredicate = NSPredicate(format: "teamId CONTAINS %@", "\(team.id)")
             predicates.append(teamPredicate)
+        } else {
+            let datePredicate = NSPredicate(format: "lastEnrolledAt > %@", filter.minModificationDate as NSDate)
+            predicates.append(datePredicate)
         }
 
         let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
