@@ -45,7 +45,7 @@ struct ContentView: View {
 
                 await fetchHosts()
             }
-            .navigationTitle(dataController.selectedFilter?.team?.wrappedName ?? "Hosts")
+            .navigationTitle(dataController.selectedFilter?.name ?? "Hosts")
         } else {
             NoHostView()
                 .sheet(isPresented: $isShowingSignInSheet) {

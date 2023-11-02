@@ -66,14 +66,6 @@ struct SettingsView: View {
                         LabeledContent("Created On", value: user.wrappedCreatedAt.formatted(date: .abbreviated, time: .omitted))
                     }
 
-                                    Section {
-                                        ForEach(user.teamsArray) { team in
-                                            Text(team.wrappedName)
-                                        }
-                                    } header: {
-                                        Text("Available Teams")
-                                    }
-
                     Section {
                         LabeledContent("Sign Out") {
                             Button("Sign Out", role: .destructive) {
@@ -82,6 +74,14 @@ struct SettingsView: View {
                             .frame(maxWidth: .infinity)
                         }
                         .labelsHidden()
+                    }
+
+                    Section {
+                        ForEach(user.teamsArray) { team in
+                            Text(team.wrappedName)
+                        }
+                    } header: {
+                        Text("Available Teams")
                     }
                 }
                 .formStyle(.grouped)
