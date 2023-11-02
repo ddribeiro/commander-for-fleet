@@ -24,10 +24,77 @@ struct MDMCommandMenu: View {
                         let deviceInformationCommand = DeviceInformationCommand(
                             command: DeviceInformationCommand.Command(
                                 queries: [
-                                    "UDID",
+                                    "AccessibilitySettings",
+                                    "ActiveManagedUsers",
+                                    "AppAnalyticsEnabled",
+                                    "AutoSetupAdminAccounts",
+                                    "AvailableDeviceCapacity",
+                                    "AwaitingConfiguration",
+                                    "BatteryLevel",
+                                    "BluetoothMAC",
+                                    "BuildVersion",
+                                    "CellularTechnology",
+                                    "DataRoamingEnabled",
+                                    "DeviceCapacity",
+                                    "DeviceID",
                                     "DeviceName",
+                                    "DevicePropertiesAttestation",
+                                    "DiagnosticSubmissionEnabled",
+                                    "EACSPreflight",
+                                    "EASDeviceIdentifier",
+                                    "EstimatedResidentUsers",
+                                    "EthernetMAC",
+                                    "HasBattery",
+                                    "HostName",
+                                    "IsActivationLockSupported",
+                                    "IsAppleSilicon",
+                                    "IsCloudBackupEnabled",
+                                    "IsDeviceLocatorServiceEnabled",
+                                    "IsDoNotDisturbInEffect",
+                                    "IsMDMLostModeEnabled",
+                                    "IsMultiUser",
+                                    "IsNetworkTethered",
+                                    "IsRoaming",
+                                    "IsSupervised",
+                                    "iTunesStoreAccountHash",
+                                    "iTunesStoreAccountIsActive",
+                                    "LastCloudBackupDate",
+                                    "LocalHostName",
+                                    "ManagedAppleIDDefaultDomains",
+                                    "MaximumResidentUsers",
+                                    "MDMOptions",
+                                    "Model",
                                     "ModelName",
-                                    "SerialNumber"
+                                    "ModemFirmwareVersion",
+                                    "ModelNumber",
+                                    "OnlineAuthenticationGracePeriod",
+                                    "OrganizationInfo",
+                                    "OSUpdateSettings",
+                                    "OSVersion",
+                                    "PersonalHotspotEnabled",
+                                    "PINRequiredForDeviceLock",
+                                    "PINRequiredForEraseDevice",
+                                    "ProductName",
+                                    "ProvisioningUDID",
+                                    "PushToken",
+                                    "QuotaSize",
+                                    "ResidentUsers",
+                                    "SerialNumber",
+                                    "ServiceSubscriptions",
+                                    "SkipLanguageAndLocaleSetupForNewUsers",
+                                    "SoftwareUpdateDeviceID",
+                                    "SoftwareUpdateSettings",
+                                    "SupplementalBuildVersion",
+                                    "SupplementalOSVersionExtra",
+                                    "SupportsiOSAppInstalls",
+                                    "SupportsLOMDevice",
+                                    "SystemIntegrityProtectionEnabled",
+                                    "TemporarySessionOnly",
+                                    "TemporarySessionTimeout",
+                                    "TimeZone",
+                                    "UDID",
+                                    "UserSessionTimeout",
+                                    "WiFiMAC"
                                 ]
                             )
                         )
@@ -42,12 +109,6 @@ struct MDMCommandMenu: View {
 
                 } label: {
                     Label("Get Device Information", systemImage: "info.circle")
-                }
-
-                Button {
-
-                } label: {
-                    Label("Install Software Updates", systemImage: "arrow.down.circle")
                 }
 
                 Divider()
@@ -86,70 +147,70 @@ struct MDMCommandMenu: View {
                 Label("Send MDM Commands", systemImage: "command")
             }
 
-            Menu {
-                Button {
-                    Task {
-                        let installZoomCommand = InstallApplicationCommand(
-                            command: InstallApplicationCommand.Command(
-                                // swiftlint:disable:next line_length
-                                manifestUrl: "https://storage.googleapis.com/harmonize-public/Fleetd%20Installers/zoom.plist"
-                            )
-                        )
-
-                        let mdmCommand = MdmCommand(
-                            command: try generatebase64EncodedPlistData(from: installZoomCommand),
-                            deviceIds: [host.uuid]
-                        )
-
-                        try await sendMDMCommand(command: mdmCommand)
-                    }
-
-                } label: {
-                    Label("Install Zoom", systemImage: "app.badge")
-                }
-
-                Button {
-                    Task {
-                        let installChromeCommand = InstallApplicationCommand(
-                            command: InstallApplicationCommand.Command(
-                                // swiftlint:disable:next line_length
-                                manifestUrl: "https://storage.googleapis.com/harmonize-public/Fleetd%20Installers/GoogleChrome-114.0.5735.198.plist"
-                            )
-                        )
-                        let mdmCommand = MdmCommand(
-                            command: try generatebase64EncodedPlistData(from: installChromeCommand),
-                            deviceIds: [host.uuid]
-                        )
-
-                        try await sendMDMCommand(command: mdmCommand)
-                    }
-
-                } label: {
-                    Label("Install Google Chrome", systemImage: "app.badge")
-                }
-
-                Button {
-                    Task {
-                        let installSlackCommand = InstallApplicationCommand(
-                            command: InstallApplicationCommand.Command(
-                                // swiftlint:disable:next line_length
-                                manifestUrl: "https://storage.googleapis.com/harmonize-public/Fleetd%20Installers/Slack-4.33.73.plist"
-                            )
-                        )
-                        let mdmCommand = MdmCommand(
-                            command: try generatebase64EncodedPlistData(from: installSlackCommand),
-                            deviceIds: [host.uuid]
-                        )
-
-                        try await sendMDMCommand(command: mdmCommand)
-                    }
-
-                } label: {
-                    Label("Install Slack", systemImage: "app.badge")
-                }
-            } label: {
-                Label("Install Apps", systemImage: "laptopcomputer.and.arrow.down")
-            }
+//            Menu {
+//                Button {
+//                    Task {
+//                        let installZoomCommand = InstallApplicationCommand(
+//                            command: InstallApplicationCommand.Command(
+//                                // swiftlint:disable:next line_length
+//                                manifestUrl: "https://storage.googleapis.com/harmonize-public/Fleetd%20Installers/zoom.plist"
+//                            )
+//                        )
+//
+//                        let mdmCommand = MdmCommand(
+//                            command: try generatebase64EncodedPlistData(from: installZoomCommand),
+//                            deviceIds: [host.uuid]
+//                        )
+//
+//                        try await sendMDMCommand(command: mdmCommand)
+//                    }
+//
+//                } label: {
+//                    Label("Install Zoom", systemImage: "app.badge")
+//                }
+//
+//                Button {
+//                    Task {
+//                        let installChromeCommand = InstallApplicationCommand(
+//                            command: InstallApplicationCommand.Command(
+//                                // swiftlint:disable:next line_length
+//                                manifestUrl: "https://storage.googleapis.com/harmonize-public/Fleetd%20Installers/GoogleChrome-114.0.5735.198.plist"
+//                            )
+//                        )
+//                        let mdmCommand = MdmCommand(
+//                            command: try generatebase64EncodedPlistData(from: installChromeCommand),
+//                            deviceIds: [host.uuid]
+//                        )
+//
+//                        try await sendMDMCommand(command: mdmCommand)
+//                    }
+//
+//                } label: {
+//                    Label("Install Google Chrome", systemImage: "app.badge")
+//                }
+//
+//                Button {
+//                    Task {
+//                        let installSlackCommand = InstallApplicationCommand(
+//                            command: InstallApplicationCommand.Command(
+//                                // swiftlint:disable:next line_length
+//                                manifestUrl: "https://storage.googleapis.com/harmonize-public/Fleetd%20Installers/Slack-4.33.73.plist"
+//                            )
+//                        )
+//                        let mdmCommand = MdmCommand(
+//                            command: try generatebase64EncodedPlistData(from: installSlackCommand),
+//                            deviceIds: [host.uuid]
+//                        )
+//
+//                        try await sendMDMCommand(command: mdmCommand)
+//                    }
+//
+//                } label: {
+//                    Label("Install Slack", systemImage: "app.badge")
+//                }
+//            } label: {
+//                Label("Install Apps", systemImage: "laptopcomputer.and.arrow.down")
+//            }
 
             Divider()
 
