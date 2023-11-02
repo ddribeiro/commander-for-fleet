@@ -22,7 +22,7 @@ case loading, loaded, failed
 class DataController: ObservableObject {
     let container = NSPersistentContainer(name: "FleetDMViewer")
 
-    @Published var selectedFilter: Filter?
+    @Published var selectedFilter: Filter? = .all
 
     @Published var filterText = ""
     @Published var filterTokens = [Token]()
@@ -195,13 +195,19 @@ class DataController: ObservableObject {
         }
     }
 
-    func signOut() {
+    func signOut() async {
         deleteAll()
         activeEnvironment = nil
         isAuthenticated = false
         teamsLastUpdatedAt = nil
         selectedHost = nil
         selectedTeam = nil
+
+        do {
+            _ = try await NetworkManager().fetch(.logout)
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 
     func updateCache(with downloadedUser: User, downloadedTeams: [Team]) {

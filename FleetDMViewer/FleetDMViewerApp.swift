@@ -14,16 +14,24 @@ struct FleetDMViewerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationSplitView {
-                TeamsView()
-            } content: {
-                ContentView()
-            } detail: {
-                DetailView()
+            if dataController.isAuthenticated {
+                NavigationSplitView {
+                    TeamsView()
+                } content: {
+                    ContentView()
+                } detail: {
+                    DetailView()
+                }
+                .environmentObject(dataController)
+                .environment(\.networkManager, networkManager)
+                .environment(\.managedObjectContext, dataController.container.viewContext)
+            } else {
+                SignedOutView()
+                    .environmentObject(dataController)
+                    .environment(\.networkManager, networkManager)
+                    .environment(\.managedObjectContext, dataController.container.viewContext)
+
             }
-            .environmentObject(dataController)
-            .environment(\.networkManager, networkManager)
-            .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }
 }

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HostRow: View {
+    @EnvironmentObject var dataController: DataController
     var host: CachedHost
     var body: some View {
         NavigationLink(value: host) {
@@ -20,10 +21,12 @@ struct HostRow: View {
                         .font(.headline)
                         .lineLimit(1)
 
-                    Text(host.wrappedTeamName)
-                        .font(.headline)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
+                    if dataController.selectedFilter == .all || dataController.selectedFilter == .recentlyEnrolled {
+                        Text(host.wrappedTeamName)
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
 
                     Text(host.wrappedHardwareSerial)
                         .foregroundStyle(.secondary)

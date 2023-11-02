@@ -1,6 +1,6 @@
 //
-//  Authentication.swift
-//  FleetSample
+//  NetworkManager.swift
+//  fleet-dm-viewer
 //
 //  Created by Dale Ribeiro on 5/25/23.
 //
@@ -62,7 +62,7 @@ struct NetworkManager {
             throw URLError(.unsupportedURL)
         }
 
-//        print(url.absoluteString)
+        print(url.absoluteString)
 
         var request = URLRequest(url: url)
         request.httpMethod = resource.method.rawValue

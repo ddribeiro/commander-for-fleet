@@ -17,3 +17,7 @@ struct LoginResponse: Codable {
     var availableTeams: [Team]
     var token: String
 }
+
+struct LogoutRespones: Codable {
+
+}

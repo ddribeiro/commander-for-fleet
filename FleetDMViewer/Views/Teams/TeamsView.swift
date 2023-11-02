@@ -31,67 +31,65 @@ struct TeamsView: View {
     }
 
     var body: some View {
-        List(selection: $dataController.selectedFilter) {
-            Section("Smart Filters", isExpanded: $smartFiltersExpanded) {
-                ForEach(smartFilters, content: SmartFilterRow.init)
-            }
+        if dataController.isAuthenticated {
+            List(selection: $dataController.selectedFilter) {
+                Section("Smart Filters", isExpanded: $smartFiltersExpanded) {
+                    ForEach(smartFilters, content: SmartFilterRow.init)
+                }
 
-            Section("Teams", isExpanded: $teamsFilterExpanded) {
-                ForEach(teamFilters) { filter in
-                    NavigationLink(value: filter) {
-                        Label(filter.name, systemImage: filter.icon)
-                            .badge(filter.hostCount)
-                            .lineLimit(1)
+                Section {
+                    ForEach(teamFilters) { filter in
+                        NavigationLink(value: filter) {
+                            Label(filter.name, systemImage: filter.icon)
+                                .badge(filter.hostCount)
+                                .lineLimit(1)
+                        }
+                    }
+                } header: {
+                    Text("Teams")
+                } footer: {
+
+                }
+            }
+            .listStyle(.sidebar)
+            .task {
+                if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
+                    guard teamsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
+                }
+                await fetchTeams()
+            }
+            .refreshable {
+                await fetchTeams()
+            }
+            .sheet(isPresented: $showingSettings) {
+                SettingsView()
+            }
+            .onChange(of: dataController.isAuthenticated) {
+                if dataController.isAuthenticated {
+                    Task {
+                        await fetchTeams()
                     }
                 }
             }
-
-            if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
-                Text("Last Updated: \(teamsLastUpdatedAt.formatted(date: .abbreviated, time: .standard))")
-                    .font(.footnote)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .center)
-            }
-        }
-        .listStyle(.sidebar)
-        .task {
-            if let teamsLastUpdatedAt = dataController.teamsLastUpdatedAt {
-                guard teamsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
-            }
-            await fetchTeams()
-        }
-        .refreshable {
-            await fetchTeams()
-        }
-        .sheet(isPresented: $showingSettings) {
-            SettingsView()
-        }
-        .onChange(of: dataController.isAuthenticated) {
-            if dataController.isAuthenticated {
-                Task {
-                    await fetchTeams()
+            .sheet(isPresented: $showingLogin, content: LoginView.init)
+            .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    Button {
+                        showingSettings.toggle()
+                    } label: {
+                        Label("Settings", systemImage: "person.crop.circle")
+                    }
+                }
+                ToolbarItem(placement: .automatic) {
+                    Button {
+                        showingLogin.toggle()
+                    } label: {
+                        Label("Login", systemImage: "network")
+                    }
                 }
             }
+            .navigationTitle("Teams")
         }
-        .sheet(isPresented: $showingLogin, content: LoginView.init)
-        .toolbar {
-            ToolbarItem(placement: .automatic) {
-                Button {
-                    showingSettings.toggle()
-                } label: {
-                    Label("Settings", systemImage: "person.crop.circle")
-                }
-            }
-            ToolbarItem(placement: .automatic) {
-                Button {
-                    showingLogin.toggle()
-                } label: {
-                    Label("Login", systemImage: "network")
-                }
-            }
-        }
-        .navigationTitle("Teams")
     }
 
     func fetchTeams() async {

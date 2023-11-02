@@ -110,7 +110,9 @@ struct SettingsView: View {
         Alert(
             title: Text("Are you sure you want to sign out?"),
             primaryButton: .destructive(Text("Sign Out")) {
-                dataContoller.signOut()
+                Task {
+                    await dataContoller.signOut()
+                }
                 dismiss()
             },
             secondaryButton: .cancel()

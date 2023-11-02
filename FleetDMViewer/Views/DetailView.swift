@@ -11,10 +11,12 @@ struct DetailView: View {
     @EnvironmentObject var dataController: DataController
     var body: some View {
         VStack {
-            if dataController.selectedHost != nil {
-                HostView()
-            } else {
-                NoHostView()
+            if dataController.isAuthenticated {
+                if dataController.selectedHost != nil {
+                    HostView()
+                } else {
+                    NoHostView()
+                }
             }
         }
         .navigationTitle("Details")

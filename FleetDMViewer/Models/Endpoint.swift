@@ -9,11 +9,12 @@ import Foundation
 
 struct Endpoint<T: Decodable> {
     var path: String
-    var type: T.Type
+    var type: T.Type?
     var method = HTTPMethod.get
     var headers = [String: String]()
     var keyPath: String?
     var id: Int?
+
 }
 
 extension Endpoint where T == LoginRequestBody {
@@ -70,6 +71,12 @@ extension Endpoint where T == User {
         type: User.self,
         keyPath: "user"
     )
+
+    static let logout = Endpoint(
+    path: "/api/v1/fleet/logout",
+    method: .post
+    )
+
 }
 
 extension Endpoint where T == MdmCommandResponse {

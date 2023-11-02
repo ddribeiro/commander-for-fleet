@@ -33,7 +33,7 @@ struct Host: Codable, Identifiable, Hashable {
     var policies: [Policy]?
     var mdm: Mdm?
     var batteries: [Battery]?
-    var teamName: String
+    var teamName: String?
 
     static let example = Host(
         platform: "darwin",
