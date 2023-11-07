@@ -182,16 +182,23 @@ class DataController: ObservableObject {
                 updateCache(with: user, downloadedTeams: teams)
                 activeEnvironment = environment
             }
-
             loadingState = .loaded
-
             AppEnvironments().addEnvironment(environment)
-
             isAuthenticated = true
-        } catch {
+        } catch let error as HTTPError {
             loadingState = .failed
-            print(error.localizedDescription)
-            showingAlert.toggle()
+            switch error {
+            case .statusCode(let statusCode):
+                print("HTTP Status Code: \(statusCode)")
+                showingAlert.toggle()
+            case .invalidURL:
+
+                alertTitle = "Invalid Server URL"
+                alertDescription = "Check your server URL to make sure it is spelled correctly."
+                showingAlert.toggle()
+            case .unexpectedResponse:
+                print("Unexpected response type")
+            }
         }
     }
 

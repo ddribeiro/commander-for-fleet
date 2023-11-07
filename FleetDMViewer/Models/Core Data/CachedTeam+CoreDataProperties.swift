@@ -38,7 +38,7 @@ extension CachedTeam {
 // MARK: Generated accessors for host
 extension CachedTeam {
 
-    @objc(addHosstObject:)
+    @objc(addHostObject:)
     @NSManaged public func addToHosts(_ value: CachedHost)
 
     @objc(removeHostsObject:)

@@ -23,6 +23,10 @@ struct HostView: View {
         if let host = updatedHost {
             Form {
                 Section {
+                    // swiftlint:disable:next line_length
+                    let driveCapacity = ((host.gigsDiskSpaceAvailable) / Double((host.percentDiskSpaceAvailable)) * 100.0)
+                    let gigsSpaceConsumed = (driveCapacity - host.gigsDiskSpaceAvailable)
+
                     LabeledContent("Device Name", value: host.computerName)
 
                     LabeledContent("Serial Number", value: host.hardwareSerial)
@@ -35,17 +39,10 @@ struct HostView: View {
                         .multilineTextAlignment(.trailing)
 
                     LabeledContent("Memory", value: "\(host.memory / 1073741824) GB")
-                } header: {
-                    Label("Device Information", systemImage: "laptopcomputer")
-                }
 
-                    Section {
-                        // swiftlint:disable:next line_length
-                        let driveCapacity = ((host.gigsDiskSpaceAvailable) / Double((host.percentDiskSpaceAvailable)) * 100.0)
-                        let gigsSpaceConsumed = (driveCapacity - host.gigsDiskSpaceAvailable)
-
+                    if host.percentDiskSpaceAvailable != 0 {
                         Gauge(value: Double(gigsSpaceConsumed), in: 0...Double(driveCapacity)) {
-                            Text("Available Storage")
+                            Text("Storage")
                         } currentValueLabel: {
                             Text("\(Int(gigsSpaceConsumed)) GB of \(Int(driveCapacity)) GB used")
                                 .foregroundStyle(.secondary)
@@ -57,6 +54,9 @@ struct HostView: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
+                } header: {
+                    Label("Device Information", systemImage: "laptopcomputer")
+                }
 
                 if let mdm = host.mdm {
                     if mdm.enrollmentStatus != nil {
@@ -135,9 +135,6 @@ struct HostView: View {
                         }
                     } header: {
                         Label("Battery Health", systemImage: "battery.100")
-                    } footer: {
-                        // swiftlint:disable:next line_length
-                        Text("Batteries have a limited amount of charge cycles before their performance is expected to diminish. Once the cycle count is reached, a replacement battery is recommended to maintain performance. A modern Mac laptop batteries are rated for 1000 charge cycles until it is considered consumed.")
                     }
                 }
 

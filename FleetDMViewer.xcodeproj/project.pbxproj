@@ -245,7 +245,6 @@
 		5EDA66E22A2A4A13006706CD /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				5ECF5D462AF405E200108411 /* SignedOutView.swift */,
 				5E028F542A4E26B500D90456 /* Teams */,
 				5E028F4F2A4DCF0300D90456 /* CommandsView */,
 				5E028F4C2A4DCEA700D90456 /* PoliciesViews */,
@@ -253,6 +252,9 @@
 				5E028F4A2A4DCE3300D90456 /* HostViews */,
 				5EDC18092A3B961400691C2E /* ContentView.swift */,
 				5EDC180B2A3B96D500691C2E /* DetailView.swift */,
+				5ECF5D462AF405E200108411 /* SignedOutView.swift */,
+				5EEA90972A93E9D800FEA5E4 /* ServerSelectionView.swift */,
+				5EEA90992A94FEF700FEA5E4 /* SettingsView.swift */,
 				5EDA66CE2A2A4979006706CD /* LoginView.swift */,
 			);
 			path = Views;
@@ -262,9 +264,7 @@
 			isa = PBXGroup;
 			children = (
 				5EEA90942A93C37100FEA5E4 /* DataController.swift */,
-				5EEA90992A94FEF700FEA5E4 /* SettingsView.swift */,
 				5EDA66D02A2A4979006706CD /* NetworkManager.swift */,
-				5EEA90972A93E9D800FEA5E4 /* ServerSelectionView.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";

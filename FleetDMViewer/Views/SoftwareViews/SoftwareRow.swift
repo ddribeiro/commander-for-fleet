@@ -22,6 +22,7 @@ struct SoftwareRow: View {
 
                     Text("Version: \(software.version)")
                         .foregroundStyle(.secondary)
+                        .font(.body.smallCaps())
                 }
 
                 Spacer()

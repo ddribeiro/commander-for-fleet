@@ -38,6 +38,14 @@ struct ContentView: View {
             .refreshable {
                 await fetchHosts()
             }
+            .toolbar {
+                ToolbarItem(placement: .bottomBar) {
+                    if let updatedAt = dataController.hostsLastUpdatedAt {
+                        Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                            .font(.caption)
+                    }
+                }
+            }
             .task {
                 if let hostsLastUpdatedAt = dataController.hostsLastUpdatedAt {
                     guard hostsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }

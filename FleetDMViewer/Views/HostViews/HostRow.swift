@@ -32,9 +32,14 @@ struct HostRow: View {
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
 
-                    Text(host.wrappedHardwareModel)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
+                    if dataController.selectedFilter != .recentlyEnrolled {
+                        Text(host.wrappedHardwareModel)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    } else {
+                        Text("Enrolled on \(host.wrappedLastEnrolledAt.formatted(date: .abbreviated, time: .omitted))")
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 Spacer()

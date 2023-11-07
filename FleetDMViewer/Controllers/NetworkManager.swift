@@ -62,7 +62,7 @@ struct NetworkManager {
             throw URLError(.unsupportedURL)
         }
 
-        print(url.absoluteString)
+//        print(url.absoluteString)
 
         var request = URLRequest(url: url)
         request.httpMethod = resource.method.rawValue
@@ -76,26 +76,39 @@ struct NetworkManager {
             ]
         }
 
-        var (data, _) = try await URLSession(configuration: configuration).data(for: request)
+        do {
+            var (data, response) = try await URLSession(configuration: configuration).data(for: request)
 
-        if let keyPath = resource.keyPath {
-            if let rootObject = try JSONSerialization.jsonObject(with: data) as? NSDictionary {
-                if let nestedObject = rootObject.value(forKeyPath: keyPath) {
+            if let httpResponse = response as? HTTPURLResponse {
+                let statusCode = httpResponse.statusCode
 
-                    // swiftlint:disable:next line_length
-                    data = try JSONSerialization.data(withJSONObject: nestedObject, options: [.fragmentsAllowed, .prettyPrinted])
+                if (200...299).contains(statusCode) {
+                    if let keyPath = resource.keyPath {
+                        if let rootObject = try JSONSerialization.jsonObject(with: data) as? NSDictionary {
+                            if let nestedObject = rootObject.value(forKeyPath: keyPath) {
+
+                                // swiftlint:disable:next line_length
+                                data = try JSONSerialization.data(withJSONObject: nestedObject, options: [.fragmentsAllowed, .prettyPrinted])
+                            }
+                        }
+                    }
+
+                    if let responseString = String(data: data, encoding: .utf8) {
+                        print(responseString)
+                    }
+
+                    let decoder = JSONDecoder()
+                    decoder.keyDecodingStrategy = .convertFromSnakeCase
+                    decoder.dateDecodingStrategy = .iso8601
+                    return try decoder.decode(T.self, from: data)
+                } else {
+                    throw HTTPError.statusCode(statusCode)
                 }
             }
+        } catch {
+            throw HTTPError.invalidURL
         }
-
-        if let responseString = String(data: data, encoding: .utf8) {
-            print(responseString)
-        }
-
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(T.self, from: data)
+        throw HTTPError.unexpectedResponse
     }
 
     // swiftlint:disable:next line_length
@@ -120,6 +133,12 @@ struct NetworkManager {
             return defaultValue
         }
     }
+}
+
+enum HTTPError: Error {
+    case statusCode(Int)
+    case invalidURL
+    case unexpectedResponse
 }
 
 struct NetworkManagerKey: EnvironmentKey {

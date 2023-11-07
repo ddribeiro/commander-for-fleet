@@ -65,7 +65,7 @@ struct LoginView: View {
                 Section {
                     LabeledContent("Sign In") {
                         Button {
-                            Task { @MainActor in
+                            Task {
                                 dataController.loadingState = .loading
                                 try? await dataController.login(
                                     email: emailAddress,
@@ -129,10 +129,10 @@ struct LoginView: View {
                 }
             }
         }
-        .alert("Login Error", isPresented: $dataController.showingAlert) {
+        .alert(dataController.alertTitle, isPresented: $dataController.showingAlert) {
             Button("OK", role: .cancel) { }
         } message: {
-            Text("Incorrect username or password.")
+            Text(dataController.alertDescription)
         }
     }
 

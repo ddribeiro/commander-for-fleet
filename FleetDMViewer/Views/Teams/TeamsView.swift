@@ -13,6 +13,7 @@ struct TeamsView: View {
     @EnvironmentObject var dataController: DataController
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.networkManager) var networkManager
+    @Environment(\.horizontalSizeClass) var sizeClass
 
     let smartFilters: [Filter] = [.all, .recentlyEnrolled]
 
@@ -37,7 +38,7 @@ struct TeamsView: View {
                     ForEach(smartFilters, content: SmartFilterRow.init)
                 }
 
-                Section {
+                Section("Teams", isExpanded: $teamsFilterExpanded) {
                     ForEach(teamFilters) { filter in
                         NavigationLink(value: filter) {
                             Label(filter.name, systemImage: filter.icon)
@@ -45,10 +46,6 @@ struct TeamsView: View {
                                 .lineLimit(1)
                         }
                     }
-                } header: {
-                    Text("Teams")
-                } footer: {
-
                 }
             }
             .listStyle(.sidebar)
@@ -85,6 +82,14 @@ struct TeamsView: View {
                         showingLogin.toggle()
                     } label: {
                         Label("Login", systemImage: "network")
+                    }
+                }
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    ToolbarItem(placement: .bottomBar) {
+                        if let updatedAt = dataController.teamsLastUpdatedAt {
+                            Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                                .font(.caption)
+                        }
                     }
                 }
             }
