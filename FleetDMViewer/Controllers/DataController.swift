@@ -92,6 +92,24 @@ class DataController: ObservableObject {
         save()
     }
 
+    func getNewToken(networkManager: NetworkManager, attempts: Int = 1) async {
+        guard let email = KeychainWrapper.default.string(forKey: "email") else { return }
+        guard let password = KeychainWrapper.default.string(forKey: "password") else { return }
+        guard let serverURL = activeEnvironment?.baseURL.absoluteString else { return }
+
+        do {
+            print("Getting new JWT")
+            try await login(email: email, password: password, serverURL: serverURL, networkManager: networkManager)
+        } catch {
+            if attempts > 1 {
+                try? await Task.sleep(for: .milliseconds(1000))
+                await getNewToken(networkManager: networkManager)
+            } else {
+                return
+            }
+        }
+    }
+
     private func delete(_ fetchRequest: NSFetchRequest<NSFetchRequestResult>) {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         batchDeleteRequest.resultType = .resultTypeObjectIDs
@@ -99,6 +117,21 @@ class DataController: ObservableObject {
         if let delete = try? container.viewContext.execute(batchDeleteRequest) as? NSBatchDeleteResult {
             let changes = [NSDeletedObjectsKey: delete.result as? [NSManagedObjectID] ?? []]
             NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [container.viewContext])
+        }
+    }
+
+    func handleHTTPErrors(networkManager: NetworkManager, error: HTTPError) async {
+        switch error {
+        case .statusCode(let statusCode):
+            switch statusCode {
+            case (401):
+                await getNewToken(networkManager: networkManager)
+                return
+            default:
+                print("Status code switch error")
+            }
+        default:
+            print("Error switch error")
         }
     }
 
@@ -173,6 +206,9 @@ class DataController: ObservableObject {
         do {
             let response = try await networkManager.fetch(.loginResponse, with: JSONEncoder().encode(credentials))
             KeychainWrapper.default.set(response.token, forKey: "apiToken")
+            KeychainWrapper.default.set(email, forKey: "email")
+            KeychainWrapper.default.set(password, forKey: "password")
+
             let user = response.user
             let teams = response.availableTeams
 

@@ -41,8 +41,13 @@ struct ContentView: View {
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
                     if let updatedAt = dataController.hostsLastUpdatedAt {
-                        Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
-                            .font(.caption)
+                        VStack {
+                            Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                                .font(.footnote)
+                            Text("^[\(dataController.hostsForSelectedFilter().count) computers](inflection: true)")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
             }
@@ -75,8 +80,11 @@ struct ContentView: View {
                 updateCache(with: hosts)
                 dataController.hostsLastUpdatedAt = .now
             }
+        } catch let error as HTTPError {
+            await dataController.handleHTTPErrors(networkManager: networkManager, error: error)
+            await fetchHosts()
         } catch {
-            print(error.localizedDescription)
+            print("Could not fetch hosts: \(error.localizedDescription)")
         }
     }
 

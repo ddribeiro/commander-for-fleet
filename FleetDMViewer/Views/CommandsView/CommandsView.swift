@@ -51,6 +51,9 @@ struct CommandsView: View {
     func fetchCommands() async {
         do {
             commands = try await networkManager.fetch(.commands, attempts: 5)
+        } catch let error as HTTPError {
+            await dataController.handleHTTPErrors(networkManager: networkManager, error: error)
+            await fetchCommands()
         } catch {
             print("Unable to fetch commands")
         }

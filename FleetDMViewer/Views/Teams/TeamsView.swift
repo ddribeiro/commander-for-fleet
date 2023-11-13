@@ -88,7 +88,7 @@ struct TeamsView: View {
                     ToolbarItem(placement: .bottomBar) {
                         if let updatedAt = dataController.teamsLastUpdatedAt {
                             Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
-                                .font(.caption)
+                                .font(.footnote)
                         }
                     }
                 }
@@ -107,6 +107,9 @@ struct TeamsView: View {
                 updateCache(with: teams)
                 dataController.teamsLastUpdatedAt = .now
             }
+        } catch let error as HTTPError {
+            await dataController.handleHTTPErrors(networkManager: networkManager, error: error)
+            await fetchTeams()
         } catch {
             print("Error: \(error.localizedDescription)")
         }
