@@ -15,7 +15,7 @@ enum SortType: String {
 }
 
 enum LoadingState {
-case loading, loaded, failed
+    case loading, loaded, failed
 }
 
 @MainActor
@@ -186,19 +186,39 @@ class DataController: ObservableObject {
             AppEnvironments().addEnvironment(environment)
             isAuthenticated = true
         } catch let error as HTTPError {
+            print(error.localizedDescription)
+            handleHTTPErrors(error: error)
+        } catch {
+            alertTitle = "Login Error"
+            alertDescription = "\(error.localizedDescription)"
+            showingAlert.toggle()
+            print(error.localizedDescription)
             loadingState = .failed
-            switch error {
-            case .statusCode(let statusCode):
-                print("HTTP Status Code: \(statusCode)")
-                showingAlert.toggle()
-            case .invalidURL:
+        }
+    }
 
-                alertTitle = "Invalid Server URL"
-                alertDescription = "Check your server URL to make sure it is spelled correctly."
+    func handleHTTPErrors(error: HTTPError) {
+        switch error {
+        case .statusCode(let statusCode):
+            switch statusCode {
+            case (401):
+                alertTitle = "Authorization Error"
+                alertDescription = "Your email address or password are incorrect."
                 showingAlert.toggle()
-            case .unexpectedResponse:
-                print("Unexpected response type")
+                loadingState = .failed
+            default:
+                alertTitle = "Login Error"
+                alertDescription = "Unown error. Please Try again"
+                showingAlert.toggle()
+                print(error.localizedDescription)
+                loadingState = .failed
             }
+        default:
+            alertTitle = "Login Error"
+            alertDescription = "\(error.localizedDescription)"
+            showingAlert.toggle()
+            print(error.localizedDescription)
+            loadingState = .failed
         }
     }
 

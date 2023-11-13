@@ -108,7 +108,7 @@ struct TeamsView: View {
                 dataController.teamsLastUpdatedAt = .now
             }
         } catch {
-            print(error.localizedDescription)
+            print("Error: \(error.localizedDescription)")
         }
     }
 
