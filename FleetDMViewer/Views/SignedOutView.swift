@@ -19,6 +19,7 @@ struct SignedOutView: View {
             Button("Sign In") {
                 showingLogin.toggle()
             }
+            .buttonStyle(.borderedProminent)
         }
         .sheet(isPresented: $showingLogin, content: LoginView.init)
     }

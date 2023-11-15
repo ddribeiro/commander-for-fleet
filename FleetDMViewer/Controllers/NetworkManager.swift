@@ -77,6 +77,7 @@ struct NetworkManager {
         }
 
         var (data, HTTPResponse) = try await URLSession(configuration: configuration).data(for: request)
+
         if let response = HTTPResponse as? HTTPURLResponse {
             if !(200...299).contains(response.statusCode) {
                 print("Error code: \(response.statusCode)")
@@ -109,6 +110,8 @@ struct NetworkManager {
         do {
             print("Attempting to fetch (Attempts remaining: \(attempts))")
             return try await fetch(resource, with: data)
+        } catch let error as HTTPError {
+            throw error
         } catch {
             if attempts > 1 {
                 try await Task.sleep(for: .milliseconds(Int(retryDelay * 1000)))

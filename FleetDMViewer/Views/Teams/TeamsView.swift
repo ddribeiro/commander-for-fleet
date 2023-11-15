@@ -77,13 +77,13 @@ struct TeamsView: View {
                         Label("Settings", systemImage: "person.crop.circle")
                     }
                 }
-                ToolbarItem(placement: .automatic) {
-                    Button {
-                        showingLogin.toggle()
-                    } label: {
-                        Label("Login", systemImage: "network")
-                    }
-                }
+//                ToolbarItem(placement: .automatic) {
+//                    Button {
+//                        showingLogin.toggle()
+//                    } label: {
+//                        Label("Login", systemImage: "network")
+//                    }
+//                }
                 if UIDevice.current.userInterfaceIdiom == .phone {
                     ToolbarItem(placement: .bottomBar) {
                         if let updatedAt = dataController.teamsLastUpdatedAt {

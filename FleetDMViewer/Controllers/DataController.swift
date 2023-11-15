@@ -92,7 +92,7 @@ class DataController: ObservableObject {
         save()
     }
 
-    func getNewToken(networkManager: NetworkManager, attempts: Int = 1) async {
+    func getNewToken(networkManager: NetworkManager) async throws {
         guard let email = KeychainWrapper.default.string(forKey: "email") else { return }
         guard let password = KeychainWrapper.default.string(forKey: "password") else { return }
         guard let serverURL = activeEnvironment?.baseURL.absoluteString else { return }
@@ -101,12 +101,11 @@ class DataController: ObservableObject {
             print("Getting new JWT")
             try await login(email: email, password: password, serverURL: serverURL, networkManager: networkManager)
         } catch {
-            if attempts > 1 {
-                try? await Task.sleep(for: .milliseconds(1000))
-                await getNewToken(networkManager: networkManager)
-            } else {
-                return
-            }
+
+            alertTitle = "Login Expired"
+            alertDescription = "Your login token has expired. Please sign out and sign back in again."
+            showingAlert.toggle()
+            throw error
         }
     }
 
@@ -125,7 +124,7 @@ class DataController: ObservableObject {
         case .statusCode(let statusCode):
             switch statusCode {
             case (401):
-                await getNewToken(networkManager: networkManager)
+                try? await getNewToken(networkManager: networkManager)
                 return
             default:
                 print("Status code switch error")
@@ -223,7 +222,7 @@ class DataController: ObservableObject {
             isAuthenticated = true
         } catch let error as HTTPError {
             print(error.localizedDescription)
-            handleHTTPErrors(error: error)
+            handleLoginErrors(error: error)
         } catch {
             alertTitle = "Login Error"
             alertDescription = "\(error.localizedDescription)"
@@ -233,13 +232,18 @@ class DataController: ObservableObject {
         }
     }
 
-    func handleHTTPErrors(error: HTTPError) {
+    func handleLoginErrors(error: HTTPError) {
         switch error {
         case .statusCode(let statusCode):
             switch statusCode {
             case (401):
                 alertTitle = "Authorization Error"
                 alertDescription = "Your email address or password are incorrect."
+                showingAlert.toggle()
+                loadingState = .failed
+            case (404):
+                alertTitle = "Server Not Found"
+                alertDescription = "Check your Fleet Server URL and try again."
                 showingAlert.toggle()
                 loadingState = .failed
             default:

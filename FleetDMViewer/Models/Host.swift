@@ -61,6 +61,11 @@ struct Host: Codable, Identifiable, Hashable {
     )
 }
 
+struct Issue: Codable, Hashable {
+    var failingPoliciesCount: Int
+
+}
+
 struct Policy: Codable, Identifiable, Hashable {
     let id: Int
     let name: String
