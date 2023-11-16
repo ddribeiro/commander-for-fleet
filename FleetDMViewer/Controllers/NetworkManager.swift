@@ -76,9 +76,9 @@ struct NetworkManager {
             ]
         }
 
-        var (data, HTTPResponse) = try await URLSession(configuration: configuration).data(for: request)
+        var (data, response) = try await URLSession(configuration: configuration).data(for: request)
 
-        if let response = HTTPResponse as? HTTPURLResponse {
+        if let response = response as? HTTPURLResponse {
             if !(200...299).contains(response.statusCode) {
                 print("Error code: \(response.statusCode)")
                 throw HTTPError.statusCode(response.statusCode)
@@ -95,9 +95,9 @@ struct NetworkManager {
             }
         }
 
-        if let responseString = String(data: data, encoding: .utf8) {
-            print(responseString)
-        }
+//        if let responseString = String(data: data, encoding: .utf8) {
+//            print(responseString)
+//        }
 
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase

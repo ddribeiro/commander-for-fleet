@@ -8,7 +8,7 @@
 import SwiftUI
 import KeychainWrapper
 
-struct TeamsView: View {
+struct SidebarView: View {
     @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
     @Environment(\.scenePhase) var scenePhase
@@ -130,7 +130,7 @@ struct TeamsView: View {
 
 struct TeamView_Previews: PreviewProvider {
     static var previews: some View {
-        TeamsView()
+        SidebarView()
             .environmentObject(DataController())
     }
 }

@@ -35,8 +35,16 @@ class DataController: ObservableObject {
     @Published var alertTitle = ""
     @Published var alertDescription = ""
 
-    @Published var teamsLastUpdatedAt: Date?
-    @Published var hostsLastUpdatedAt: Date?
+    @Published var teamsLastUpdatedAt: Date? {
+        didSet {
+            UserDefaults.standard.setValue(teamsLastUpdatedAt, forKey: "teamsLastUpdatedAt")
+        }
+    }
+    @Published var hostsLastUpdatedAt: Date? {
+        didSet {
+            UserDefaults.standard.setValue(hostsLastUpdatedAt, forKey: "hostsLastUpdatedAt")
+        }
+    }
 
     @Published var allTokens = [
         Token(name: "macOS", platform: ["darwin"]),
@@ -51,6 +59,18 @@ class DataController: ObservableObject {
     @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
 
     init() {
+        if let teamsLastUpdatedAt = UserDefaults.standard.value(forKey: "teamsLastUpdatedAt") as? Date {
+            self.teamsLastUpdatedAt = teamsLastUpdatedAt
+        }
+
+        if let hostsLastUpdatedAt = UserDefaults.standard.value(forKey: "hostsLastUpdatedAt") as? Date {
+            self.hostsLastUpdatedAt = hostsLastUpdatedAt
+        }
+
+        if let selectedFilter = UserDefaults.standard.value(forKey: "selectedFilter") as? Filter {
+            self.selectedFilter = selectedFilter
+        }
+
         container.loadPersistentStores { _, error in
             if let error = error {
                 print("Core Data failed to load: \(error.localizedDescription)")
@@ -101,7 +121,6 @@ class DataController: ObservableObject {
             print("Getting new JWT")
             try await login(email: email, password: password, serverURL: serverURL, networkManager: networkManager)
         } catch {
-
             alertTitle = "Login Expired"
             alertDescription = "Your login token has expired. Please sign out and sign back in again."
             showingAlert.toggle()

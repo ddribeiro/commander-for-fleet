@@ -16,7 +16,7 @@ struct FleetDMViewerApp: App {
         WindowGroup {
             if dataController.isAuthenticated {
                 NavigationSplitView {
-                    TeamsView()
+                    SidebarView()
                 } content: {
                     ContentView()
                 } detail: {
