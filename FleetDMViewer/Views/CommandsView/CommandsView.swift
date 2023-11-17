@@ -10,13 +10,13 @@ import KeychainWrapper
 
 struct CommandsView: View {
     @EnvironmentObject var dataController: DataController
-    
+
     @Environment(\.networkManager) var networkManager
     @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
-    
+
     @FetchRequest var commands: FetchedResults<CachedCommandResponse>
-    
+
     var body: some View {
         NavigationStack {
             List {
@@ -30,7 +30,7 @@ struct CommandsView: View {
 #endif
             .overlay {
                 if commands.isEmpty {
-                    
+
                 }
             }
             .task {
@@ -40,7 +40,7 @@ struct CommandsView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done", role: .cancel) {
                         dismiss()
-                        
+
                     }
                 }
             }
@@ -48,15 +48,15 @@ struct CommandsView: View {
         .task {
             await fetchCommands()
         }
-        
+
     }
-    
+
     func fetchCommands() async {
         guard dataController.activeEnvironment != nil else { return }
-        
+
         do {
             let commands = try await networkManager.fetch(.commands, attempts: 5)
-            
+
             await MainActor.run {
                 updateCache(with: commands)
             }
@@ -70,11 +70,11 @@ struct CommandsView: View {
     init(host: Host) {
         _commands = FetchRequest<CachedCommandResponse>(sortDescriptors: [SortDescriptor(\.updatedAt, order: .reverse)], predicate: NSPredicate(format: "deviceID CONTAINS %@", host.uuid))
     }
-    
+
     func updateCache(with downloadedCommands: [CommandResponse]) {
         for downloadedCommand in downloadedCommands {
             let cachedCommand = CachedCommandResponse(context: moc)
-            
+
             cachedCommand.status = downloadedCommand.status
             cachedCommand.commandUUID = downloadedCommand.commandUuid
             cachedCommand.deviceID = downloadedCommand.deviceId
