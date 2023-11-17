@@ -9,12 +9,12 @@ import SwiftUI
 import KeychainWrapper
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
+
+    @Environment(\.managedObjectContext) var moc
     @Environment(\.networkManager) var networkManager
 
     @State private var isShowingSignInSheet = false
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.computerName)]) var hosts: FetchedResults<CachedHost>
 
     var body: some View {
         if dataController.isAuthenticated {

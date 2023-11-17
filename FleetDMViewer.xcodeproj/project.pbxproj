@@ -12,6 +12,8 @@
 		5E028F512A4DE24400D90456 /* CommandRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E028F502A4DE24400D90456 /* CommandRow.swift */; };
 		5E028F532A4E26AD00D90456 /* NoHostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E028F522A4E26AD00D90456 /* NoHostsView.swift */; };
 		5E2A7D0D2B05577200D1EFFE /* Date-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2A7D0C2B05577200D1EFFE /* Date-Extension.swift */; };
+		5E65E6262B07F1D80023341D /* CachedCommandResponse+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E65E6242B07F1D80023341D /* CachedCommandResponse+CoreDataClass.swift */; };
+		5E65E6272B07F1D80023341D /* CachedCommandResponse+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E65E6252B07F1D80023341D /* CachedCommandResponse+CoreDataProperties.swift */; };
 		5E7DAB0D2A339C7F00DDFAFC /* NoHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */; };
 		5E8260412AA1230B0021289B /* SmartFilterRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8260402AA1230B0021289B /* SmartFilterRow.swift */; };
 		5E9038D52A4384F50077F3DC /* SoftwareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D42A4384F50077F3DC /* SoftwareView.swift */; };
@@ -72,6 +74,8 @@
 		5E028F502A4DE24400D90456 /* CommandRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandRow.swift; sourceTree = "<group>"; };
 		5E028F522A4E26AD00D90456 /* NoHostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoHostsView.swift; sourceTree = "<group>"; };
 		5E2A7D0C2B05577200D1EFFE /* Date-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date-Extension.swift"; sourceTree = "<group>"; };
+		5E65E6242B07F1D80023341D /* CachedCommandResponse+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedCommandResponse+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5E65E6252B07F1D80023341D /* CachedCommandResponse+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedCommandResponse+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoHostView.swift; sourceTree = "<group>"; };
 		5E8260402AA1230B0021289B /* SmartFilterRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartFilterRow.swift; sourceTree = "<group>"; };
 		5E9038D42A4384F50077F3DC /* SoftwareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareView.swift; sourceTree = "<group>"; };
@@ -283,6 +287,8 @@
 		5EEA90F22A97DA3500FEA5E4 /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
+				5E65E6242B07F1D80023341D /* CachedCommandResponse+CoreDataClass.swift */,
+				5E65E6252B07F1D80023341D /* CachedCommandResponse+CoreDataProperties.swift */,
 				5EEA91012A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataClass.swift */,
 				5EEA91022A97F1BA00FEA5E4 /* CachedUserTeam+CoreDataProperties.swift */,
 				5EEA90F92A97DB8B00FEA5E4 /* CachedMdm+CoreDataClass.swift */,
@@ -411,6 +417,7 @@
 				5EDA66BD2A2A4955006706CD /* FleetDMViewerApp.swift in Sources */,
 				5EEA90982A93E9D800FEA5E4 /* ServerSelectionView.swift in Sources */,
 				5EEA90E72A97DA0300FEA5E4 /* CachedSoftware+CoreDataProperties.swift in Sources */,
+				5E65E6262B07F1D80023341D /* CachedCommandResponse+CoreDataClass.swift in Sources */,
 				5E9038D92A43944B0077F3DC /* SoftwareDetailView.swift in Sources */,
 				5EEA90E52A97DA0300FEA5E4 /* CachedTeam+CoreDataProperties.swift in Sources */,
 				5E9038DF2A44AF6F0077F3DC /* MDMCommands.swift in Sources */,
@@ -454,6 +461,7 @@
 				5EDC18042A3A506200691C2E /* User.swift in Sources */,
 				5EDC18082A3B8FDF00691C2E /* HostRow.swift in Sources */,
 				5EEA90EC2A97DA0300FEA5E4 /* CachedProfile+CoreDataClass.swift in Sources */,
+				5E65E6272B07F1D80023341D /* CachedCommandResponse+CoreDataProperties.swift in Sources */,
 				5E9038DD2A43A3AE0077F3DC /* ProfilesView.swift in Sources */,
 				5EFC7ADF2A9E8F9A00C2ED06 /* Filter.swift in Sources */,
 				5EEA90EF2A97DA0300FEA5E4 /* CachedHost+CoreDataProperties.swift in Sources */,

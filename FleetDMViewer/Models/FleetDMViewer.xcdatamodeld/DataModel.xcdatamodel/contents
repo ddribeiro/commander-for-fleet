@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23B74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23B81" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CachedBattery" representedClassName="CachedBattery" syncable="YES">
         <attribute name="cycleCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="health" optional="YES" attributeType="String"/>
         <relationship name="host" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedHost" inverseName="battery" inverseEntity="CachedHost"/>
+    </entity>
+    <entity name="CachedCommandResponse" representedClassName="CachedCommandResponse" syncable="YES">
+        <attribute name="commandUUID" optional="YES" attributeType="String"/>
+        <attribute name="deviceID" optional="YES" attributeType="String"/>
+        <attribute name="hostname" optional="YES" attributeType="String"/>
+        <attribute name="requestType" optional="YES" attributeType="String"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="commandUUID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="CachedHost" representedClassName="CachedHost" syncable="YES">
         <attribute name="computerName" optional="YES" attributeType="String"/>
@@ -28,6 +41,7 @@
         <attribute name="uptime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String"/>
         <relationship name="battery" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedBattery" inverseName="host" inverseEntity="CachedBattery"/>
+        <relationship name="commands" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedCommandResponse"/>
         <relationship name="mdm" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedMdm" inverseName="host" inverseEntity="CachedMdm"/>
         <relationship name="policies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedPolicy" inverseName="host" inverseEntity="CachedPolicy"/>
         <relationship name="software" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedSoftware" inverseName="host" inverseEntity="CachedSoftware"/>

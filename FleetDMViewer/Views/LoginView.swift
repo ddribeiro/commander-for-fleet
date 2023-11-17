@@ -11,9 +11,9 @@ import SwiftUI
 struct LoginView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
+    @Environment(\.networkManager) var networkManager
 
     @EnvironmentObject var dataController: DataController
-    @Environment(\.networkManager) var networkManager
 
     @State private var serverURL = ""
     @State private var emailAddress = ""
@@ -27,7 +27,6 @@ struct LoginView: View {
                 Section {
                     LabeledContent("Server URL") {
                         TextField("FleetDM Server URL", text: $serverURL)
-
                             .multilineTextAlignment(.trailing)
 #if os(iOS)
                             .textContentType(.URL)
@@ -79,9 +78,12 @@ struct LoginView: View {
                                 }
                             }
                         } label: {
-                            if dataController.loadingState == .loading {
+                            switch dataController.loadingState {
+                            case .loading:
                                 ProgressView()
-                            } else {
+                            case .loaded:
+                                Text("Sign In")
+                            case .failed:
                                 Text("Sign In")
                             }
                         }

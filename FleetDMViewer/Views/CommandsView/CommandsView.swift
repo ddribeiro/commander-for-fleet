@@ -10,34 +10,37 @@ import KeychainWrapper
 
 struct CommandsView: View {
     @EnvironmentObject var dataController: DataController
+    
     @Environment(\.networkManager) var networkManager
-
+    @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
-
-    @State private var commands = [CommandResponse]()
-
+    
+    @FetchRequest var commands: FetchedResults<CachedCommandResponse>
+    
     var body: some View {
         NavigationStack {
-            if sortedCommands.isEmpty {
-                Text("No Commands")
-                    .font(.title)
-                    .foregroundStyle(.secondary)
-            } else {
-                Form {
-                    ForEach(sortedCommands, id: \.commandUuid) { command in
-                        CommandRow(command: command)
-                    }
+            List {
+                ForEach(commands) { command in
+                    CommandRow(command: command)
                 }
-                .navigationTitle("Command History for \(dataController.selectedHost?.computerName ?? "N/A")")
+            }
+            .navigationTitle("Command History for \(dataController.selectedHost?.computerName ?? "N/A")")
 #if os(iOS)
-                .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.inline)
 #endif
-                .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("Done", role: .cancel) {
-                            dismiss()
-
-                        }
+            .overlay {
+                if commands.isEmpty {
+                    
+                }
+            }
+            .task {
+                await fetchCommands()
+            }
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done", role: .cancel) {
+                        dismiss()
+                        
                     }
                 }
             }
@@ -45,12 +48,18 @@ struct CommandsView: View {
         .task {
             await fetchCommands()
         }
-
+        
     }
-
+    
     func fetchCommands() async {
+        guard dataController.activeEnvironment != nil else { return }
+        
         do {
-            commands = try await networkManager.fetch(.commands, attempts: 5)
+            let commands = try await networkManager.fetch(.commands, attempts: 5)
+            
+            await MainActor.run {
+                updateCache(with: commands)
+            }
         } catch let error as HTTPError {
             await dataController.handleHTTPErrors(networkManager: networkManager, error: error)
             await fetchCommands()
@@ -58,22 +67,21 @@ struct CommandsView: View {
             print("Unable to fetch commands")
         }
     }
-
-    var filteredCommands: [CommandResponse] {
-        commands.filter { command in
-            command.deviceId == dataController.selectedHost?.uuid
+    init(host: Host) {
+        _commands = FetchRequest<CachedCommandResponse>(sortDescriptors: [SortDescriptor(\.updatedAt, order: .reverse)], predicate: NSPredicate(format: "deviceID CONTAINS %@", host.uuid))
+    }
+    
+    func updateCache(with downloadedCommands: [CommandResponse]) {
+        for downloadedCommand in downloadedCommands {
+            let cachedCommand = CachedCommandResponse(context: moc)
+            
+            cachedCommand.status = downloadedCommand.status
+            cachedCommand.commandUUID = downloadedCommand.commandUuid
+            cachedCommand.deviceID = downloadedCommand.deviceId
+            cachedCommand.updatedAt = downloadedCommand.updatedAt
+            cachedCommand.requestType = downloadedCommand.requestType
+            cachedCommand.hostname = downloadedCommand.hostname
         }
-    }
-
-    var sortedCommands: [CommandResponse] {
-        filteredCommands.sorted(by: {
-            $0.updatedAt > $1.updatedAt
-        })
-    }
-}
-
-struct CommandsView_Previews: PreviewProvider {
-    static var previews: some View {
-        CommandsView()
+        try? moc.save()
     }
 }

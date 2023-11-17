@@ -224,7 +224,7 @@ struct MDMCommandMenu: View {
             Label("MDM Commands", systemImage: "ellipsis.circle")
         }
         .sheet(isPresented: $showingCommandSheet) {
-            CommandsView()
+            CommandsView(host: host)
         }
         .alert("Enter Lock Code", isPresented: $showingLockAlert) {
             TextField("Enter your code", text: $lockCode)

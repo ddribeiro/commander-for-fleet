@@ -166,11 +166,15 @@ class DataController: ObservableObject {
         let request4: NSFetchRequest<NSFetchRequestResult> = CachedHost.fetchRequest()
         delete(request4)
 
+        let request5: NSFetchRequest<NSFetchRequestResult> = CachedCommandResponse.fetchRequest()
+        delete(request5)
+
     }
 
     func hostsForSelectedFilter() -> [CachedHost] {
         let filter = selectedFilter ?? .all
         var predicates = [NSPredicate]()
+        var sortDescriptors = [NSSortDescriptor]()
 
         if let team = filter.team {
             let teamPredicate = NSPredicate(format: "teamId CONTAINS %@", "\(team.id)")
@@ -178,6 +182,10 @@ class DataController: ObservableObject {
         } else {
             let datePredicate = NSPredicate(format: "lastEnrolledAt > %@", filter.minEnrollmentDate as NSDate)
             predicates.append(datePredicate)
+
+            let sortDescriptor = NSSortDescriptor(key: "lastEnrolledAt", ascending: true)
+            sortDescriptors.append(sortDescriptor)
+
         }
 
         let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
@@ -203,11 +211,31 @@ class DataController: ObservableObject {
             let combinedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: platformPredicates)
             predicates.append(combinedPredicate)
         }
+        let sortDescriptor = NSSortDescriptor(key: "computerName", ascending: true)
+        sortDescriptors.append(sortDescriptor)
 
         let request = CachedHost.fetchRequest()
         request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        request.sortDescriptors = sortDescriptors
         let allHosts = (try? container.viewContext.fetch(request)) ?? []
         return allHosts
+    }
+
+    func commandsForSelectedHost() -> [CachedCommandResponse] {
+        guard let host = selectedHost else { return [] }
+
+        var predicates = [NSPredicate]()
+
+        if let hostID = host.uuid {
+            let hostPredicate = NSPredicate(format: "deviceID CONTAINS %@", "\(hostID)")
+            predicates.append(hostPredicate)
+        }
+
+        let request = CachedCommandResponse.fetchRequest()
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        request.sortDescriptors = [NSSortDescriptor(key: "updatedAt", ascending: false)]
+        let commandsForHost = (try? container.viewContext.fetch(request)) ?? []
+        return commandsForHost
     }
 
     func login(email: String, password: String, serverURL: String, networkManager: NetworkManager) async throws {

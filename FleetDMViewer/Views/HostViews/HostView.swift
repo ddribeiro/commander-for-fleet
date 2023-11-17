@@ -187,13 +187,7 @@ struct HostView: View {
             }
             .navigationTitle("\(host.computerName)")
         } else {
-            VStack {
-                ProgressView()
-                Text("Loading")
-                    .font(.body.smallCaps())
-                    .foregroundColor(.secondary)
-
-            }
+            
             .task {
                 await updateHost()
             }
