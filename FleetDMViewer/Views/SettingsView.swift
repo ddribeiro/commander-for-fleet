@@ -61,7 +61,7 @@ struct SettingsView: View {
                     }
 
                     Section {
-                        LabeledContent("Role", value: user.wrappedGlobalRole.capitalized)
+                        LabeledContent("Global Role", value: user.wrappedGlobalRole.capitalized)
                         // swiftlint:disable:next line_length
                         LabeledContent("Created On", value: user.wrappedCreatedAt.formatted(date: .abbreviated, time: .omitted))
                     }

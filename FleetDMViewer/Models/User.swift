@@ -13,7 +13,7 @@ struct User: Codable, Identifiable {
     var id: Int
     var name: String
     var email: String
-    var globalRole: String
+    var globalRole: String?
     var gravatarUrl: String
     var ssoEnabled: Bool
     var apiOnly: Bool

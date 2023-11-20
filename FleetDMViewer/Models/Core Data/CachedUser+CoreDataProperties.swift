@@ -35,7 +35,7 @@ extension CachedUser {
     }
 
     var wrappedGlobalRole: String {
-        globalRole ?? ""
+        globalRole ?? "N/A"
     }
 
     var wrappedGravatarUrl: String {
