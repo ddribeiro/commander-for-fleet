@@ -18,6 +18,9 @@ struct LoginView: View {
     @State private var serverURL = ""
     @State private var emailAddress = ""
     @State private var password = ""
+    @State private var apiKey = ""
+
+    @State private var useApiKey = false
 
     @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
 
@@ -41,23 +44,38 @@ struct LoginView: View {
                 }
 
                 Section {
+                    if !useApiKey {
                     LabeledContent("Email Address") {
                         TextField("Email Address", text: $emailAddress)
-                            .multilineTextAlignment(.trailing)
+                                .multilineTextAlignment(.trailing)
 #if os(iOS)
-                            .textContentType(.emailAddress)
-                            .textInputAutocapitalization(.never)
-                            .keyboardType(.emailAddress)
+                                .textContentType(!useApiKey ? .emailAddress : .password)
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.emailAddress)
 #endif
-                    }
+                        }
 
-                    LabeledContent("Password") {
-                        SecureField("Password", text: $password)
-                            .multilineTextAlignment(.trailing)
+                        LabeledContent("Password") {
+                            SecureField("Password", text: $password)
+                                .multilineTextAlignment(.trailing)
 #if os(iOS)
-                            .textContentType(.password)
-                            .autocorrectionDisabled()
+                                .textContentType(.password)
+                                .autocorrectionDisabled()
 #endif
+                        }
+                    } else {
+                        LabeledContent("API Token") {
+                            SecureField("API Token", text: $apiKey)
+                                .multilineTextAlignment(.trailing)
+#if os(iOS)
+                                .textContentType(.password)
+                                .autocorrectionDisabled()
+#endif
+                        }
+                    }
+                    LabeledContent("Use API Key") {
+                        Toggle("Use API Key", isOn: $useApiKey)
+                            .labelsHidden()
                     }
                 }
 
@@ -66,12 +84,20 @@ struct LoginView: View {
                         Button {
                             Task {
                                 dataController.loadingState = .loading
-                                try? await dataController.login(
-                                    email: emailAddress,
-                                    password: password,
-                                    serverURL: serverURL,
-                                    networkManager: networkManager
-                                )
+                                if !useApiKey {
+                                    try await dataController.loginWithEmail(
+                                        email: emailAddress,
+                                        password: password,
+                                        serverURL: serverURL,
+                                        networkManager: networkManager
+                                    )
+                                } else {
+                                    try await dataController.loginWithApiKey(
+                                        apiKey: apiKey,
+                                        serverURL: serverURL,
+                                        networkManager: networkManager
+                                    )
+                                }
 
                                 if dataController.loadingState == .loaded {
                                     dismiss()
@@ -93,6 +119,7 @@ struct LoginView: View {
                     .labelsHidden()
                 }
             }
+            .animation(.default, value: useApiKey)
             .formStyle(.grouped)
             .navigationTitle("Sign In")
             .toolbar {
@@ -100,12 +127,20 @@ struct LoginView: View {
                     Button {
                         Task {
                             dataController.loadingState = .loading
-                            try await dataController.login(
-                                email: emailAddress,
-                                password: password,
-                                serverURL: serverURL,
-                                networkManager: networkManager
-                            )
+                            if !useApiKey {
+                                try await dataController.loginWithEmail(
+                                    email: emailAddress,
+                                    password: password,
+                                    serverURL: serverURL,
+                                    networkManager: networkManager
+                                )
+                            } else {
+                                try await dataController.loginWithApiKey(
+                                    apiKey: apiKey,
+                                    serverURL: serverURL,
+                                    networkManager: networkManager
+                                )
+                            }
 
                             if dataController.loadingState == .loaded {
                                 dismiss()
@@ -139,7 +174,7 @@ struct LoginView: View {
     }
 
     private var isFormValid: Bool {
-        return !serverURL.isEmpty && !emailAddress.isEmpty && !password.isEmpty
+        return (!serverURL.isEmpty && !emailAddress.isEmpty && !password.isEmpty) || (!serverURL.isEmpty && !apiKey.isEmpty)
     }
 }
 

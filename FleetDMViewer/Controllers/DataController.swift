@@ -11,7 +11,13 @@ import SwiftUI
 import KeychainWrapper
 
 enum SortType: String {
-    case com
+    case name
+    case enolledDate
+    case updatedDate
+}
+
+enum Status {
+    case all, online, offline, missing, recentlyEnrolled
 }
 
 enum LoadingState {
@@ -26,6 +32,11 @@ class DataController: ObservableObject {
 
     @Published var filterText = ""
     @Published var filterTokens = [Token]()
+
+    @Published var filterEnabled = false
+    @Published var filterStatus = Status.all
+    @Published var sortNewestFirst = true
+    @Published var sortType = SortType.enolledDate
 
     @Published var selectedTeam: CachedTeam?
     @Published var selectedHost: CachedHost?
@@ -119,7 +130,10 @@ class DataController: ObservableObject {
 
         do {
             print("Getting new JWT")
-            try await login(email: email, password: password, serverURL: serverURL, networkManager: networkManager)
+            print("Email is \(email)")
+            print("Password is \(password)")
+            print("Server URL is \(serverURL)")
+            try await loginWithEmail(email: email, password: password, serverURL: serverURL, networkManager: networkManager)
         } catch {
             alertTitle = "Login Expired"
             alertDescription = "Your login token has expired. Please sign out and sign back in again."
@@ -238,7 +252,10 @@ class DataController: ObservableObject {
         return commandsForHost
     }
 
-    func login(email: String, password: String, serverURL: String, networkManager: NetworkManager) async throws {
+    func loginWithEmail(email: String, password: String, serverURL: String, networkManager: NetworkManager) async throws {
+
+        KeychainWrapper.default.removeAllKeys()
+
         let environment = AppEnvironment(
             baseURL: URL(
                 string: "\(try validateServerURL(serverURL))"
@@ -264,6 +281,43 @@ class DataController: ObservableObject {
                 updateCache(with: user, downloadedTeams: teams)
                 activeEnvironment = environment
             }
+            loadingState = .loaded
+            AppEnvironments().addEnvironment(environment)
+            isAuthenticated = true
+        } catch let error as HTTPError {
+            print(error.localizedDescription)
+            handleLoginErrors(error: error)
+        } catch {
+            alertTitle = "Login Error"
+            alertDescription = "\(error.localizedDescription)"
+            showingAlert.toggle()
+            print(error.localizedDescription)
+            loadingState = .failed
+        }
+    }
+
+    func loginWithApiKey(apiKey: String, serverURL: String, networkManager: NetworkManager) async throws {
+        KeychainWrapper.default.removeAllKeys()
+
+        let environment = AppEnvironment(
+            baseURL: URL(
+                string: "\(try validateServerURL(serverURL))"
+            )!
+        )
+        saveActiveEnvironment(environment: environment)
+
+        do {
+            KeychainWrapper.default.set(apiKey, forKey: "apiToken")
+            let user = try await networkManager.fetch(.meEndpoint)
+            let teams = user.teams
+
+            deleteAll()
+
+            await MainActor.run {
+                updateCache(with: user, downloadedTeams: teams)
+                activeEnvironment = environment
+            }
+
             loadingState = .loaded
             AppEnvironments().addEnvironment(environment)
             isAuthenticated = true

@@ -66,20 +66,6 @@ struct Issue: Codable, Hashable {
 
 }
 
-struct Policy: Codable, Identifiable, Hashable {
-    let id: Int
-    let name: String
-    let critical: Bool
-    let response: String
-
-    static let example = Policy(
-        id: 12,
-        name: "Screen lock enabled (macOS) (All teams)",
-        critical: false,
-        response: "pass"
-    )
-}
-
 struct Battery: Codable, Hashable {
     var cycleCount: Int
     var health: String

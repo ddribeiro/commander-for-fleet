@@ -39,6 +39,9 @@ struct ContentView: View {
                 await fetchHosts()
             }
             .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    ContentViewToolbar()
+                }
                 ToolbarItem(placement: .bottomBar) {
                     if let updatedAt = dataController.hostsLastUpdatedAt {
                         VStack {

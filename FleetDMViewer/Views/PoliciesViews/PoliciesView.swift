@@ -29,10 +29,11 @@ struct PoliciesView: View {
                         VStack(alignment: .leading) {
                             Text(policy.name)
                                 .font(.headline)
-
-                            Text(policy.response)
-                                .foregroundStyle(.secondary)
-                                .font(.body.smallCaps())
+                            if let response = policy.response {
+                                Text(response)
+                                    .foregroundStyle(.secondary)
+                                    .font(.body.smallCaps())
+                            }
                         }
                     }
                 }
@@ -43,6 +44,6 @@ struct PoliciesView: View {
 
 struct PoliciesView_Previews: PreviewProvider {
     static var previews: some View {
-        PoliciesView(policies: [Policy(id: 42, name: "Auto Updates", critical: false, response: "pass")])
+        PoliciesView(policies: [.example])
     }
 }

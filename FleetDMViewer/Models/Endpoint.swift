@@ -76,7 +76,6 @@ extension Endpoint where T == User {
     path: "/api/v1/fleet/logout",
     method: .post
     )
-
 }
 
 extension Endpoint where T == MdmCommandResponse {
