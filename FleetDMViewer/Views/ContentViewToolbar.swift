@@ -26,10 +26,11 @@ struct ContentViewToolbar: View {
 
                 Divider()
 
-                Picker("Sort Order", selection: $dataController.sortNewestFirst) {
-                    Text("Newest to Oldest").tag(true)
-                    Text("Oldest to Newest").tag(false)
+                Picker("Sort Order", selection: $dataController.sortOldestFirst) {
+                    Text(dataController.sortType == .name ? "Alphabetical" : "Oldest to Newest").tag(true)
+                    Text(dataController.sortType == .name ? "Reverse Alphabetical" : "Newest to Oldest").tag(false)
                 }
+            }
 
                 Picker("Status", selection: $dataController.filterStatus) {
                     Text("All").tag(Status.all)
@@ -39,7 +40,6 @@ struct ContentViewToolbar: View {
                     Text("Missing").tag(Status.missing)
                 }
                 .disabled(dataController.filterEnabled == false)
-            }
         } label: {
             Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
                 .symbolVariant(dataController.filterEnabled ? .fill : .none)

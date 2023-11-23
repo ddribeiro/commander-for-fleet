@@ -73,8 +73,8 @@ struct LoginView: View {
 #endif
                         }
                     }
-                    LabeledContent("Use API Key") {
-                        Toggle("Use API Key", isOn: $useApiKey)
+                    LabeledContent("Use API Token") {
+                        Toggle("Use API Token", isOn: $useApiKey)
                             .labelsHidden()
                     }
                 }

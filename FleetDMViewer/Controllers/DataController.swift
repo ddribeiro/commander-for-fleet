@@ -7,13 +7,12 @@
 
 import CoreData
 import Foundation
-import SwiftUI
 import KeychainWrapper
 
 enum SortType: String {
-    case name
-    case enolledDate
-    case updatedDate
+    case name = "computerName"
+    case enolledDate = "lastEnrolledAt"
+    case updatedDate = "seenTime"
 }
 
 enum Status {
@@ -35,8 +34,8 @@ class DataController: ObservableObject {
 
     @Published var filterEnabled = false
     @Published var filterStatus = Status.all
-    @Published var sortNewestFirst = true
-    @Published var sortType = SortType.enolledDate
+    @Published var sortOldestFirst = true
+    @Published var sortType = SortType.name
 
     @Published var selectedTeam: CachedTeam?
     @Published var selectedHost: CachedHost?
@@ -51,6 +50,7 @@ class DataController: ObservableObject {
             UserDefaults.standard.setValue(teamsLastUpdatedAt, forKey: "teamsLastUpdatedAt")
         }
     }
+
     @Published var hostsLastUpdatedAt: Date? {
         didSet {
             UserDefaults.standard.setValue(hostsLastUpdatedAt, forKey: "hostsLastUpdatedAt")
@@ -67,7 +67,11 @@ class DataController: ObservableObject {
 
     private var saveTask: Task<Void, Error>?
 
-    @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
+    @Published var isAuthenticated: Bool = false {
+        didSet {
+            UserDefaults.standard.setValue(isAuthenticated, forKey: "isAuthenticated")
+        }
+    }
 
     init() {
         if let teamsLastUpdatedAt = UserDefaults.standard.value(forKey: "teamsLastUpdatedAt") as? Date {
@@ -80,6 +84,10 @@ class DataController: ObservableObject {
 
         if let selectedFilter = UserDefaults.standard.value(forKey: "selectedFilter") as? Filter {
             self.selectedFilter = selectedFilter
+        }
+
+        if let isAuthenticated = UserDefaults.standard.value(forKey: "isAuthenticated") as? Bool {
+            self.isAuthenticated = isAuthenticated
         }
 
         container.loadPersistentStores { _, error in
@@ -225,12 +233,29 @@ class DataController: ObservableObject {
             let combinedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: platformPredicates)
             predicates.append(combinedPredicate)
         }
-        let sortDescriptor = NSSortDescriptor(key: "computerName", ascending: true)
-        sortDescriptors.append(sortDescriptor)
+
+        if filterEnabled {
+            if filterStatus == .online {
+                let statusFilter = NSPredicate(format: "status CONTAINS[c] %@", "online")
+                predicates.append(statusFilter)
+            }
+            if filterStatus == .offline {
+                let statusFilter = NSPredicate(format: "status CONTAINS[c] %@", "offline")
+                predicates.append(statusFilter)
+            }
+            if filterStatus == .missing {
+                let statusFilter = NSPredicate(format: "seenTime < %@", Date.now.addingTimeInterval(86400 * -30) as NSDate)
+                predicates.append(statusFilter)
+            }
+            if filterStatus == .recentlyEnrolled {
+                let statusFilter = NSPredicate(format: "lastEnrolledAt > %@", Date.now.addingTimeInterval(86400 * -7) as NSDate)
+                predicates.append(statusFilter)
+            }
+        }
 
         let request = CachedHost.fetchRequest()
         request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        request.sortDescriptors = sortDescriptors
+        request.sortDescriptors = [NSSortDescriptor(key: sortType.rawValue, ascending: sortOldestFirst)]
         let allHosts = (try? container.viewContext.fetch(request)) ?? []
         return allHosts
     }
