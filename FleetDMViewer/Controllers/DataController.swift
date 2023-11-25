@@ -30,7 +30,7 @@ class DataController: ObservableObject {
     @Published var selectedFilter: Filter? = .all
 
     @Published var filterText = ""
-    @Published var filterTokens = [Token]()
+    @Published var filterTokens = [SearchToken]()
 
     @Published var filterEnabled = false
     @Published var filterStatus = Status.all
@@ -58,9 +58,9 @@ class DataController: ObservableObject {
     }
 
     @Published var allTokens = [
-        Token(name: "macOS", platform: ["darwin"]),
-        Token(name: "Windows", platform: ["windows"]),
-        Token(name: "Linux", platform: ["rhel", "ubuntu"])
+        SearchToken(name: "macOS", platform: ["darwin"]),
+        SearchToken(name: "Windows", platform: ["windows"]),
+        SearchToken(name: "Linux", platform: ["rhel", "ubuntu"])
     ]
 
     @Published var loadingState = LoadingState.loaded
@@ -132,16 +132,20 @@ class DataController: ObservableObject {
     }
 
     func getNewToken(networkManager: NetworkManager) async throws {
-        guard let email = KeychainWrapper.default.string(forKey: "email") else { return }
-        guard let password = KeychainWrapper.default.string(forKey: "password") else { return }
-        guard let serverURL = activeEnvironment?.baseURL.absoluteString else { return }
+
+        guard let email = KeychainWrapper.default.string(forKey: "email"),
+              let password = KeychainWrapper.default.string(forKey: "password"),
+              let serverURL = activeEnvironment?.baseURL.absoluteString  else {
+            throw TokenRefreshError.noCredentials
+        }
 
         do {
-            print("Getting new JWT")
-            print("Email is \(email)")
-            print("Password is \(password)")
-            print("Server URL is \(serverURL)")
-            try await loginWithEmail(email: email, password: password, serverURL: serverURL, networkManager: networkManager)
+            try await loginWithEmail(
+                email: email,
+                password: password,
+                serverURL: serverURL,
+                networkManager: networkManager
+            )
         } catch {
             alertTitle = "Login Expired"
             alertDescription = "Your login token has expired. Please sign out and sign back in again."
@@ -293,7 +297,8 @@ class DataController: ObservableObject {
 
         do {
             let response = try await networkManager.fetch(.loginResponse, with: JSONEncoder().encode(credentials))
-            KeychainWrapper.default.set(response.token, forKey: "apiToken")
+            let newToken = Token(value: response.token, isValid: true)
+            KeychainWrapper.default.set(newToken, forKey: "apiToken")
             KeychainWrapper.default.set(email, forKey: "email")
             KeychainWrapper.default.set(password, forKey: "password")
 
@@ -397,7 +402,7 @@ class DataController: ObservableObject {
         selectedTeam = nil
 
         do {
-            _ = try await NetworkManager().fetch(.logout)
+            _ = try await NetworkManager(authManager: AuthManager()).fetch(.logout)
         } catch {
             print(error.localizedDescription)
         }

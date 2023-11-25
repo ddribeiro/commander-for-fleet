@@ -49,6 +49,12 @@ class AppEnvironments: ObservableObject {
 }
 
 struct NetworkManager {
+    var authManager = AuthManager()
+
+    init(authManager: AuthManager) {
+           self.authManager = authManager
+       }
+
     var environment: AppEnvironment? {
         if let data = UserDefaults.standard.data(forKey: "activeEnvironment") {
             let decoded = try? JSONDecoder().decode(AppEnvironment.self, from: data)
@@ -57,7 +63,14 @@ struct NetworkManager {
         return nil
     }
 
-    func fetch<T>(_ resource: Endpoint<T>, with data: Data? = nil) async throws -> T {
+    private func authorizedRequest(from url: URL) async throws -> URLRequest {
+        var urlRequest = URLRequest(url: url)
+        let token = try await authManager.validToken()
+        urlRequest.setValue("Bearer \(token.value)", forHTTPHeaderField: "Authorization")
+        return urlRequest
+    }
+
+    func fetch<T>(_ resource: Endpoint<T>, with data: Data? = nil, allowRetry: Bool = true) async throws -> T {
         guard let url = URL(string: resource.path, relativeTo: environment?.baseURL) else {
             throw URLError(.unsupportedURL)
         }
@@ -70,20 +83,27 @@ struct NetworkManager {
         request.allHTTPHeaderFields = resource.headers
 
         let configuration = URLSessionConfiguration.default
-        if let apiToken = KeychainWrapper.default.string(forKey: "apiToken") {
+        if let apiToken = KeychainWrapper.default.object(of: Token.self, forKey: "apiToken") {
             configuration.httpAdditionalHeaders = [
-                "Authorization": "Bearer \(apiToken)"
+                "Authorization": "Bearer \(apiToken.value)"
             ]
         }
 
         var (data, response) = try await URLSession(configuration: configuration).data(for: request)
 
-        if let response = response as? HTTPURLResponse {
-            if !(200...299).contains(response.statusCode) {
-                print("Error code: \(response.statusCode)")
-                throw HTTPError.statusCode(response.statusCode)
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 402 {
+            if allowRetry {
+                _ = try await authManager.refreshToken()
+                return try await fetch(resource, with: data, allowRetry: false)
             }
         }
+
+//        if let response = response as? HTTPURLResponse {
+//            if !(200...299).contains(response.statusCode) {
+//                print("Error code: \(response.statusCode)")
+//                throw HTTPError.statusCode(response.statusCode)
+//            }
+//        }
 
         if let keyPath = resource.keyPath {
             if let rootObject = try JSONSerialization.jsonObject(with: data) as? NSDictionary {
@@ -138,7 +158,7 @@ enum HTTPError: Error {
 }
 
 struct NetworkManagerKey: EnvironmentKey {
-    static var defaultValue = NetworkManager()
+    static var defaultValue = NetworkManager(authManager: AuthManager())
 }
 
 extension EnvironmentValues {

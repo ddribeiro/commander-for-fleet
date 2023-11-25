@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct FleetDMViewerApp: App {
     @StateObject var dataController = DataController()
-    @State var networkManager = NetworkManager()
+    @State var networkManager = NetworkManager(authManager: AuthManager())
 
     var body: some Scene {
         WindowGroup {

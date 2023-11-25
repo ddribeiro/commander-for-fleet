@@ -150,7 +150,7 @@ struct Mdm: Codable, Hashable {
     )
 }
 
-struct Token: Identifiable {
+struct SearchToken: Identifiable {
     var id: String { name }
     var name: String
     var platform: [String]
