@@ -52,8 +52,8 @@ struct NetworkManager {
     var authManager = AuthManager()
 
     init(authManager: AuthManager) {
-           self.authManager = authManager
-       }
+        self.authManager = authManager
+    }
 
     var environment: AppEnvironment? {
         if let data = UserDefaults.standard.data(forKey: "activeEnvironment") {
@@ -63,19 +63,12 @@ struct NetworkManager {
         return nil
     }
 
-    private func authorizedRequest(from url: URL) async throws -> URLRequest {
-        var urlRequest = URLRequest(url: url)
-        let token = try await authManager.validToken()
-        urlRequest.setValue("Bearer \(token.value)", forHTTPHeaderField: "Authorization")
-        return urlRequest
-    }
-
     func fetch<T>(_ resource: Endpoint<T>, with data: Data? = nil, allowRetry: Bool = true) async throws -> T {
         guard let url = URL(string: resource.path, relativeTo: environment?.baseURL) else {
             throw URLError(.unsupportedURL)
         }
 
-                print(url.absoluteString)
+        print(url.absoluteString)
 
         var request = URLRequest(url: url)
         request.httpMethod = resource.method.rawValue
@@ -89,20 +82,12 @@ struct NetworkManager {
             ]
         }
 
-        print(String(describing: request.httpMethod))
-
-        if let data = data {
-            if let bodyString = String(data: data, encoding: .utf8) {
-                print("Body: \(bodyString)")
-            }
-        }
-
         var (responseData, response) = try await URLSession(configuration: configuration).data(for: request)
 
         if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 401 {
-                let newToken = try await authManager.refreshToken()
-                KeychainWrapper.default.set(newToken, forKey: "apiToken")
-                _ = try await fetch(resource, with: data, allowRetry: false)
+            let newToken = try await authManager.refreshToken()
+            KeychainWrapper.default.set(newToken, forKey: "apiToken")
+            return try await fetch(resource, with: data, allowRetry: false)
 
         }
 
@@ -116,9 +101,9 @@ struct NetworkManager {
             }
         }
 
-        if let responseString = String(data: responseData, encoding: .utf8) {
-            print(responseString)
-        }
+//        if let responseString = String(data: responseData, encoding: .utf8) {
+//            print(responseString)
+//        }
 
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
