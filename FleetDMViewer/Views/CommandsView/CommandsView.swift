@@ -60,15 +60,22 @@ struct CommandsView: View {
             await MainActor.run {
                 updateCache(with: commands)
             }
-        } catch let error as HTTPError {
-            await dataController.handleHTTPErrors(networkManager: networkManager, error: error)
-            await fetchCommands()
         } catch {
             print("Unable to fetch commands")
         }
     }
     init(host: Host) {
-        _commands = FetchRequest<CachedCommandResponse>(sortDescriptors: [SortDescriptor(\.updatedAt, order: .reverse)], predicate: NSPredicate(format: "deviceID CONTAINS %@", host.uuid))
+        _commands = FetchRequest<CachedCommandResponse>(
+            sortDescriptors: [
+                SortDescriptor(
+                    \.updatedAt,
+                     order: .reverse
+                )
+            ],
+            predicate: NSPredicate(
+                format: "deviceID CONTAINS %@", host.uuid
+            )
+        )
     }
 
     func updateCache(with downloadedCommands: [CommandResponse]) {

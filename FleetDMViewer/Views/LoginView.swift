@@ -174,6 +174,7 @@ struct LoginView: View {
     }
 
     private var isFormValid: Bool {
+        // swiftlint:disable:next line_length
         return (!serverURL.isEmpty && !emailAddress.isEmpty && !password.isEmpty) || (!serverURL.isEmpty && !apiKey.isEmpty)
     }
 }

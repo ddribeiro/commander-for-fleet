@@ -24,6 +24,7 @@ enum LoadingState {
 }
 
 @MainActor
+// swiftlint:disable:next type_body_length
 class DataController: ObservableObject {
     let container = NSPersistentContainer(name: "FleetDMViewer")
 
@@ -131,29 +132,6 @@ class DataController: ObservableObject {
         save()
     }
 
-    func getNewToken(networkManager: NetworkManager) async throws {
-
-        guard let email = KeychainWrapper.default.string(forKey: "email"),
-              let password = KeychainWrapper.default.string(forKey: "password"),
-              let serverURL = activeEnvironment?.baseURL.absoluteString  else {
-            throw TokenRefreshError.noCredentials
-        }
-
-        do {
-            try await loginWithEmail(
-                email: email,
-                password: password,
-                serverURL: serverURL,
-                networkManager: networkManager
-            )
-        } catch {
-            alertTitle = "Login Expired"
-            alertDescription = "Your login token has expired. Please sign out and sign back in again."
-            showingAlert.toggle()
-            throw error
-        }
-    }
-
     private func delete(_ fetchRequest: NSFetchRequest<NSFetchRequestResult>) {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         batchDeleteRequest.resultType = .resultTypeObjectIDs
@@ -161,21 +139,6 @@ class DataController: ObservableObject {
         if let delete = try? container.viewContext.execute(batchDeleteRequest) as? NSBatchDeleteResult {
             let changes = [NSDeletedObjectsKey: delete.result as? [NSManagedObjectID] ?? []]
             NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [container.viewContext])
-        }
-    }
-
-    func handleHTTPErrors(networkManager: NetworkManager, error: HTTPError) async {
-        switch error {
-        case .statusCode(let statusCode):
-            switch statusCode {
-            case (401):
-                try? await getNewToken(networkManager: networkManager)
-                return
-            default:
-                print("Status code switch error")
-            }
-        default:
-            print("Error switch error")
         }
     }
 
@@ -196,7 +159,7 @@ class DataController: ObservableObject {
         delete(request5)
 
     }
-
+    // swiftlint:disable:next function_body_length
     func hostsForSelectedFilter() -> [CachedHost] {
         let filter = selectedFilter ?? .all
         var predicates = [NSPredicate]()
@@ -248,10 +211,12 @@ class DataController: ObservableObject {
                 predicates.append(statusFilter)
             }
             if filterStatus == .missing {
+                // swiftlint:disable:next line_length
                 let statusFilter = NSPredicate(format: "seenTime < %@", Date.now.addingTimeInterval(86400 * -30) as NSDate)
                 predicates.append(statusFilter)
             }
             if filterStatus == .recentlyEnrolled {
+                // swiftlint:disable:next line_length
                 let statusFilter = NSPredicate(format: "lastEnrolledAt > %@", Date.now.addingTimeInterval(86400 * -7) as NSDate)
                 predicates.append(statusFilter)
             }
@@ -281,7 +246,12 @@ class DataController: ObservableObject {
         return commandsForHost
     }
 
-    func loginWithEmail(email: String, password: String, serverURL: String, networkManager: NetworkManager) async throws {
+    func loginWithEmail(
+        email: String,
+        password: String,
+        serverURL: String,
+        networkManager: NetworkManager
+    ) async throws {
 
         KeychainWrapper.default.removeAllKeys()
 
@@ -446,4 +416,5 @@ class DataController: ObservableObject {
         }
         return urlString
     }
+    // swiftlint:disable:next file_length
 }

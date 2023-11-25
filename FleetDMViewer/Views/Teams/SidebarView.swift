@@ -107,9 +107,6 @@ struct SidebarView: View {
                 updateCache(with: teams)
                 dataController.teamsLastUpdatedAt = .now
             }
-        } catch let error as HTTPError {
-            await dataController.handleHTTPErrors(networkManager: networkManager, error: error)
-            await fetchTeams()
         } catch {
             print("Error: \(error.localizedDescription)")
         }

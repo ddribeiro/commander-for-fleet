@@ -217,10 +217,6 @@ struct HostView: View {
         do {
             let host = try await networkManager.fetch(endpoint, attempts: 5)
             return host
-        } catch let error as HTTPError {
-            await dataController.handleHTTPErrors(networkManager: networkManager, error: error)
-            let host = try await networkManager.fetch(endpoint, attempts: 5)
-            return host
         } catch {
             print(error.localizedDescription)
             throw error

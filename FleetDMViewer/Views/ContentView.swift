@@ -38,6 +38,7 @@ struct ContentView: View {
             .refreshable {
                 await fetchHosts()
             }
+            #if os(iOS)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     ContentViewToolbar()
@@ -54,6 +55,7 @@ struct ContentView: View {
                     }
                 }
             }
+            #endif
             .task {
                 if let hostsLastUpdatedAt = dataController.hostsLastUpdatedAt {
                     guard hostsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
@@ -83,9 +85,6 @@ struct ContentView: View {
                 updateCache(with: hosts)
                 dataController.hostsLastUpdatedAt = .now
             }
-        } catch let error as HTTPError {
-            await dataController.handleHTTPErrors(networkManager: networkManager, error: error)
-            await fetchHosts()
         } catch {
             print("Could not fetch hosts: \(error.localizedDescription)")
         }

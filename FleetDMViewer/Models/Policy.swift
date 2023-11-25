@@ -35,6 +35,7 @@ struct Policy: Codable, Identifiable, Hashable {
         authorName: "Dale Ribeiro",
         authorEmail: "dale@harmonize.io",
         teamId: 35,
+        // swiftlint:disable:next line_length
         resolution: "To enable full disk encryption, on the failing device, select System Preferences > Security & Privacy > FileVault > Turn On FileVault.",
         platform: "darwin",
         createdAt: .distantPast,
