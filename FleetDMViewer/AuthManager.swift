@@ -35,12 +35,17 @@ actor AuthManager {
         let task = Task { () throws -> Token in
             defer { refreshTask = nil }
 
-            guard let email = KeychainWrapper.default.string(forKey: "email"), let password = KeychainWrapper.default.string(forKey: "password") else {
+            guard let email = KeychainWrapper.default.string(forKey: "email"),
+                  let password = KeychainWrapper.default.string(forKey: "password") else {
                 throw AuthError.missingCredentials
             }
 
             let credentials = LoginRequestBody(email: email, password: password)
-            let response = try await NetworkManager(authManager: self).fetch(.loginResponse, with: JSONEncoder().encode(credentials))
+            let response = try await NetworkManager(
+                authManager: self
+            ).fetch(
+                .loginResponse, with: JSONEncoder().encode(credentials)
+            )
             let newToken = Token(value: response.token, isValid: true)
 
             return newToken

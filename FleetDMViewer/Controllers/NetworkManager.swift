@@ -89,40 +89,41 @@ struct NetworkManager {
             ]
         }
 
-        var (data, response) = try await URLSession(configuration: configuration).data(for: request)
+        print(String(describing: request.httpMethod))
 
-        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 402 {
-            if allowRetry {
-                _ = try await authManager.refreshToken()
-                return try await fetch(resource, with: data, allowRetry: false)
+        if let data = data {
+            if let bodyString = String(data: data, encoding: .utf8) {
+                print("Body: \(bodyString)")
             }
         }
 
-//        if let response = response as? HTTPURLResponse {
-//            if !(200...299).contains(response.statusCode) {
-//                print("Error code: \(response.statusCode)")
-//                throw HTTPError.statusCode(response.statusCode)
-//            }
-//        }
+        var (responseData, response) = try await URLSession(configuration: configuration).data(for: request)
+
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 401 {
+                let newToken = try await authManager.refreshToken()
+                KeychainWrapper.default.set(newToken, forKey: "apiToken")
+                _ = try await fetch(resource, with: data, allowRetry: false)
+
+        }
 
         if let keyPath = resource.keyPath {
-            if let rootObject = try JSONSerialization.jsonObject(with: data) as? NSDictionary {
+            if let rootObject = try JSONSerialization.jsonObject(with: responseData) as? NSDictionary {
                 if let nestedObject = rootObject.value(forKeyPath: keyPath) {
 
                     // swiftlint:disable:next line_length
-                    data = try JSONSerialization.data(withJSONObject: nestedObject, options: [.fragmentsAllowed, .prettyPrinted])
+                    responseData = try JSONSerialization.data(withJSONObject: nestedObject, options: [.fragmentsAllowed, .prettyPrinted])
                 }
             }
         }
 
-        if let responseString = String(data: data, encoding: .utf8) {
+        if let responseString = String(data: responseData, encoding: .utf8) {
             print(responseString)
         }
 
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(T.self, from: data)
+        return try decoder.decode(T.self, from: responseData)
     }
 
     // swiftlint:disable:next line_length

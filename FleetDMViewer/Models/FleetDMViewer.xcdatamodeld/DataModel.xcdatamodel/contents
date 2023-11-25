@@ -41,7 +41,6 @@
         <attribute name="uptime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String"/>
         <relationship name="battery" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedBattery" inverseName="host" inverseEntity="CachedBattery"/>
-        <relationship name="commands" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedCommandResponse"/>
         <relationship name="mdm" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedMdm" inverseName="host" inverseEntity="CachedMdm"/>
         <relationship name="policies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedPolicy" inverseName="host" inverseEntity="CachedPolicy"/>
         <relationship name="software" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedSoftware" inverseName="host" inverseEntity="CachedSoftware"/>
