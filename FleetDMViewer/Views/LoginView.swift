@@ -77,6 +77,8 @@ struct LoginView: View {
                         Toggle("Use API Token", isOn: $useApiKey)
                             .labelsHidden()
                     }
+                } footer: {
+                    Text("Use an API Token if single sign-on is enabled on your account.")
                 }
 
                 Section {

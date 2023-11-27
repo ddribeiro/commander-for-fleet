@@ -32,3 +32,8 @@ struct User: Codable, Identifiable {
         teams: [.example]
     )
 }
+
+struct MeResponse: Codable {
+    var user: User
+    var availableTeams: [Team]
+}

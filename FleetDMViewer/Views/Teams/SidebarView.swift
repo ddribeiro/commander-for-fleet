@@ -68,6 +68,24 @@ struct SidebarView: View {
                     }
                 }
             }
+            .alert(dataController.alertTitle, isPresented: $dataController.showingApiTokenAlert) {
+                SecureField("Enter new API Token", text: $dataController.apiTokenText)
+                Button("Sign Out", role: .destructive) {
+                    Task {
+                        await dataController.signOut()
+                    }
+                }
+
+                Button("Update Token") {
+                    Task {
+                        let newToken = Token(value: dataController.apiTokenText, isValid: true)
+                        KeychainWrapper.default.set(newToken, forKey: "apiToken")
+                        await fetchTeams()
+                    }
+                }
+            } message: {
+                Text(dataController.alertDescription)
+            }
             .sheet(isPresented: $showingLogin, content: LoginView.init)
             .toolbar {
                 ToolbarItem(placement: .automatic) {
@@ -77,13 +95,7 @@ struct SidebarView: View {
                         Label("Settings", systemImage: "person.crop.circle")
                     }
                 }
-//                ToolbarItem(placement: .automatic) {
-//                    Button {
-//                        showingLogin.toggle()
-//                    } label: {
-//                        Label("Login", systemImage: "network")
-//                    }
-//                }
+
                 if UIDevice.current.userInterfaceIdiom == .phone {
                     ToolbarItem(placement: .bottomBar) {
                         if let updatedAt = dataController.teamsLastUpdatedAt {
@@ -108,7 +120,19 @@ struct SidebarView: View {
                 dataController.teamsLastUpdatedAt = .now
             }
         } catch {
-            print("Error: \(error.localizedDescription)")
+            switch error as? AuthManager.AuthError {
+            case .missingCredentials:
+                if !dataController.showingApiTokenAlert {
+                    dataController.showingApiTokenAlert = true
+                    dataController.alertTitle = "API Token Expired"
+                    // swiftlint:disable:next line_length
+                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
+                }
+            case .missingToken:
+                print(error.localizedDescription)
+            case .none:
+                print(error.localizedDescription)
+            }
         }
     }
 

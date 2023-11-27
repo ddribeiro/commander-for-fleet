@@ -12,7 +12,11 @@ struct ProfilesView: View {
 
     var body: some View {
         if profiles.isEmpty {
-            Text("No Profiles")
+            ContentUnavailableView(
+                "No Profiles",
+                systemImage: "exclamationmark.triangle",
+                description: Text("This host has no profiles installed.")
+            )
         } else {
             ForEach(profiles) { profile in
                 ProfilesRow(profile: profile)

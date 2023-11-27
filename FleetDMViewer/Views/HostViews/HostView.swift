@@ -163,7 +163,11 @@ struct HostView: View {
                         if let profiles = host.mdm?.profiles {
                             ProfilesView(profiles: profiles)
                         } else {
-                            ProgressView()
+                            ContentUnavailableView(
+                                "No Profiles",
+                                systemImage: "exclamationmark.triangle",
+                                description: Text("This host has no profiles installed.")
+                            )
                         }
                     default:
                         Text("N/A")
@@ -179,6 +183,26 @@ struct HostView: View {
 
             .refreshable {
                 await updateHost()
+            }
+
+            .alert(dataController.alertTitle, isPresented: $dataController.showingApiTokenAlert) {
+                    SecureField("Enter new API Token", text: $dataController.apiTokenText)
+                Button("Sign Out", role: .destructive) {
+                    Task {
+                        await dataController.signOut()
+                    }
+                }
+
+                if let serverURL = dataController.activeEnvironment?.baseURL.absoluteString {
+                    Button("Update Token") {
+                        Task {
+                            let newToken = Token(value: dataController.apiTokenText, isValid: true)
+                            KeychainWrapper.default.set(newToken, forKey: "apiToken")
+                            await updateHost()
+                        }
+                    }
+                }
+
             }
 
             .toolbar {
@@ -207,7 +231,19 @@ struct HostView: View {
                 updatedHost = try await getHost(hostID: Int(id))
             }
         } catch {
-            print(error.localizedDescription)
+            switch error as? AuthManager.AuthError {
+            case .missingCredentials:
+                if !dataController.showingApiTokenAlert {
+                    dataController.showingApiTokenAlert = true
+                    dataController.alertTitle = "API Token Expired"
+                    // swiftlint:disable:next line_length
+                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
+                }
+            case .missingToken:
+                print(error.localizedDescription)
+            case .none:
+                print(error.localizedDescription)
+            }
         }
     }
 

@@ -45,6 +45,23 @@ struct CommandsView: View {
                 }
             }
         }
+        .alert(dataController.alertTitle, isPresented: $dataController.showingApiTokenAlert) {
+            SecureField("Enter new API Token", text: $dataController.apiTokenText)
+            Button("Sign Out", role: .destructive) {
+                Task {
+                    await dataController.signOut()
+                }
+            }
+
+            Button("Update Token") {
+                Task {
+                    let newToken = Token(value: dataController.apiTokenText, isValid: true)
+                    KeychainWrapper.default.set(newToken, forKey: "apiToken")
+                    await fetchCommands()
+                }
+            }
+
+        }
         .task {
             await fetchCommands()
         }
@@ -61,7 +78,19 @@ struct CommandsView: View {
                 updateCache(with: commands)
             }
         } catch {
-            print("Unable to fetch commands")
+            switch error as? AuthManager.AuthError {
+            case .missingCredentials:
+                if !dataController.showingApiTokenAlert {
+                    dataController.showingApiTokenAlert = true
+                    dataController.alertTitle = "API Token Expired"
+                    // swiftlint:disable:next line_length
+                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
+                }
+            case .missingToken:
+                print(error.localizedDescription)
+            case .none:
+                print(error.localizedDescription)
+            }
         }
     }
     init(host: Host) {

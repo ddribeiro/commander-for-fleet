@@ -22,15 +22,16 @@ struct PoliciesView: View {
                 ForEach(policies) { policy in
                     HStack {
                         // swiftlint:disable:next line_length
-                        Image(systemName: policy.response == "pass" ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
-                            .foregroundStyle(policy.response == "pass" ? .green : .red)
+                        Image(systemName: policy.response == "" ? "questionmark.circle.fill" : policy.response == "pass" ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
+                        // swiftlint:disable:next line_length
+                            .foregroundStyle(policy.response == "" ? .yellow : policy.response == "pass" ? .green : .red)
                             .imageScale(.large)
 
                         VStack(alignment: .leading) {
                             Text(policy.name)
                                 .font(.headline)
                             if let response = policy.response {
-                                Text(response)
+                                Text(response == "" ? "Pending" : response)
                                     .foregroundStyle(.secondary)
                                     .font(.body.smallCaps())
                             }

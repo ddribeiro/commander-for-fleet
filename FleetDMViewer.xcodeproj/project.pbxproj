@@ -25,7 +25,6 @@
 		5E9038DD2A43A3AE0077F3DC /* ProfilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038DC2A43A3AE0077F3DC /* ProfilesView.swift */; };
 		5E9038DF2A44AF6F0077F3DC /* MDMCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038DE2A44AF6F0077F3DC /* MDMCommands.swift */; };
 		5E9039322A45FC250077F3DC /* HostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9039312A45FC250077F3DC /* HostView.swift */; };
-		5E94DCC22B11185B00C09185 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E94DCC12B11185B00C09185 /* Errors.swift */; };
 		5E94DCC42B11358300C09185 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E94DCC32B11358300C09185 /* AuthManager.swift */; };
 		5E9B94E22A3231F900A7A0CE /* LoginRequestBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E12A3231F900A7A0CE /* LoginRequestBody.swift */; };
 		5E9B94E42A32320D00A7A0CE /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E32A32320D00A7A0CE /* Host.swift */; };
@@ -91,7 +90,6 @@
 		5E9038DC2A43A3AE0077F3DC /* ProfilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilesView.swift; sourceTree = "<group>"; };
 		5E9038DE2A44AF6F0077F3DC /* MDMCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDMCommands.swift; sourceTree = "<group>"; };
 		5E9039312A45FC250077F3DC /* HostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HostView.swift; sourceTree = "<group>"; };
-		5E94DCC12B11185B00C09185 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		5E94DCC32B11358300C09185 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		5E9B94E12A3231F900A7A0CE /* LoginRequestBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRequestBody.swift; sourceTree = "<group>"; };
 		5E9B94E32A32320D00A7A0CE /* Host.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
@@ -245,7 +243,6 @@
 		5EDA66BB2A2A4955006706CD /* FleetDMViewer */ = {
 			isa = PBXGroup;
 			children = (
-				5E94DCC32B11358300C09185 /* AuthManager.swift */,
 				5E2A7D092B054C5A00D1EFFE /* Extensions */,
 				5EDA66BC2A2A4955006706CD /* FleetDMViewerApp.swift */,
 				5E028F442A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift */,
@@ -289,8 +286,8 @@
 		5EEA90962A93C37D00FEA5E4 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5E94DCC32B11358300C09185 /* AuthManager.swift */,
 				5EEA90942A93C37100FEA5E4 /* DataController.swift */,
-				5E94DCC12B11185B00C09185 /* Errors.swift */,
 				5EDA66D02A2A4979006706CD /* NetworkManager.swift */,
 			);
 			path = Controllers;
@@ -446,7 +443,6 @@
 				5EEA90AD2A96948E00FEA5E4 /* CachedUser+CoreDataProperties.swift in Sources */,
 				5E9039322A45FC250077F3DC /* HostView.swift in Sources */,
 				5EEA90ED2A97DA0300FEA5E4 /* CachedProfile+CoreDataProperties.swift in Sources */,
-				5E94DCC22B11185B00C09185 /* Errors.swift in Sources */,
 				5EEA90952A93C37100FEA5E4 /* DataController.swift in Sources */,
 				5EEA90E92A97DA0300FEA5E4 /* CachedVulnerability+CoreDataProperties.swift in Sources */,
 				5EDA66D82A2A4979006706CD /* LoginView.swift in Sources */,

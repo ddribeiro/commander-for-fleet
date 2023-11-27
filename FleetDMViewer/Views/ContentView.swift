@@ -38,7 +38,25 @@ struct ContentView: View {
             .refreshable {
                 await fetchHosts()
             }
-            #if os(iOS)
+            .alert(dataController.alertTitle, isPresented: $dataController.showingApiTokenAlert) {
+                SecureField("Enter new API Token", text: $dataController.apiTokenText)
+                Button("Sign Out", role: .destructive) {
+                    Task {
+                        await dataController.signOut()
+                    }
+                }
+
+                Button("Update Token") {
+                    Task {
+                        let newToken = Token(value: dataController.apiTokenText, isValid: true)
+                        KeychainWrapper.default.set(newToken, forKey: "apiToken")
+                        await fetchHosts()
+                    }
+                }
+            } message: {
+                Text(dataController.alertDescription)
+            }
+#if os(iOS)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     ContentViewToolbar()
@@ -55,7 +73,7 @@ struct ContentView: View {
                     }
                 }
             }
-            #endif
+#endif
             .task {
                 if let hostsLastUpdatedAt = dataController.hostsLastUpdatedAt {
                     guard hostsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
@@ -79,14 +97,26 @@ struct ContentView: View {
         guard dataController.activeEnvironment != nil else { return }
 
         do {
-            let hosts = try await networkManager.fetch(.hosts)
+            let hosts = try await networkManager.fetch(.hosts, attempts: 5)
 
             await MainActor.run {
                 updateCache(with: hosts)
                 dataController.hostsLastUpdatedAt = .now
             }
         } catch {
-            print("Could not fetch hosts: \(error.localizedDescription)")
+            switch error as? AuthManager.AuthError {
+            case .missingCredentials:
+                if !dataController.showingApiTokenAlert {
+                    dataController.showingApiTokenAlert = true
+                    dataController.alertTitle = "API Token Expired"
+                    // swiftlint:disable:next line_length
+                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
+                }
+            case .missingToken:
+                print(error.localizedDescription)
+            case .none:
+                print(error.localizedDescription)
+            }
         }
     }
 

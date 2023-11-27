@@ -68,7 +68,7 @@ struct NetworkManager {
             throw URLError(.unsupportedURL)
         }
 
-        print(url.absoluteString)
+//        print(url.absoluteString)
 
         var request = URLRequest(url: url)
         request.httpMethod = resource.method.rawValue
@@ -84,11 +84,21 @@ struct NetworkManager {
 
         var (responseData, response) = try await URLSession(configuration: configuration).data(for: request)
 
-        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 401 {
-            let newToken = try await authManager.refreshToken()
-            KeychainWrapper.default.set(newToken, forKey: "apiToken")
-            return try await fetch(resource, with: data, allowRetry: false)
-
+        if let httpResponse = response as? HTTPURLResponse {
+            if !(200...299).contains(httpResponse.statusCode) {
+                switch httpResponse.statusCode {
+                case 401:
+                    if allowRetry {
+                        let newToken = try await authManager.refreshToken()
+                        KeychainWrapper.default.set(newToken, forKey: "apiToken")
+                        return try await fetch(resource, with: data, allowRetry: false)
+                    } else {
+                        throw HTTPError.statusCode(httpResponse.statusCode)
+                    }
+                default:
+                    throw HTTPError.statusCode(httpResponse.statusCode)
+                }
+            }
         }
 
         if let keyPath = resource.keyPath {
@@ -116,8 +126,6 @@ struct NetworkManager {
         do {
             print("Attempting to fetch (Attempts remaining: \(attempts))")
             return try await fetch(resource, with: data)
-        } catch let error as HTTPError {
-            throw error
         } catch {
             if attempts > 1 {
                 try await Task.sleep(for: .milliseconds(Int(retryDelay * 1000)))

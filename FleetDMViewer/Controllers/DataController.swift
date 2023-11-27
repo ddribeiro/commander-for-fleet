@@ -43,6 +43,8 @@ class DataController: ObservableObject {
     @Published var activeEnvironment: AppEnvironment?
 
     @Published var showingAlert = false
+    @Published var showingApiTokenAlert = false
+    @Published var apiTokenText = ""
     @Published var alertTitle = ""
     @Published var alertDescription = ""
 
@@ -266,7 +268,12 @@ class DataController: ObservableObject {
         let credentials = LoginRequestBody(email: email, password: password)
 
         do {
-            let response = try await networkManager.fetch(.loginResponse, with: JSONEncoder().encode(credentials))
+            let response = try await networkManager.fetch(
+                .loginResponse,
+                with: JSONEncoder().encode(credentials),
+                allowRetry: false
+            )
+
             let newToken = Token(value: response.token, isValid: true)
             KeychainWrapper.default.set(newToken, forKey: "apiToken")
             KeychainWrapper.default.set(email, forKey: "email")
@@ -305,11 +312,13 @@ class DataController: ObservableObject {
             )!
         )
         saveActiveEnvironment(environment: environment)
+        let newToken = Token(value: apiKey, isValid: true)
 
         do {
-            KeychainWrapper.default.set(apiKey, forKey: "apiToken")
-            let user = try await networkManager.fetch(.meEndpoint)
-            let teams = user.teams
+            KeychainWrapper.default.set(newToken, forKey: "apiToken")
+            let response = try await networkManager.fetch(.meEndpoint)
+            let user = response.user
+            let teams = response.availableTeams
 
             deleteAll()
 

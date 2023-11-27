@@ -66,15 +66,22 @@ extension Endpoint where T == User {
         )
     }
 
-    static let meEndpoint = Endpoint(
-        path: "/api/v1/fleet/me",
-        type: User.self,
-        keyPath: "user"
-    )
+//    static let meEndpoint = Endpoint(
+//        path: "/api/v1/fleet/me",
+//        type: User.self,
+//        keyPath: "user"
+//    )
 
     static let logout = Endpoint(
     path: "/api/v1/fleet/logout",
     method: .post
+    )
+}
+
+extension Endpoint where T == MeResponse {
+    static let meEndpoint = Endpoint(
+        path: "/api/v1/fleet/me",
+        type: MeResponse.self
     )
 }
 
