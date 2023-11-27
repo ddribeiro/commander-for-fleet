@@ -29,7 +29,12 @@ struct HostView: View {
 
                     LabeledContent("Device Name", value: host.computerName)
 
-                    LabeledContent("Serial Number", value: host.hardwareSerial)
+                    LabeledContent {
+                        Text(host.hardwareSerial)
+                            .monospaced()
+                    } label: {
+                        Text("Serial Number")
+                    }
 
                     LabeledContent("Model", value: host.hardwareModel)
 
@@ -186,23 +191,19 @@ struct HostView: View {
             }
 
             .alert(dataController.alertTitle, isPresented: $dataController.showingApiTokenAlert) {
-                    SecureField("Enter new API Token", text: $dataController.apiTokenText)
+                SecureField("Enter new API Token", text: $dataController.apiTokenText)
                 Button("Sign Out", role: .destructive) {
                     Task {
                         await dataController.signOut()
                     }
                 }
-
-                if let serverURL = dataController.activeEnvironment?.baseURL.absoluteString {
-                    Button("Update Token") {
-                        Task {
-                            let newToken = Token(value: dataController.apiTokenText, isValid: true)
-                            KeychainWrapper.default.set(newToken, forKey: "apiToken")
-                            await updateHost()
-                        }
+                Button("Update Token") {
+                    Task {
+                        let newToken = Token(value: dataController.apiTokenText, isValid: true)
+                        KeychainWrapper.default.set(newToken, forKey: "apiToken")
+                        await updateHost()
                     }
                 }
-
             }
 
             .toolbar {
