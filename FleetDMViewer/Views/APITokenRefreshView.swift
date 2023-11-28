@@ -42,8 +42,9 @@ struct APITokenRefreshView: View {
 
                     Task {
                         do {
-                            dataController.loadingState = .loaded
+                            dataController.loadingState = .loading
                             _ = try await networkManager.fetch(.meEndpoint)
+                            
                             dismiss()
                             dataController.loadingState = .loaded
                             dataController.apiTokenText = ""
