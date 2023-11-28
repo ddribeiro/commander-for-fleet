@@ -68,23 +68,9 @@ struct SidebarView: View {
                     }
                 }
             }
-            .alert(dataController.alertTitle, isPresented: $dataController.showingApiTokenAlert) {
-                SecureField("Enter new API Token", text: $dataController.apiTokenText)
-                Button("Sign Out", role: .destructive) {
-                    Task {
-                        await dataController.signOut()
-                    }
-                }
-
-                Button("Update Token") {
-                    Task {
-                        let newToken = Token(value: dataController.apiTokenText, isValid: true)
-                        KeychainWrapper.default.set(newToken, forKey: "apiToken")
-                        await fetchTeams()
-                    }
-                }
-            } message: {
-                Text(dataController.alertDescription)
+            .sheet(isPresented: $dataController.showingApiTokenAlert) {
+                APITokenRefreshView()
+                    .presentationDetents([.medium])
             }
             .sheet(isPresented: $showingLogin, content: LoginView.init)
             .toolbar {

@@ -162,7 +162,6 @@ struct LoginView: View {
                 }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel", role: .cancel) {
-                        print("Canceled sign in.")
                         dismiss()
                     }
                 }

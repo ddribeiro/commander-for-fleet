@@ -189,23 +189,10 @@ struct HostView: View {
             .refreshable {
                 await updateHost()
             }
-
-            .alert(dataController.alertTitle, isPresented: $dataController.showingApiTokenAlert) {
-                SecureField("Enter new API Token", text: $dataController.apiTokenText)
-                Button("Sign Out", role: .destructive) {
-                    Task {
-                        await dataController.signOut()
-                    }
-                }
-                Button("Update Token") {
-                    Task {
-                        let newToken = Token(value: dataController.apiTokenText, isValid: true)
-                        KeychainWrapper.default.set(newToken, forKey: "apiToken")
-                        await updateHost()
-                    }
-                }
+            .sheet(isPresented: $dataController.showingApiTokenAlert) {
+                APITokenRefreshView()
+                    .presentationDetents([.medium])
             }
-
             .toolbar {
                 MDMCommandMenu(host: host)
                     .disabled(host.mdm?.enrollmentStatus == nil)

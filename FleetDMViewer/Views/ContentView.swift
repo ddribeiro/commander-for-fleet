@@ -38,23 +38,9 @@ struct ContentView: View {
             .refreshable {
                 await fetchHosts()
             }
-            .alert(dataController.alertTitle, isPresented: $dataController.showingApiTokenAlert) {
-                SecureField("Enter new API Token", text: $dataController.apiTokenText)
-                Button("Sign Out", role: .destructive) {
-                    Task {
-                        await dataController.signOut()
-                    }
-                }
-
-                Button("Update Token") {
-                    Task {
-                        let newToken = Token(value: dataController.apiTokenText, isValid: true)
-                        KeychainWrapper.default.set(newToken, forKey: "apiToken")
-                        await fetchHosts()
-                    }
-                }
-            } message: {
-                Text(dataController.alertDescription)
+            .sheet(isPresented: $dataController.showingApiTokenAlert) {
+                APITokenRefreshView()
+                    .presentationDetents([.medium])
             }
 #if os(iOS)
             .toolbar {
