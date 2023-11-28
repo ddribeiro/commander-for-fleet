@@ -16,63 +16,63 @@ struct APITokenRefreshView: View {
     @State private var showingErrorText = false
 
     var body: some View {
-            VStack {
-                Text("API Token Expired")
-                    .font(.title)
-                    .padding(.bottom)
+        VStack {
+            Text("API Token Expired")
+                .font(.title)
+                .padding(.bottom)
 
-                Text("Your API token has expired. Please create a new one and enter it below.")
-                    .foregroundStyle(.secondary)
-                    .font(.body)
-                    .multilineTextAlignment(.center)
+            Text("Your API token has expired. Please create a new one and enter it below.")
+                .foregroundStyle(.secondary)
+                .font(.body)
+                .multilineTextAlignment(.center)
 
-                SecureField("API Token", text: $dataController.apiTokenText)
-                    .textFieldStyle(.roundedBorder)
-                    .animation(.bouncy, value: showingErrorText)
+            SecureField("API Token", text: $dataController.apiTokenText)
+                .textFieldStyle(.roundedBorder)
+                .animation(.bouncy, value: showingErrorText)
 
-                if showingErrorText {
-                    Text("Your API Token was not accepted. Please try again.")
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                }
+            if showingErrorText {
+                Text("Your API Token was not accepted. Please try again.")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
 
-                Button {
-                    let newToken = Token(value: dataController.apiTokenText, isValid: true)
-                    KeychainWrapper.default.set(newToken, forKey: "apiToken")
+            Button {
+                let newToken = Token(value: dataController.apiTokenText, isValid: true)
+                KeychainWrapper.default.set(newToken, forKey: "apiToken")
 
-                    Task {
-                        do {
-                            dataController.loadingState = .loading
-                            _ = try await networkManager.fetch(.meEndpoint)
-                            
-                            dismiss()
-                            dataController.loadingState = .loaded
-                            dataController.apiTokenText = ""
-                        } catch {
-                            dataController.loadingState = .failed
-                            showingErrorText = true
-                        }
-                    }
+                Task {
+                    do {
+                        dataController.loadingState = .loading
+                        _ = try await networkManager.fetch(.meEndpoint)
 
-                } label: {
-                    switch dataController.loadingState {
-                    case .loading:
-                        ProgressView()
-                    case .loaded:
-                        Text("Submit")
-                    case .failed:
-                        Text("Submit")
+                        dismiss()
+                        dataController.loadingState = .loaded
+                        dataController.apiTokenText = ""
+                    } catch {
+                        dataController.loadingState = .failed
+                        showingErrorText = true
                     }
                 }
-                .buttonStyle(.borderedProminent)
-                .padding(.top)
 
-                Button("Cancel", role: .cancel) {
-                    dismiss()
+            } label: {
+                switch dataController.loadingState {
+                case .loading:
+                    ProgressView()
+                case .loaded:
+                    Text("Submit")
+                case .failed:
+                    Text("Submit")
                 }
             }
-            .padding()
+            .buttonStyle(.borderedProminent)
+            .padding(.top)
+
+            Button("Cancel", role: .cancel) {
+                dismiss()
+            }
         }
+        .padding()
+    }
 }
 
 #Preview {
