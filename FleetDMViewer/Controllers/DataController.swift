@@ -33,7 +33,6 @@ class DataController: ObservableObject {
     @Published var filterText = ""
     @Published var filterTokens = [SearchToken]()
 
-    @Published var filterEnabled = false
     @Published var filterStatus = Status.all
     @Published var sortOldestFirst = true
     @Published var sortType = SortType.name
@@ -203,7 +202,7 @@ class DataController: ObservableObject {
             predicates.append(combinedPredicate)
         }
 
-        if filterEnabled {
+        if filterStatus != .all {
             if filterStatus == .online {
                 let statusFilter = NSPredicate(format: "status CONTAINS[c] %@", "online")
                 predicates.append(statusFilter)

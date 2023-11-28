@@ -11,12 +11,6 @@ struct ContentViewToolbar: View {
     @EnvironmentObject var dataController: DataController
     var body: some View {
         Menu {
-            Button(dataController.filterEnabled ? "Turn Filter Off" : "Turn Filter On") {
-                dataController.filterEnabled.toggle()
-            }
-
-            Divider()
-
             Menu("Sort By") {
                 Picker("Sort By", selection: $dataController.sortType) {
                     Text("Name").tag(SortType.name)
@@ -39,10 +33,9 @@ struct ContentViewToolbar: View {
                     Text("Recently Enrolled").tag(Status.recentlyEnrolled)
                     Text("Missing").tag(Status.missing)
                 }
-                .disabled(dataController.filterEnabled == false)
         } label: {
             Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
-                .symbolVariant(dataController.filterEnabled ? .fill : .none)
+                .symbolVariant(dataController.filterStatus != .all ? .fill : .none)
         }
     }
 }
