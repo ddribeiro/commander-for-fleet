@@ -2,7 +2,7 @@
 //  CachedHost+CoreDataProperties.swift
 //  FleetDMViewer
 //
-//  Created by Dale Ribeiro on 8/24/23.
+//  Created by Dale Ribeiro on 12/1/23.
 //
 //
 
@@ -15,32 +15,34 @@ extension CachedHost {
         return NSFetchRequest<CachedHost>(entityName: "CachedHost")
     }
 
-    @NSManaged public var id: Int16
-    @NSManaged public var lastEnrolledAt: Date?
-    @NSManaged public var seenTime: Date?
-    @NSManaged public var uuid: String?
-    @NSManaged public var osVersion: String?
-    @NSManaged public var uptime: Int64
-    @NSManaged public var memory: Int64
+    @NSManaged public var computerName: String?
     @NSManaged public var cpuBrand: String?
+    @NSManaged public var diskEncryptionEnabled: Bool
+    @NSManaged public var gigsDiskSpaceAvailable: Double
     @NSManaged public var hardwareModel: String?
     @NSManaged public var hardwareSerial: String?
-    @NSManaged public var computerName: String?
+    @NSManaged public var id: Int16
+    @NSManaged public var lastEnrolledAt: Date?
+    @NSManaged public var memory: Int64
+    @NSManaged public var osVersion: String?
+    @NSManaged public var percentDiskSpaceAvailable: Double
     @NSManaged public var platform: String?
-    @NSManaged public var publicIp: String?
     @NSManaged public var primaryIp: String?
     @NSManaged public var primaryMac: String?
-    @NSManaged public var teamId: Int16
-    @NSManaged public var gigsDiskSpaceAvailable: Double
-    @NSManaged public var percentDiskSpaceAvailable: Double
-    @NSManaged public var diskEncryptionEnabled: Bool
+    @NSManaged public var publicIp: String?
+    @NSManaged public var seenTime: Date?
     @NSManaged public var status: String?
-    @NSManaged public var policies: NSSet?
+    @NSManaged public var teamId: Int16
+    @NSManaged public var teamName: String?
+    @NSManaged public var uptime: Int64
+    @NSManaged public var uuid: String?
     @NSManaged public var battery: CachedBattery?
     @NSManaged public var mdm: CachedMdm?
+    @NSManaged public var policies: NSSet?
     @NSManaged public var software: NSSet?
     @NSManaged public var team: CachedTeam?
-    @NSManaged public var teamName: String?
+    @NSManaged public var commands: CachedCommandResponse?
+    @NSManaged public var profiles: NSSet?
 
     var wrappedLastEnrolledAt: Date {
         lastEnrolledAt ?? Date.now
@@ -113,19 +115,19 @@ extension CachedHost {
             $0.wrappedName < $1.wrappedName
         }
     }
-}
 
-extension CachedHost: Comparable {
-// swiftlint:disable:next operator_whitespace
-    public static func <(lhs: CachedHost, rhs: CachedHost) -> Bool {
-        let left = lhs.wrappedComputerName.localizedLowercase
-        let right = rhs.wrappedComputerName.localizedLowercase
-
-        if left == right {
-            return lhs.wrappedUuid < rhs.wrappedUuid
-        } else {
-            return left < right
-        }
+    public var formattedDate: String {
+        let date: String = {
+            if Calendar.current.isDateInToday(wrappedSeenTime) {
+                return String(localized: "Today")
+            } else if Calendar.current.isDateInYesterday(wrappedSeenTime) {
+                return String(localized: "Yesterday")
+            } else {
+                return wrappedSeenTime.formatted(date: .numeric, time: .omitted)
+            }
+        }()
+        let time = wrappedSeenTime.formatted(date: .omitted, time: .shortened)
+        return "\(date), \(time)"
     }
 }
 
@@ -160,6 +162,23 @@ extension CachedHost {
 
     @objc(removeSoftware:)
     @NSManaged public func removeFromSoftware(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for profiles
+extension CachedHost {
+
+    @objc(addProfilesObject:)
+    @NSManaged public func addToProfiles(_ value: CachedProfile)
+
+    @objc(removeProfilesObject:)
+    @NSManaged public func removeFromProfiles(_ value: CachedProfile)
+
+    @objc(addProfiles:)
+    @NSManaged public func addToProfiles(_ values: NSSet)
+
+    @objc(removeProfiles:)
+    @NSManaged public func removeFromProfiles(_ values: NSSet)
 
 }
 

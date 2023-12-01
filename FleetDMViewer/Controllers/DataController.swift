@@ -28,7 +28,7 @@ enum LoadingState {
 class DataController: ObservableObject {
     let container = NSPersistentContainer(name: "FleetDMViewer")
 
-    @Published var selectedFilter: Filter? = .all
+    @Published var selectedFilter = Filter.all
 
     @Published var filterText = ""
     @Published var filterTokens = [SearchToken]()
@@ -37,8 +37,11 @@ class DataController: ObservableObject {
     @Published var sortOldestFirst = true
     @Published var sortType = SortType.name
 
+    @Published var currentUser: CachedUser?
+
     @Published var selectedTeam: CachedTeam?
     @Published var selectedHost: CachedHost?
+    @Published var selectedUser: CachedUser?
     @Published var activeEnvironment: AppEnvironment?
 
     @Published var showingAlert = false
@@ -56,6 +59,12 @@ class DataController: ObservableObject {
     @Published var hostsLastUpdatedAt: Date? {
         didSet {
             UserDefaults.standard.setValue(hostsLastUpdatedAt, forKey: "hostsLastUpdatedAt")
+        }
+    }
+
+    @Published var usersLastUpdatedAt: Date? {
+        didSet {
+            UserDefaults.standard.setValue(hostsLastUpdatedAt, forKey: "usersLastUpdatedAt")
         }
     }
 
@@ -82,6 +91,14 @@ class DataController: ObservableObject {
 
         if let hostsLastUpdatedAt = UserDefaults.standard.value(forKey: "hostsLastUpdatedAt") as? Date {
             self.hostsLastUpdatedAt = hostsLastUpdatedAt
+        }
+
+        if let usersLastUpdatedAt = UserDefaults.standard.value(forKey: "usersLastUpdatedAt") as? Date {
+            self.usersLastUpdatedAt = usersLastUpdatedAt
+        }
+
+        if let currentUser = UserDefaults.standard.value(forKey: "usersLastUpdatedAt") as? CachedUser {
+            self.currentUser = currentUser
         }
 
         if let selectedFilter = UserDefaults.standard.value(forKey: "selectedFilter") as? Filter {
@@ -150,9 +167,6 @@ class DataController: ObservableObject {
         let request2: NSFetchRequest<NSFetchRequestResult> = CachedUser.fetchRequest()
         delete(request2)
 
-        let request3: NSFetchRequest<NSFetchRequestResult> = CachedUserTeam.fetchRequest()
-        delete(request3)
-
         let request4: NSFetchRequest<NSFetchRequestResult> = CachedHost.fetchRequest()
         delete(request4)
 
@@ -160,9 +174,25 @@ class DataController: ObservableObject {
         delete(request5)
 
     }
+
+    func usersForSelectedFilter() -> [CachedUser] {
+        let filter = selectedFilter
+        var predicates = [NSPredicate]()
+
+        if let team = filter.team {
+            let teamPredicate = NSPredicate(format: "teams.@count > 0", "\(team.id)")
+            predicates.append(teamPredicate)
+        }
+
+        let request = CachedUser.fetchRequest()
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        let allUsers = (try? container.viewContext.fetch(request)) ?? []
+        return allUsers
+    }
+
     // swiftlint:disable:next function_body_length
     func hostsForSelectedFilter() -> [CachedHost] {
-        let filter = selectedFilter ?? .all
+        let filter = selectedFilter
         var predicates = [NSPredicate]()
         var sortDescriptors = [NSSortDescriptor]()
 
@@ -400,14 +430,17 @@ class DataController: ObservableObject {
         cachedUser.ssoEnabled = downloadedUser.ssoEnabled
         cachedUser.apiOnly = downloadedUser.apiOnly
 
+        UserDefaults.standard.setValue(cachedUser.id, forKey: "loggedInUserID")
+
         for team in downloadedTeams {
-            let cachedTeam = CachedUserTeam(context: viewContext)
+            let cachedTeam = CachedTeam(context: viewContext)
             cachedTeam.id = Int16(team.id)
             cachedTeam.name = team.name
-            cachedTeam.teamDescription = team.description
 
-            cachedUser.addToUserTeams(cachedTeam)
+            cachedUser.addToTeams(cachedTeam)
         }
+
+        print(String(describing: cachedUser.teamsArray))
 
         try? viewContext.save()
     }

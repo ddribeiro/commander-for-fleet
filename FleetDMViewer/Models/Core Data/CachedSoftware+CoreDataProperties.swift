@@ -2,7 +2,7 @@
 //  CachedSoftware+CoreDataProperties.swift
 //  FleetDMViewer
 //
-//  Created by Dale Ribeiro on 8/24/23.
+//  Created by Dale Ribeiro on 12/1/23.
 //
 //
 
@@ -15,15 +15,15 @@ extension CachedSoftware {
         return NSFetchRequest<CachedSoftware>(entityName: "CachedSoftware")
     }
 
-    @NSManaged public var id: Int16
-    @NSManaged public var name: String?
-    @NSManaged public var version: String?
     @NSManaged public var bundleIdentifier: String?
-    @NSManaged public var source: String?
+    @NSManaged public var id: Int16
     @NSManaged public var installedPaths: String?
     @NSManaged public var lastOpenedAt: Date?
+    @NSManaged public var name: String?
+    @NSManaged public var source: String?
+    @NSManaged public var version: String?
+    @NSManaged public var hosts: NSSet?
     @NSManaged public var vulnerabilities: NSSet?
-    @NSManaged public var host: CachedHost?
 
     var wrappedName: String {
         name ?? ""
@@ -57,22 +57,47 @@ extension CachedSoftware {
         }
     }
 
+    var hostsArray: [CachedHost] {
+        let set = hosts as? Set<CachedHost> ?? []
+
+        return set.sorted {
+            $0.wrappedComputerName < $1.wrappedComputerName
+        }
+    }
+
 }
 
-// MARK: Generated accessors for vulnerability
+// MARK: Generated accessors for hosts
 extension CachedSoftware {
 
-    @objc(addVulnerabilityObject:)
-    @NSManaged public func addToVulnerability(_ value: CachedVulnerability)
+    @objc(addHostsObject:)
+    @NSManaged public func addToHosts(_ value: CachedHost)
 
-    @objc(removeVulnerabilityObject:)
-    @NSManaged public func removeFromVulnerability(_ value: CachedVulnerability)
+    @objc(removeHostsObject:)
+    @NSManaged public func removeFromHosts(_ value: CachedHost)
 
-    @objc(addVulnerability:)
-    @NSManaged public func addToVulnerability(_ values: NSSet)
+    @objc(addHosts:)
+    @NSManaged public func addToHosts(_ values: NSSet)
 
-    @objc(removeVulnerability:)
-    @NSManaged public func removeFromVulnerability(_ values: NSSet)
+    @objc(removeHosts:)
+    @NSManaged public func removeFromHosts(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for vulnerabilities
+extension CachedSoftware {
+
+    @objc(addVulnerabilitiesObject:)
+    @NSManaged public func addToVulnerabilities(_ value: CachedVulnerability)
+
+    @objc(removeVulnerabilitiesObject:)
+    @NSManaged public func removeFromVulnerabilities(_ value: CachedVulnerability)
+
+    @objc(addVulnerabilities:)
+    @NSManaged public func addToVulnerabilities(_ values: NSSet)
+
+    @objc(removeVulnerabilities:)
+    @NSManaged public func removeFromVulnerabilities(_ values: NSSet)
 
 }
 

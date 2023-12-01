@@ -2,7 +2,7 @@
 //  CachedProfile+CoreDataProperties.swift
 //  FleetDMViewer
 //
-//  Created by Dale Ribeiro on 8/24/23.
+//  Created by Dale Ribeiro on 12/1/23.
 //
 //
 
@@ -15,28 +15,29 @@ extension CachedProfile {
         return NSFetchRequest<CachedProfile>(entityName: "CachedProfile")
     }
 
-    @NSManaged public var profileId: Int16
-    @NSManaged public var name: String?
-    @NSManaged public var status: String?
-    @NSManaged public var operationType: String?
     @NSManaged public var detail: String?
-    @NSManaged public var mdm: CachedMdm?
+    @NSManaged public var name: String?
+    @NSManaged public var operationType: String?
+    @NSManaged public var profileId: Int16
+    @NSManaged public var status: String?
+    @NSManaged public var hosts: NSSet?
 
-    var wrappedName: String {
-        name ?? ""
-    }
+}
 
-    var wrappedStatus: String {
-        status ?? ""
-    }
+// MARK: Generated accessors for hosts
+extension CachedProfile {
 
-    var wrappedOperationType: String {
-        operationType ?? ""
-    }
+    @objc(addHostsObject:)
+    @NSManaged public func addToHosts(_ value: CachedHost)
 
-    var wrappedDetail: String {
-        detail ?? ""
-    }
+    @objc(removeHostsObject:)
+    @NSManaged public func removeFromHosts(_ value: CachedHost)
+
+    @objc(addHosts:)
+    @NSManaged public func addToHosts(_ values: NSSet)
+
+    @objc(removeHosts:)
+    @NSManaged public func removeFromHosts(_ values: NSSet)
 
 }
 

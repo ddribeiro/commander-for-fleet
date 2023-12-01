@@ -2,7 +2,7 @@
 //  CachedUser+CoreDataProperties.swift
 //  FleetDMViewer
 //
-//  Created by Dale Ribeiro on 8/23/23.
+//  Created by Dale Ribeiro on 12/1/23.
 //
 //
 
@@ -50,30 +50,29 @@ extension CachedUser {
         updatedAt ?? Date.now
     }
 
-    var teamsArray: [CachedUserTeam] {
-        let set = teams as? Set<CachedUserTeam> ?? []
+    var teamsArray: [CachedTeam] {
+        let set = teams as? Set<CachedTeam> ?? []
 
         return set.sorted {
             $0.wrappedName < $1.wrappedName
         }
     }
-
 }
 
 // MARK: Generated accessors for teams
 extension CachedUser {
 
     @objc(addTeamsObject:)
-    @NSManaged public func addToUserTeams(_ value: CachedUserTeam)
+    @NSManaged public func addToTeams(_ value: CachedTeam)
 
     @objc(removeTeamsObject:)
-    @NSManaged public func removeFromUserTeams(_ value: CachedUserTeam)
+    @NSManaged public func removeFromTeams(_ value: CachedTeam)
 
     @objc(addTeams:)
-    @NSManaged public func addToUserTeams(_ values: NSSet)
+    @NSManaged public func addToTeams(_ values: NSSet)
 
     @objc(removeTeams:)
-    @NSManaged public func removeFromUserTeams(_ values: NSSet)
+    @NSManaged public func removeFromTeams(_ values: NSSet)
 
 }
 

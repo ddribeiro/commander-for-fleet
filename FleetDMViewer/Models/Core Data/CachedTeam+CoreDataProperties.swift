@@ -2,7 +2,7 @@
 //  CachedTeam+CoreDataProperties.swift
 //  FleetDMViewer
 //
-//  Created by Dale Ribeiro on 8/24/23.
+//  Created by Dale Ribeiro on 12/1/23.
 //
 //
 
@@ -18,8 +18,8 @@ extension CachedTeam {
     @NSManaged public var hostCount: Int16
     @NSManaged public var id: Int16
     @NSManaged public var name: String?
-    @NSManaged public var user: CachedUser?
     @NSManaged public var hosts: NSSet?
+    @NSManaged public var users: NSSet?
 
     var wrappedName: String {
         name ?? ""
@@ -33,12 +33,20 @@ extension CachedTeam {
         }
     }
 
+    var usersArray: [CachedUser] {
+        let set = users as? Set<CachedUser> ?? []
+
+        return set.sorted {
+            $0.wrappedName < $1.wrappedName
+        }
+    }
+
 }
 
-// MARK: Generated accessors for host
+// MARK: Generated accessors for hosts
 extension CachedTeam {
 
-    @objc(addHostObject:)
+    @objc(addHostsObject:)
     @NSManaged public func addToHosts(_ value: CachedHost)
 
     @objc(removeHostsObject:)
@@ -49,6 +57,23 @@ extension CachedTeam {
 
     @objc(removeHosts:)
     @NSManaged public func removeFromHosts(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for users
+extension CachedTeam {
+
+    @objc(addUsersObject:)
+    @NSManaged public func addToUsers(_ value: CachedUser)
+
+    @objc(removeUsersObject:)
+    @NSManaged public func removeFromUsers(_ value: CachedUser)
+
+    @objc(addUsers:)
+    @NSManaged public func addToUsers(_ values: NSSet)
+
+    @objc(removeUsers:)
+    @NSManaged public func removeFromUsers(_ values: NSSet)
 
 }
 

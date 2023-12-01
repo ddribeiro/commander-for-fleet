@@ -16,7 +16,7 @@ struct HostView: View {
     @State private var selectedView = "Policies"
     @State private var lockCode: String = ""
 
-    var host: CachedHost?
+    var id: Int16?
     var views = ["Policies", "Software", "Profiles"]
 
     var body: some View {
@@ -215,7 +215,7 @@ struct HostView: View {
         guard dataController.activeEnvironment != nil else { return }
 
         do {
-            if let id = dataController.selectedHost?.id {
+            if let id = id {
                 updatedHost = try await getHost(hostID: Int(id))
             }
         } catch {

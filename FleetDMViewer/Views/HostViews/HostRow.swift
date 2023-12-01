@@ -11,7 +11,7 @@ struct HostRow: View {
     @EnvironmentObject var dataController: DataController
     var host: CachedHost
     var body: some View {
-        NavigationLink(value: host) {
+        NavigationLink(value: host.id) {
             HStack {
                 Image(systemName: "laptopcomputer")
                     .imageScale(.large)
