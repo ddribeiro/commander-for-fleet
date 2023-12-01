@@ -13,7 +13,7 @@ struct UsersTableView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.networkManager) var networkManager
 
-    @State private var sortOrder = [KeyPathComparator(\CachedUser.wrappedName, order: .reverse)]
+    @State private var sortOrder = [KeyPathComparator(\CachedUser.id, order: .reverse)]
 
     @Binding var selection: Set<CachedUser.ID>
 

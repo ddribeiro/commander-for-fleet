@@ -57,6 +57,14 @@ extension Endpoint where T == Host {
     }
 }
 
+extension Endpoint where T == [Software] {
+    static let software = Endpoint(
+        path: "/api/v1/fleet/software",
+        type: [Software].self,
+        keyPath: "software"
+    )
+}
+
 extension Endpoint where T == [User] {
     static let users = Endpoint(
         path: "api/v1/fleet/users",

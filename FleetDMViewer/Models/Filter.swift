@@ -20,7 +20,7 @@ struct Filter: Identifiable, Hashable {
 
     static var all = Filter(
         id: 0,
-        name: "All Hosts",
+        name: "All",
         icon: "laptopcomputer"
     )
 

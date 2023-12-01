@@ -26,6 +26,8 @@ struct Sidebar: View {
     @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
 
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
+
     let smartFilters: [Filter] = [.all, .recentlyEnrolled]
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
@@ -49,9 +51,14 @@ struct Sidebar: View {
                 NavigationLink(value: Panel.hosts) {
                     Label("Hosts", systemImage: "laptopcomputer")
                 }
-
-                NavigationLink(value: Panel.users) {
-                    Label("Users", systemImage: "person.3")
+                if let savedUserID = UserDefaults.standard.value(forKey: "loggedInUserID") as? Int16 {
+                if let loggedInUser = users.first(where: { $0.id == savedUserID}) {
+                    if loggedInUser.globalRole == "admin" {
+                        NavigationLink(value: Panel.users) {
+                            Label("Users", systemImage: "person.3")
+                        }
+                    }
+                    }
                 }
 
                 NavigationLink(value: Panel.software) {

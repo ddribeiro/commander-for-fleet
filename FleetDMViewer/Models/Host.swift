@@ -105,6 +105,7 @@ struct Software: Codable, Identifiable, Hashable {
     var vulnerabilities: [Vulnerability]?
     var installedPaths: [String]?
     var lastOpenedAt: Date?
+    var hostsCount: Int?
 
     static let example = Software(
         id: 2089,
@@ -113,24 +114,27 @@ struct Software: Codable, Identifiable, Hashable {
         source: "apps",
         vulnerabilities: [.example],
         installedPaths: ["/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app"],
-        lastOpenedAt: .now
+        lastOpenedAt: .now,
+        hostsCount: 2
     )
 }
 
 struct Vulnerability: Codable, Hashable {
-    var cve: String
+    var cveDescription: String?
     var detailsLink: String
     var cvssScore: Double?
-    var epssProbability: Double
-    var cisaKnownExploit: Bool
-    var cvePublished: Date
+    var cvePublished: Date?
+    var epssProbability: Double?
+    var cisaKnownExploit: Bool?
+    var cve: String
+    var resolvedInVersion: String?
 
     static let example = Vulnerability(
-        cve: "CVE-2016-4613",
         detailsLink: "https://nvd.nist.gov/vuln/detail/CVE-2016-4613",
+        cvePublished: .now,
         epssProbability: 30.1,
         cisaKnownExploit: false,
-        cvePublished: .now
+        cve: "CVE-2016-4613"
     )
 }
 

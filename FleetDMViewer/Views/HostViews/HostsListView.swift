@@ -31,19 +31,6 @@ struct HostsListView: View {
                     HostRow(host: host)
                 }
             }
-            .searchable(
-                text: $dataController.filterText,
-                tokens: $dataController.filterTokens,
-                suggestedTokens: $dataController.allTokens
-            ) { token in
-                Text(token.name)
-            }
-            .overlay {
-                if dataController.hostsForSelectedFilter().isEmpty {
-                    ContentUnavailableView.search
-                }
-            }
-            .navigationTitle(dataController.selectedFilter.name)
         } else {
             NoHostView()
                 .sheet(isPresented: $isShowingSignInSheet) {

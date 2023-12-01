@@ -42,7 +42,7 @@ struct HostsView: View {
                 HostsTable(selection: $selection)
             }
         }
-        .navigationTitle(dataController.selectedFilter.name)
+        .navigationTitle(dataController.selectedFilter == .all ? "All Hosts" : dataController.selectedFilter.name)
         .navigationDestination(for: CachedHost.ID.self) { id in
             HostView(id: id)
         }
@@ -87,7 +87,7 @@ struct HostsView: View {
                         Text("All Hosts").tag(Filter.all)
                         Divider()
                         ForEach(teamFilters) { filter in
-                            Text(filter.name).tag(filter).badge(filter.hostCount)
+                            Text(filter.name).badge(filter.hostCount).tag(filter)
                         }
                     }
                 } label: {
@@ -215,6 +215,7 @@ struct HostsView: View {
             cachedTeam.hostCount = Int16(downloadedTeam.hostCount ?? 0)
             cachedTeam.id = Int16(downloadedTeam.id)
             cachedTeam.name = downloadedTeam.name
+            cachedTeam.role = downloadedTeam.role
         }
 
         try? moc.save()

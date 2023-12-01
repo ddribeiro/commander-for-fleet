@@ -20,11 +20,11 @@ struct UsersView: View {
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
     var displayAsList: Bool {
-        #if os(iOS)
+#if os(iOS)
         return sizeClass == .compact
-        #else
+#else
         return false
-        #endif
+#endif
     }
 
     var teamFilters: [Filter] {
@@ -41,7 +41,7 @@ struct UsersView: View {
                 UsersTableView(selection: $selection)
             }
         }
-        .navigationTitle(dataController.selectedFilter.name)
+        .navigationTitle(dataController.selectedFilter == .all ? "All Users" : dataController.selectedFilter.name)
         .navigationDestination(for: CachedUser.self) { user in
             UserView(user: user)
         }
@@ -54,7 +54,15 @@ struct UsersView: View {
         .refreshable {
             await fetchUsers()
         }
-        #if os(iOS)
+        .overlay {
+            if dataController.usersForSelectedFilter().isEmpty {
+                ContentUnavailableView.search
+            }
+        }
+        .searchable(
+            text: $dataController.filterText
+        )
+#if os(iOS)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
@@ -139,16 +147,13 @@ struct UsersView: View {
             cachedUser.removeFromTeams(cachedUser.teams ?? [] as NSSet)
 
             for team in downloadedUser.teams {
-                if let team = team {
-                    let cachedTeam = CachedTeam(context: moc)
-                    cachedTeam.id = Int16(team.id)
-                    cachedTeam.name = team.name
+                let cachedTeam = CachedTeam(context: moc)
+                cachedTeam.id = Int16(team.id)
+                cachedTeam.name = team.name
 
-                    cachedUser.addToTeams(cachedTeam)
+                cachedUser.addToTeams(cachedTeam)
 
-                }
             }
-            print(String(describing: cachedUser.teams))
         }
 
         try? moc.save()

@@ -68,6 +68,12 @@ class DataController: ObservableObject {
         }
     }
 
+    @Published var softwareLastUpdatedAt: Date? {
+        didSet {
+            UserDefaults.standard.setValue(softwareLastUpdatedAt, forKey: "softwareLastUpdatedAt")
+        }
+    }
+
     @Published var allTokens = [
         SearchToken(name: "macOS", platform: ["darwin"]),
         SearchToken(name: "Windows", platform: ["windows"]),
@@ -95,6 +101,10 @@ class DataController: ObservableObject {
 
         if let usersLastUpdatedAt = UserDefaults.standard.value(forKey: "usersLastUpdatedAt") as? Date {
             self.usersLastUpdatedAt = usersLastUpdatedAt
+        }
+
+        if let softwareLastUpdatedAt = UserDefaults.standard.value(forKey: "softwareLastUpdatedAt") as? Date {
+            self.softwareLastUpdatedAt = softwareLastUpdatedAt
         }
 
         if let currentUser = UserDefaults.standard.value(forKey: "usersLastUpdatedAt") as? CachedUser {
@@ -180,14 +190,45 @@ class DataController: ObservableObject {
         var predicates = [NSPredicate]()
 
         if let team = filter.team {
-            let teamPredicate = NSPredicate(format: "teams.@count > 0", "\(team.id)")
+            let teamPredicate = NSPredicate(format: "ANY teams.id = %@ OR teams.@count == 0", "\(team.id)")
             predicates.append(teamPredicate)
+        }
+
+        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
+
+        if trimmedFilterText.isEmpty == false {
+            let userNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
+            let emailPredicate = NSPredicate(format: "email CONTAINS[c] %@", trimmedFilterText)
+            let combinedPredicate = NSCompoundPredicate(
+                orPredicateWithSubpredicates: [userNamePredicate, emailPredicate]
+            )
+
+            predicates.append(combinedPredicate)
         }
 
         let request = CachedUser.fetchRequest()
         request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         let allUsers = (try? container.viewContext.fetch(request)) ?? []
         return allUsers
+    }
+
+    func softwareForSelectedFilter() -> [CachedSoftware] {
+        var predicates = [NSPredicate]()
+
+        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
+
+        if trimmedFilterText.isEmpty == false {
+            let softwareNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
+            let combinedPredicate = NSCompoundPredicate(
+                orPredicateWithSubpredicates: [softwareNamePredicate]
+            )
+
+            predicates.append(combinedPredicate)
+        }
+        let request = CachedSoftware.fetchRequest()
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        let allSoftware = (try? container.viewContext.fetch(request)) ?? []
+        return allSoftware
     }
 
     // swiftlint:disable:next function_body_length
@@ -309,7 +350,13 @@ class DataController: ObservableObject {
             KeychainWrapper.default.set(password, forKey: "password")
 
             let user = response.user
-            let teams = response.availableTeams
+            var teams: [Team] {
+                if response.user.teams.isEmpty {
+                    return response.availableTeams
+                }
+
+                return response.user.teams
+            }
 
             deleteAll()
 
@@ -436,12 +483,12 @@ class DataController: ObservableObject {
             let cachedTeam = CachedTeam(context: viewContext)
             cachedTeam.id = Int16(team.id)
             cachedTeam.name = team.name
+            cachedTeam.role = team.role
 
             cachedUser.addToTeams(cachedTeam)
         }
 
-        print(String(describing: cachedUser.teamsArray))
-
+        print(cachedUser.teamsArray)
         try? viewContext.save()
     }
 

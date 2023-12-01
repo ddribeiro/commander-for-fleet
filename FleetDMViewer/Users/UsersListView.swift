@@ -26,7 +26,7 @@ struct UsersListView: View {
     var body: some View {
         List(selection: $dataController.selectedUser) {
             ForEach(dataController.usersForSelectedFilter()) { user in
-                Text(user.wrappedName)
+                UserRow(user: user)
             }
         }
     }

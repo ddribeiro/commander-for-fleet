@@ -16,7 +16,7 @@ extension CachedSoftware {
     }
 
     @NSManaged public var bundleIdentifier: String?
-    @NSManaged public var id: Int16
+    @NSManaged public var id: Int32
     @NSManaged public var installedPaths: String?
     @NSManaged public var lastOpenedAt: Date?
     @NSManaged public var name: String?
@@ -24,6 +24,7 @@ extension CachedSoftware {
     @NSManaged public var version: String?
     @NSManaged public var hosts: NSSet?
     @NSManaged public var vulnerabilities: NSSet?
+    @NSManaged public var hostCount: Int16
 
     var wrappedName: String {
         name ?? ""

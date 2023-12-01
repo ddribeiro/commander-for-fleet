@@ -16,11 +16,11 @@ struct SoftwareRow: View {
                     .imageScale(.large)
 
                 VStack(alignment: .leading) {
-                    Text(software.name)
+                    Text(software.name ?? "")
                         .font(.headline)
                         .lineLimit(1)
 
-                    Text("Version: \(software.version)")
+                    Text("Version: \(software.version ?? "")")
                         .foregroundStyle(.secondary)
                         .font(.body.smallCaps())
                 }

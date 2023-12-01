@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SoftwareView: View {
+struct HostSoftwareView: View {
     let software: [Software]
     var vulnerableSoftware: [Software] {
         software.filter { software in
@@ -35,11 +35,5 @@ struct SoftwareView: View {
                 }
             }
         }
-    }
-}
-
-struct SoftwareView_Previews: PreviewProvider {
-    static var previews: some View {
-        SoftwareView(software: [.example])
     }
 }

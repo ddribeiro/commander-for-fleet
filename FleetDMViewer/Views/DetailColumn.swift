@@ -26,7 +26,7 @@ struct DetailColumn: View {
         case .policies:
             EmptyView()
         case .software:
-            EmptyView()
+            AllSoftwareView()
         }
     }
 }

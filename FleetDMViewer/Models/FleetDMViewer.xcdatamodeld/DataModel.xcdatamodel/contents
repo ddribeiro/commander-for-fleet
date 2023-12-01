@@ -94,7 +94,8 @@
     </entity>
     <entity name="CachedSoftware" representedClassName="CachedSoftware" syncable="YES">
         <attribute name="bundleIdentifier" optional="YES" attributeType="String"/>
-        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="hostCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="installedPaths" optional="YES" attributeType="String"/>
         <attribute name="lastOpenedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -112,6 +113,7 @@
         <attribute name="hostCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="role" optional="YES" attributeType="String"/>
         <relationship name="hosts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedHost" inverseName="team" inverseEntity="CachedHost"/>
         <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedUser" inverseName="teams" inverseEntity="CachedUser"/>
         <uniquenessConstraints>
@@ -140,10 +142,12 @@
     <entity name="CachedVulnerability" representedClassName="CachedVulnerability" syncable="YES">
         <attribute name="cisaKnownExploit" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="cve" optional="YES" attributeType="String"/>
+        <attribute name="cveDescription" optional="YES" attributeType="String"/>
         <attribute name="cvePublished" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="cvssScore" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="detailsLink" optional="YES" attributeType="String"/>
         <attribute name="epssProbability" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="resolvedInVersion" optional="YES" attributeType="String"/>
         <relationship name="software" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedSoftware" inverseName="vulnerabilities" inverseEntity="CachedSoftware"/>
         <uniquenessConstraints>
             <uniquenessConstraint>

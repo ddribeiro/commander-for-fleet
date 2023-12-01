@@ -17,7 +17,7 @@ struct User: Codable, Identifiable {
     var gravatarUrl: String
     var ssoEnabled: Bool
     var apiOnly: Bool
-    var teams: [Team?]
+    var teams: [Team]
 
     static let example = User(
         createdAt: .now,

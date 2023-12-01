@@ -12,6 +12,7 @@ struct Team: Codable, Identifiable, Hashable {
     var name: String
     var description: String
     var hostCount: Int?
+    var role: String?
 
     static let example = Team(
         id: 2,

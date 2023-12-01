@@ -18,11 +18,16 @@ extension CachedTeam {
     @NSManaged public var hostCount: Int16
     @NSManaged public var id: Int16
     @NSManaged public var name: String?
+    @NSManaged public var role: String?
     @NSManaged public var hosts: NSSet?
     @NSManaged public var users: NSSet?
 
     var wrappedName: String {
         name ?? ""
+    }
+
+    var wrappedRole: String {
+        role ?? ""
     }
 
     var hostsArray: [CachedHost] {

@@ -12,10 +12,10 @@ struct SoftwareDetailView: View {
     var body: some View {
         Form {
             Section {
-                LabeledContent("Name", value: software.name)
+                LabeledContent("Name", value: software.name ?? "")
                     .multilineTextAlignment(.trailing)
 
-                LabeledContent("Version", value: software.version)
+                LabeledContent("Version", value: software.version ?? "")
 
                 if let bundleIdentifier = software.bundleIdentifier {
                     LabeledContent("Bundle Identifier", value: bundleIdentifier)
@@ -50,9 +50,9 @@ struct SoftwareDetailView: View {
                                         .font(.body.smallCaps())
                                 }
 
-                                Text("EPSS Probability: \(vulnerability.epssProbability.formatted(.percent))")
-                                    .foregroundStyle(.secondary)
-                                    .font(.body.smallCaps())
+//                                Text("EPSS Probability: \(vulnerability.epssProbability?.formatted(.percent))")
+//                                    .foregroundStyle(.secondary)
+//                                    .font(.body.smallCaps())
                             }
                             Spacer()
                             VStack {
@@ -62,7 +62,7 @@ struct SoftwareDetailView: View {
                                 Text("Known Exploit")
                                     .font(.body.smallCaps())
                             }
-                            .opacity(vulnerability.cisaKnownExploit ? 1 : 0)
+                            .opacity(vulnerability.cisaKnownExploit ?? false ? 1 : 0)
                         }
 
                     }
