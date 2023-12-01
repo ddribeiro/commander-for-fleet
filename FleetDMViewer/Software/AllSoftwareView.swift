@@ -33,7 +33,7 @@ struct AllSoftwareView: View {
                 AllSoftwareTableView(selection: $selection)
             }
         }
-        .navigationTitle(dataController.selectedFilter == .all ? "All Software" : dataController.selectedFilter.name)
+        .navigationTitle("Software")
         .task {
             if let softwareLastUpdatedAt = dataController.softwareLastUpdatedAt {
                 guard softwareLastUpdatedAt < .now.addingTimeInterval(-43200) else { return }
@@ -42,6 +42,9 @@ struct AllSoftwareView: View {
         }
         .refreshable {
             await fetchSoftware()
+        }
+        .onAppear {
+            dataController.filterText = ""
         }
         .overlay {
             if dataController.softwareForSelectedFilter().isEmpty {

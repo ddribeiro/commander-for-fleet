@@ -43,7 +43,6 @@
         <attribute name="uuid" optional="YES" attributeType="String"/>
         <relationship name="battery" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedBattery" inverseName="host" inverseEntity="CachedBattery"/>
         <relationship name="commands" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedCommandResponse" inverseName="hosts" inverseEntity="CachedCommandResponse"/>
-        <relationship name="mdm" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedMdm" inverseName="host" inverseEntity="CachedMdm"/>
         <relationship name="policies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedPolicy" inverseName="hosts" inverseEntity="CachedPolicy"/>
         <relationship name="profiles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedProfile" inverseName="hosts" inverseEntity="CachedProfile"/>
         <relationship name="software" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedSoftware" inverseName="hosts" inverseEntity="CachedSoftware"/>
@@ -51,19 +50,6 @@
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
-    </entity>
-    <entity name="CachedMdm" representedClassName="CachedMdm" syncable="YES">
-        <attribute name="encryptionKeyAvailable" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="enrollmentStatus" optional="YES" attributeType="String"/>
-        <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="serverUrl" optional="YES" attributeType="String"/>
-        <relationship name="host" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedHost" inverseName="mdm" inverseEntity="CachedHost"/>
-        <relationship name="profiles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedProfile"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="serverUrl"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>

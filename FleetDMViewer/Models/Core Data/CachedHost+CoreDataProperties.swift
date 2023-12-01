@@ -37,7 +37,6 @@ extension CachedHost {
     @NSManaged public var uptime: Int64
     @NSManaged public var uuid: String?
     @NSManaged public var battery: CachedBattery?
-    @NSManaged public var mdm: CachedMdm?
     @NSManaged public var policies: NSSet?
     @NSManaged public var software: NSSet?
     @NSManaged public var team: CachedTeam?

@@ -9,18 +9,18 @@ import SwiftUI
 
 struct SoftwareRow: View {
     var software: Software
+
     var body: some View {
-        NavigationStack {
             HStack {
                 Image(systemName: "app.badge")
                     .imageScale(.large)
 
                 VStack(alignment: .leading) {
-                    Text(software.name ?? "")
+                    Text(software.name)
                         .font(.headline)
                         .lineLimit(1)
 
-                    Text("Version: \(software.version ?? "")")
+                    Text("Version: \(software.version)")
                         .foregroundStyle(.secondary)
                         .font(.body.smallCaps())
                 }
@@ -39,7 +39,6 @@ struct SoftwareRow: View {
                     }
                 }
             }
-        }
     }
 }
 

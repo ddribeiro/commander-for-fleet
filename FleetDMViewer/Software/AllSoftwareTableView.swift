@@ -24,6 +24,7 @@ struct AllSoftwareTableView: View {
                 AllSoftwareRow(software: software)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .layoutPriority(1)
+
             }
 
             TableColumn("Version", value: \.wrappedVersion) { software in
@@ -45,8 +46,16 @@ struct AllSoftwareTableView: View {
             }
 
             TableColumn("Vulnerabilties", value: \.vulnerabilitiesArray.count) { software in
-                Text("\(software.vulnerabilitiesArray.count)")
-                    .monospacedDigit()
+                HStack {
+
+                        Image(systemName: "exclamationmark.shield.fill")
+                            .opacity(software.vulnerabilitiesArray.count != 0 ? 1 : 0)
+                            .imageScale(.large)
+                            .foregroundStyle(.red)
+
+                    Text("\(software.vulnerabilitiesArray.count)")
+                        .monospacedDigit()
+                }
             }
 
             TableColumn("Details") { software in

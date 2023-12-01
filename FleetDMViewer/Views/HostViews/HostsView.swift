@@ -58,6 +58,9 @@ struct HostsView: View {
             await fetchTeams()
             await fetchHosts()
         }
+        .onAppear {
+            dataController.filterText = ""
+        }
         .overlay {
             if dataController.hostsForSelectedFilter().isEmpty {
                 ContentUnavailableView.search

@@ -12,10 +12,10 @@ struct SoftwareDetailView: View {
     var body: some View {
         Form {
             Section {
-                LabeledContent("Name", value: software.name ?? "")
+                LabeledContent("Name", value: software.name)
                     .multilineTextAlignment(.trailing)
 
-                LabeledContent("Version", value: software.version ?? "")
+                LabeledContent("Version", value: software.version)
 
                 if let bundleIdentifier = software.bundleIdentifier {
                     LabeledContent("Bundle Identifier", value: bundleIdentifier)

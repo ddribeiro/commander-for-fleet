@@ -160,9 +160,13 @@ struct HostView: View {
                         }
                     case "Software":
                         if let software = host.software {
-                            HostSoftwareView(software: software)
+                            SoftwareView(software: software)
                         } else {
-                            ProgressView()
+                            ContentUnavailableView(
+                                "No Software",
+                                systemImage: "exclamationmark.triangle",
+                                description: Text("This host has no software.")
+                                )
                         }
                     case "Profiles":
                         if let profiles = host.mdm?.profiles {

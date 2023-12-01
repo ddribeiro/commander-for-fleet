@@ -18,7 +18,13 @@ struct UserView: View {
             Section {
                 LabeledContent("Name", value: user.wrappedName)
                 LabeledContent("Email", value: user.wrappedEmail)
-                LabeledContent("Created At", value: user.wrappedCreatedAt.formatted(date: .abbreviated, time: .shortened))
+                LabeledContent(
+                    "Created At",
+                    value: user.wrappedCreatedAt.formatted(
+                        date: .abbreviated,
+                        time: .shortened
+                    )
+                )
             }
 
             Section("Teams") {
