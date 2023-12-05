@@ -17,7 +17,7 @@
 		5E680A5D2B1657EA0024C757 /* APITokenRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E680A5C2B1657EA0024C757 /* APITokenRefreshView.swift */; };
 		5E680A5F2B168E520024C757 /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E680A5E2B168E520024C757 /* Sidebar.swift */; };
 		5E7DAB0D2A339C7F00DDFAFC /* NoHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */; };
-		5E815E562B1944CD00E0E44A /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E815E552B1944CD00E0E44A /* UserView.swift */; };
+		5E815E562B1944CD00E0E44A /* UserDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E815E552B1944CD00E0E44A /* UserDetailView.swift */; };
 		5E815E932B1A2DF300E0E44A /* CachedTeam+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E815E7F2B1A2DF200E0E44A /* CachedTeam+CoreDataClass.swift */; };
 		5E815E942B1A2DF300E0E44A /* CachedTeam+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E815E802B1A2DF200E0E44A /* CachedTeam+CoreDataProperties.swift */; };
 		5E815E952B1A2DF300E0E44A /* CachedVulnerability+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E815E812B1A2DF200E0E44A /* CachedVulnerability+CoreDataClass.swift */; };
@@ -38,6 +38,9 @@
 		5E815EA62B1A2DF300E0E44A /* CachedProfile+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E815E922B1A2DF300E0E44A /* CachedProfile+CoreDataProperties.swift */; };
 		5E815EA92B1A606300E0E44A /* AllSoftwareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E815EA82B1A606300E0E44A /* AllSoftwareView.swift */; };
 		5E8260412AA1230B0021289B /* SmartFilterRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8260402AA1230B0021289B /* SmartFilterRow.swift */; };
+		5E8311322B1FBCB40029480B /* AllPoliciesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8311312B1FBCB40029480B /* AllPoliciesView.swift */; };
+		5E8311342B1FD4130029480B /* AllPoliciesTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8311332B1FD4130029480B /* AllPoliciesTableView.swift */; };
+		5E8311382B1FD7800029480B /* AllPoliciesRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8311372B1FD7800029480B /* AllPoliciesRow.swift */; };
 		5E9038D52A4384F50077F3DC /* SoftwareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D42A4384F50077F3DC /* SoftwareView.swift */; };
 		5E9038D72A4387670077F3DC /* SoftwareRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D62A4387670077F3DC /* SoftwareRow.swift */; };
 		5E9038D92A43944B0077F3DC /* SoftwareDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D82A43944B0077F3DC /* SoftwareDetailView.swift */; };
@@ -93,7 +96,7 @@
 		5E680A5C2B1657EA0024C757 /* APITokenRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = APITokenRefreshView.swift; path = FleetDMViewer/Views/APITokenRefreshView.swift; sourceTree = SOURCE_ROOT; };
 		5E680A5E2B168E520024C757 /* Sidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sidebar.swift; sourceTree = "<group>"; };
 		5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoHostView.swift; sourceTree = "<group>"; };
-		5E815E552B1944CD00E0E44A /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
+		5E815E552B1944CD00E0E44A /* UserDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailView.swift; sourceTree = "<group>"; };
 		5E815E7F2B1A2DF200E0E44A /* CachedTeam+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedTeam+CoreDataClass.swift"; sourceTree = "<group>"; };
 		5E815E802B1A2DF200E0E44A /* CachedTeam+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedTeam+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		5E815E812B1A2DF200E0E44A /* CachedVulnerability+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedVulnerability+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -114,6 +117,9 @@
 		5E815E922B1A2DF300E0E44A /* CachedProfile+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedProfile+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		5E815EA82B1A606300E0E44A /* AllSoftwareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllSoftwareView.swift; sourceTree = "<group>"; };
 		5E8260402AA1230B0021289B /* SmartFilterRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartFilterRow.swift; sourceTree = "<group>"; };
+		5E8311312B1FBCB40029480B /* AllPoliciesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllPoliciesView.swift; sourceTree = "<group>"; };
+		5E8311332B1FD4130029480B /* AllPoliciesTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllPoliciesTableView.swift; sourceTree = "<group>"; };
+		5E8311372B1FD7800029480B /* AllPoliciesRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllPoliciesRow.swift; sourceTree = "<group>"; };
 		5E9038D42A4384F50077F3DC /* SoftwareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareView.swift; sourceTree = "<group>"; };
 		5E9038D62A4387670077F3DC /* SoftwareRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareRow.swift; sourceTree = "<group>"; };
 		5E9038D82A43944B0077F3DC /* SoftwareDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareDetailView.swift; sourceTree = "<group>"; };
@@ -244,6 +250,16 @@
 			path = Software;
 			sourceTree = "<group>";
 		};
+		5E8311302B1FBCAA0029480B /* All Policies */ = {
+			isa = PBXGroup;
+			children = (
+				5E8311312B1FBCB40029480B /* AllPoliciesView.swift */,
+				5E8311332B1FD4130029480B /* AllPoliciesTableView.swift */,
+				5E8311372B1FD7800029480B /* AllPoliciesRow.swift */,
+			);
+			path = "All Policies";
+			sourceTree = "<group>";
+		};
 		5E9B94E02A3231E600A7A0CE /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -280,6 +296,7 @@
 		5EDA66BB2A2A4955006706CD /* FleetDMViewer */ = {
 			isa = PBXGroup;
 			children = (
+				5E8311302B1FBCAA0029480B /* All Policies */,
 				5E815EA72B1A605400E0E44A /* Software */,
 				5EDE46B82B17E43500BA99A4 /* Users */,
 				5E2A7D092B054C5A00D1EFFE /* Extensions */,
@@ -329,7 +346,7 @@
 				5EDE46BB2B17E70700BA99A4 /* UsersListView.swift */,
 				5EDE46C32B19162500BA99A4 /* UserRow.swift */,
 				5EDE46B92B17E44C00BA99A4 /* UsersView.swift */,
-				5E815E552B1944CD00E0E44A /* UserView.swift */,
+				5E815E552B1944CD00E0E44A /* UserDetailView.swift */,
 				5EDE46C12B1915A900BA99A4 /* UsersTableView.swift */,
 			);
 			path = Users;
@@ -503,6 +520,7 @@
 				5ED5596B2B1A65F600AC581E /* AllSoftwareTableView.swift in Sources */,
 				5E9B94E22A3231F900A7A0CE /* LoginRequestBody.swift in Sources */,
 				5E680A5D2B1657EA0024C757 /* APITokenRefreshView.swift in Sources */,
+				5E8311342B1FD4130029480B /* AllPoliciesTableView.swift in Sources */,
 				5E028F452A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift in Sources */,
 				5ECF5D472AF405E200108411 /* SignedOutView.swift in Sources */,
 				5E8260412AA1230B0021289B /* SmartFilterRow.swift in Sources */,
@@ -511,7 +529,7 @@
 				5E9B94E82A32323300A7A0CE /* Endpoint.swift in Sources */,
 				5E815EA32B1A2DF300E0E44A /* CachedPolicy+CoreDataClass.swift in Sources */,
 				5E815E9B2B1A2DF300E0E44A /* CachedHost+CoreDataClass.swift in Sources */,
-				5E815E562B1944CD00E0E44A /* UserView.swift in Sources */,
+				5E815E562B1944CD00E0E44A /* UserDetailView.swift in Sources */,
 				5E815E9F2B1A2DF300E0E44A /* CachedBattery+CoreDataClass.swift in Sources */,
 				5EDC180A2A3B961400691C2E /* ContentView.swift in Sources */,
 				5EDC180E2A409DB100691C2E /* PoliciesView.swift in Sources */,
@@ -524,6 +542,7 @@
 				5E815E942B1A2DF300E0E44A /* CachedTeam+CoreDataProperties.swift in Sources */,
 				5E028F512A4DE24400D90456 /* CommandRow.swift in Sources */,
 				5EEA909F2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld in Sources */,
+				5E8311382B1FD7800029480B /* AllPoliciesRow.swift in Sources */,
 				5E815E962B1A2DF300E0E44A /* CachedVulnerability+CoreDataProperties.swift in Sources */,
 				5E9038DB2A43A0F60077F3DC /* ProfilesRow.swift in Sources */,
 				5E94DCC42B11358300C09185 /* AuthManager.swift in Sources */,
@@ -536,6 +555,7 @@
 				5EDE46B12B179CC100BA99A4 /* DetailColumn.swift in Sources */,
 				5E815E9A2B1A2DF300E0E44A /* CachedUser+CoreDataProperties.swift in Sources */,
 				5EFC7ADF2A9E8F9A00C2ED06 /* Filter.swift in Sources */,
+				5E8311322B1FBCB40029480B /* AllPoliciesView.swift in Sources */,
 				5E9038D52A4384F50077F3DC /* SoftwareView.swift in Sources */,
 				5E2A7D0D2B05577200D1EFFE /* Date-Extension.swift in Sources */,
 				5E0C87DF2B0C098800806EA8 /* Policy.swift in Sources */,

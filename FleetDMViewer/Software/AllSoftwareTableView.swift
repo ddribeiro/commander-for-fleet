@@ -19,7 +19,6 @@ struct AllSoftwareTableView: View {
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
-
             TableColumn("Name", value: \.id) { software in
                 AllSoftwareRow(software: software)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -81,5 +80,6 @@ struct AllSoftwareTableView: View {
                 }
             }
         }
+        .id(UUID())
     }
 }

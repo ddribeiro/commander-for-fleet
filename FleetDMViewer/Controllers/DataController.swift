@@ -8,6 +8,7 @@
 import CoreData
 import Foundation
 import KeychainWrapper
+import SwiftUI
 
 enum SortType: String {
     case name = "computerName"
@@ -74,6 +75,12 @@ class DataController: ObservableObject {
         }
     }
 
+    @Published var policiesLastUpdatedAt: Date? {
+        didSet {
+            UserDefaults.standard.setValue(policiesLastUpdatedAt, forKey: "policiesLastUpdatedAt")
+        }
+    }
+
     @Published var allTokens = [
         SearchToken(name: "macOS", platform: ["darwin"]),
         SearchToken(name: "Windows", platform: ["windows"]),
@@ -105,6 +112,10 @@ class DataController: ObservableObject {
 
         if let softwareLastUpdatedAt = UserDefaults.standard.value(forKey: "softwareLastUpdatedAt") as? Date {
             self.softwareLastUpdatedAt = softwareLastUpdatedAt
+        }
+
+        if let policiesLastUpdatedAt = UserDefaults.standard.value(forKey: "policiesLastUpdatedAt") as? Date {
+            self.policiesLastUpdatedAt = policiesLastUpdatedAt
         }
 
         if let currentUser = UserDefaults.standard.value(forKey: "usersLastUpdatedAt") as? CachedUser {
@@ -183,6 +194,33 @@ class DataController: ObservableObject {
         let request5: NSFetchRequest<NSFetchRequestResult> = CachedCommandResponse.fetchRequest()
         delete(request5)
 
+    }
+
+    func policiesforSelectedFilter() -> [CachedPolicy] {
+        let filter = selectedFilter
+        var predicates = [NSPredicate]()
+
+        if let team = filter.team {
+            let teamPredicate = NSPredicate(format: "teamId == %@", "\(team.id)")
+            predicates.append(teamPredicate)
+        }
+
+        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
+
+        if trimmedFilterText.isEmpty == false {
+            let userNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
+            let emailPredicate = NSPredicate(format: "authorName CONTAINS[c] %@", trimmedFilterText)
+            let combinedPredicate = NSCompoundPredicate(
+                orPredicateWithSubpredicates: [userNamePredicate, emailPredicate]
+            )
+
+            predicates.append(combinedPredicate)
+        }
+
+        let request = CachedPolicy.fetchRequest()
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        let allPolicies = (try? container.viewContext.fetch(request)) ?? []
+        return allPolicies
     }
 
     func usersForSelectedFilter() -> [CachedUser] {

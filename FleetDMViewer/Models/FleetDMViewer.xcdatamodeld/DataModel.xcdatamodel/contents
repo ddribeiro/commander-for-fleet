@@ -54,10 +54,22 @@
         </uniquenessConstraints>
     </entity>
     <entity name="CachedPolicy" representedClassName="CachedPolicy" syncable="YES">
+        <attribute name="authorEmail" optional="YES" attributeType="String"/>
+        <attribute name="authorId" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="authorName" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="critical" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="failingHostCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="passingHostCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="platform" optional="YES" attributeType="String"/>
+        <attribute name="policyDescription" optional="YES" attributeType="String"/>
+        <attribute name="query" optional="YES" attributeType="String"/>
+        <attribute name="resolution" optional="YES" attributeType="String"/>
         <attribute name="response" optional="YES" attributeType="String"/>
+        <attribute name="teamId" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="hosts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CachedHost" inverseName="policies" inverseEntity="CachedHost"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -115,6 +127,7 @@
         <attribute name="globalRole" optional="YES" attributeType="String"/>
         <attribute name="gravatarUrl" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="lastFetched" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="ssoEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>

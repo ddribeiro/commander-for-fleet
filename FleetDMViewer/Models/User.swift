@@ -33,7 +33,7 @@ struct User: Codable, Identifiable {
     )
 }
 
-struct MeResponse: Codable {
+struct UserReponse: Codable {
     var user: User
     var availableTeams: [Team]
 }

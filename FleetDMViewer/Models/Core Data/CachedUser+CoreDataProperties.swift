@@ -16,6 +16,7 @@ extension CachedUser {
     }
 
     @NSManaged public var apiOnly: Bool
+    @NSManaged public var lastFetched: Date?
     @NSManaged public var createdAt: Date?
     @NSManaged public var email: String?
     @NSManaged public var globalRole: String?
@@ -50,9 +51,20 @@ extension CachedUser {
         updatedAt ?? Date.now
     }
 
+    var wrappedLastFetched: Date {
+        lastFetched ?? Date.now
+    }
+
     var teamsArray: [CachedTeam] {
         let set = teams as? Set<CachedTeam> ?? []
 
+        return set.sorted {
+            $0.wrappedName < $1.wrappedName
+        }
+    }
+
+    @objc dynamic var observableTeamsArray: [CachedTeam] {
+        let set = teams as? Set<CachedTeam> ?? []
         return set.sorted {
             $0.wrappedName < $1.wrappedName
         }

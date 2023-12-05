@@ -40,10 +40,16 @@ struct HostsTable: View {
 
             TableColumn("Team", value: \.wrappedTeamName) { host in
                 Text(host.wrappedTeamName)
+#if os(macOS)
+                    .foregroundStyle(.secondary)
+#endif
             }
 
             TableColumn("Last Seen", value: \.wrappedSeenTime) { host in
                 Text(host.formattedDate)
+#if os(macOS)
+                    .foregroundStyle(.secondary)
+#endif
             }
 
             TableColumn("Status", value: \.wrappedStatus) { host in

@@ -74,56 +74,72 @@ extension Endpoint where T == [User] {
 }
 
 extension Endpoint where T == User {
-    static func getUser(id: Int) -> Endpoint {
-        return Endpoint(
-            path: "/api/v1/fleet/users/\(id)",
-            type: User.self,
-            keyPath: "user"
-        )
-    }
 
-//    static let meEndpoint = Endpoint(
-//        path: "/api/v1/fleet/me",
-//        type: User.self,
-//        keyPath: "user"
-//    )
+    //    static let meEndpoint = Endpoint(
+    //        path: "/api/v1/fleet/me",
+    //        type: User.self,
+    //        keyPath: "user"
+    //    )
 
     static let logout = Endpoint(
-    path: "/api/v1/fleet/logout",
-    method: .post
+        path: "/api/v1/fleet/logout",
+        method: .post
     )
 }
 
-extension Endpoint where T == MeResponse {
-    static let meEndpoint = Endpoint(
-        path: "/api/v1/fleet/me",
-        type: MeResponse.self
+extension Endpoint where T == [Policy] {
+    static let globalPolicies = Endpoint(
+        path: "/api/v1/fleet/global/policies",
+        type: [Policy].self,
+        keyPath: "policies"
     )
-}
 
-extension Endpoint where T == MdmCommandResponse {
-    static let mdmCommand = Endpoint(
-        path: "/api/v1/fleet/mdm/apple/enqueue",
-        type: MdmCommandResponse.self,
-        method: .post,
-        headers: [
-            "Content-Type": "application/json"
-        ]
-    )
-}
-
-extension Endpoint where T == [CommandResponse] {
-    static let commands = Endpoint(
-        path: "/api/v1/fleet/mdm/apple/commands",
-        type: [CommandResponse].self,
-        keyPath: "results"
-    )
-}
-
-enum HTTPMethod: String {
-    case delete, get, patch, post, put
-
-    var rawValue: String {
-        String(describing: self).uppercased()
+    static func getTeamPolicies(id: Int) -> Endpoint {
+        return Endpoint(
+            path: "/api/v1/fleet/teams/\(id)/policies",
+            type: [Policy].self,
+            keyPath: "policies"
+        )
     }
-}
+        }
+
+        extension Endpoint where T == UserReponse {
+            static let meEndpoint = Endpoint(
+                path: "/api/v1/fleet/me",
+                type: UserReponse.self
+            )
+
+            static func getUser(id: Int) -> Endpoint {
+                return Endpoint(
+                    path: "/api/v1/fleet/users/\(id)",
+                    type: UserReponse.self
+                )
+            }
+        }
+
+        extension Endpoint where T == MdmCommandResponse {
+            static let mdmCommand = Endpoint(
+                path: "/api/v1/fleet/mdm/apple/enqueue",
+                type: MdmCommandResponse.self,
+                method: .post,
+                headers: [
+                    "Content-Type": "application/json"
+                ]
+            )
+        }
+
+        extension Endpoint where T == [CommandResponse] {
+            static let commands = Endpoint(
+                path: "/api/v1/fleet/mdm/apple/commands",
+                type: [CommandResponse].self,
+                keyPath: "results"
+            )
+        }
+
+        enum HTTPMethod: String {
+        case delete, get, patch, post, put
+
+            var rawValue: String {
+                String(describing: self).uppercased()
+            }
+        }

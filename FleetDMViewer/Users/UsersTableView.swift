@@ -43,7 +43,7 @@ struct UsersTableView: View {
 
             TableColumn("Details") { user in
                 Menu {
-                    NavigationLink(value: user.id) {
+                    NavigationLink(value: user) {
                         Label("View Details", systemImage: "list.bullet.below.rectangle")
                     }
                 } label: {

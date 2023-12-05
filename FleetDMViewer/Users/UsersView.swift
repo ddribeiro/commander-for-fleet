@@ -43,7 +43,7 @@ struct UsersView: View {
         }
         .navigationTitle(dataController.selectedFilter == .all ? "All Users" : dataController.selectedFilter.name)
         .navigationDestination(for: CachedUser.self) { user in
-            UserView(user: user)
+            UserDetailView(user: user)
         }
         .task {
             if let usersLastUpdatedAt = dataController.usersLastUpdatedAt {
@@ -84,7 +84,7 @@ struct UsersView: View {
                     VStack {
                         Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
                             .font(.footnote)
-                        Text("^[\(dataController.usersForSelectedFilter().count) Users](inflection: true)")
+                        Text("^[\(dataController.usersForSelectedFilter().count) Users](inflect: true)")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
