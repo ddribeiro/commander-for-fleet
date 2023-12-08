@@ -16,6 +16,17 @@ struct UsersTableView: View {
     @State private var sortOrder = [KeyPathComparator(\CachedUser.id, order: .reverse)]
 
     @Binding var selection: Set<CachedUser.ID>
+    @Binding var searchText: String
+
+    var searchResults: [CachedUser] {
+        if searchText.isEmpty {
+            return dataController.usersForSelectedFilter()
+        } else {
+            return dataController.usersForSelectedFilter().filter {
+                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
@@ -59,7 +70,7 @@ struct UsersTableView: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(dataController.usersForSelectedFilter(), id: \.id) { user in
+                ForEach(searchResults, id: \.id) { user in
                     TableRow(user)
                 }
             }

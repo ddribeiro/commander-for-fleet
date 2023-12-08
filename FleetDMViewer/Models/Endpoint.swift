@@ -45,6 +45,30 @@ extension Endpoint where T == [Host] {
         type: [Host].self,
         keyPath: "hosts"
     )
+
+    static func getPassingHostsForPolicy(policyID: Int) -> Endpoint {
+        return Endpoint(
+            path: "/api/v1/fleet/hosts?policy_id=\(policyID)&policy_response=passing",
+            type: [Host].self,
+            keyPath: "hosts"
+        )
+    }
+
+    static func getFailingHostsForPolicy(policyID: Int) -> Endpoint {
+        return Endpoint(
+            path: "/api/v1/fleet/hosts?policy_id=\(policyID)&policy_response=failing",
+            type: [Host].self,
+            keyPath: "hosts"
+        )
+    }
+
+    static func getHostsForSoftware(softwareID: Int) -> Endpoint {
+        return Endpoint(
+            path: "/api/v1/fleet/hosts?software_id=\(softwareID)",
+            type: [Host].self,
+            keyPath: "hosts"
+        )
+    }
 }
 
 extension Endpoint where T == Host {
@@ -63,6 +87,14 @@ extension Endpoint where T == [Software] {
         type: [Software].self,
         keyPath: "software"
     )
+
+    static func getSoftwareForTeam(id: Int) -> Endpoint {
+        return Endpoint(
+            path: "/api/v1/fleet/software?team_id=\(id)",
+            type: [Software].self,
+            keyPath: "software"
+        )
+    }
 }
 
 extension Endpoint where T == [User] {
@@ -87,18 +119,16 @@ extension Endpoint where T == User {
     )
 }
 
-extension Endpoint where T == [Policy] {
+extension Endpoint where T == PolicyResponse {
     static let globalPolicies = Endpoint(
         path: "/api/v1/fleet/global/policies",
-        type: [Policy].self,
-        keyPath: "policies"
+        type: PolicyResponse.self
     )
 
     static func getTeamPolicies(id: Int) -> Endpoint {
         return Endpoint(
             path: "/api/v1/fleet/teams/\(id)/policies",
-            type: [Policy].self,
-            keyPath: "policies"
+            type: PolicyResponse.self
         )
     }
         }

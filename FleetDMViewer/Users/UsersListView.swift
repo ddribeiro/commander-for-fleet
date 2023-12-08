@@ -24,10 +24,20 @@ struct UsersListView: View {
     }
 
     var body: some View {
-        List(selection: $dataController.selectedUser) {
-            ForEach(dataController.usersForSelectedFilter()) { user in
-                UserRow(user: user)
+        if dataController.isAuthenticated {
+            List(selection: $dataController.selectedUser) {
+                ForEach(dataController.usersForSelectedFilter()) { user in
+                    UserRow(user: user)
+                }
             }
+        } else {
+            NoHostView()
+                .sheet(isPresented: $isShowingSignInSheet) {
+                    LoginView()
+                }
+                .onAppear {
+                    isShowingSignInSheet = true
+                }
         }
     }
 }

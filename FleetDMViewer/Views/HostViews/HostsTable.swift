@@ -25,6 +25,7 @@ struct HostsTable: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .layoutPriority(1)
             }
+            .width(200)
 
             TableColumn("Serial Number", value: \.wrappedHardwareSerial) { host in
                 Text(host.wrappedHardwareSerial)

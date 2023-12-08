@@ -90,15 +90,6 @@ struct Sidebar: View {
                     Label("Settings", systemImage: "person.crop.circle")
                 }
             }
-
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                ToolbarItem(placement: .bottomBar) {
-                    if let updatedAt = dataController.teamsLastUpdatedAt {
-                        Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
-                            .font(.footnote)
-                    }
-                }
-            }
         }
         .navigationTitle("Commander")
     }

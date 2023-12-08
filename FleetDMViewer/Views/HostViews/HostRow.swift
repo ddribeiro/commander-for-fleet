@@ -47,7 +47,7 @@ struct HostRow: View {
                 VStack(alignment: .trailing) {
                     Image(systemName: "circle.fill")
                         .imageScale(.small)
-                        .foregroundColor(host.status == "online" ? .green : .red)
+                        .foregroundStyle(host.status == "online" ? .green : .red)
 
                     Text(host.wrappedStatus)
                         .font(.body.smallCaps())

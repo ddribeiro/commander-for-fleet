@@ -22,7 +22,11 @@ struct DetailColumn: View {
         case .users:
             UsersView()
         case .queries:
-            EmptyView()
+            ContentUnavailableView(
+                "Queries Coming Soon",
+                systemImage: "rectangle.and.text.magnifyingglass",
+                description: Text("Check back later for query support.")
+            )
         case .policies:
             AllPoliciesView()
         case .software:

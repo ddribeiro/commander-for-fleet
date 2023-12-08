@@ -15,12 +15,23 @@ struct AllPoliciesView: View {
     @Environment(\.horizontalSizeClass) var sizeClass
 
     @State private var selection: Set<CachedPolicy.ID> = []
+    @State private var searchText = ""
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
     var teamFilters: [Filter] {
         teams.map { team in
             Filter(id: Int(team.id), name: team.wrappedName, icon: "person.3", team: team)
+        }
+    }
+
+    var searchResults: [CachedPolicy] {
+        if searchText.isEmpty {
+            return dataController.policiesforSelectedFilter()
+        } else {
+            return dataController.policiesforSelectedFilter().filter {
+                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
+            }
         }
     }
 
@@ -35,15 +46,23 @@ struct AllPoliciesView: View {
     var body: some View {
         ZStack {
             if displayAsList {
-                EmptyView()
+                list
             } else {
-                AllPoliciesTableView(selection: $selection)
+                AllPoliciesTableView(selection: $selection, searchText: $searchText)
             }
+        }
+        .navigationDestination(for: CachedPolicy.self) { policy in
+            PolicyDetailView(policy: policy)
         }
         .navigationTitle(dataController.selectedFilter == .all ? "All Policies" : dataController.selectedFilter.name)
         .task {
             if let policiesLastUpdatedAt = dataController.policiesLastUpdatedAt {
                 guard policiesLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
+                for team in teamFilters {
+                    await fetchTeamPolicies(id: team.id)
+                }
+                await fetchGlobalPolicies()
+            } else {
                 for team in teamFilters {
                     await fetchTeamPolicies(id: team.id)
                 }
@@ -67,15 +86,13 @@ struct AllPoliciesView: View {
                 ContentUnavailableView.search
             }
         }
-        .searchable(
-            text: $dataController.filterText
-        )
+        .searchable(text: $searchText)
 #if os(iOS)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     Picker("Team", selection: $dataController.selectedFilter) {
-                        Text("All Users").tag(Filter.all)
+                        Text("All Policies").tag(Filter.all)
                         Divider()
                         ForEach(teamFilters) { filter in
                             Text(filter.name).tag(filter).badge(filter.hostCount)
@@ -88,18 +105,48 @@ struct AllPoliciesView: View {
             }
 
             ToolbarItem(placement: .bottomBar) {
-                if let updatedAt = dataController.policiesLastUpdatedAt {
+                if dataController.loadingState == .loaded {
                     VStack {
-                        Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
-                            .font(.footnote)
-                        Text("^[\(dataController.policiesforSelectedFilter().count) Policy](inflect: true)")
+                        if let updatedAt = dataController.policiesLastUpdatedAt {
+                            Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                                .font(.footnote)
+                        }
+
+                        Text("^[\(searchResults.count) Policy](inflect: true)")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
                 }
+
+                if dataController.loadingState == .loading {
+                    HStack {
+                        ProgressView()
+                            .padding(.horizontal, 1)
+                            .controlSize(.mini)
+
+                        Text("Loading Policies")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+
+                }
             }
         }
 #endif
+    }
+
+    var list: some View {
+        List {
+            policyRows(searchResults)
+        }
+    }
+
+    func policyRows(_ policies: [CachedPolicy]) -> some View {
+        ForEach(policies) { policy in
+            NavigationLink(value: policy) {
+                AllPoliciesRow(policy: policy)
+            }
+        }
     }
 
     @ViewBuilder
@@ -114,13 +161,19 @@ struct AllPoliciesView: View {
         guard dataController.activeEnvironment != nil else { return }
 
         do {
-            let policies = try await networkManager.fetch(.getTeamPolicies(id: id))
+            dataController.loadingState = .loading
+            let policies = try await networkManager.fetch(.getTeamPolicies(id: id)).policies
 
-            await MainActor.run {
-                updateCache(with: policies)
-                dataController.policiesLastUpdatedAt = .now
+            if let policies = policies {
+                await MainActor.run {
+                    updateCache(with: policies)
+                    dataController.policiesLastUpdatedAt = .now
+                }
             }
+
+            dataController.loadingState = .loaded
         } catch {
+            dataController.loadingState = .failed
             switch error as? AuthManager.AuthError {
             case .missingCredentials:
                 if !dataController.showingApiTokenAlert {
@@ -141,11 +194,13 @@ struct AllPoliciesView: View {
         guard dataController.activeEnvironment != nil else { return }
 
         do {
-            let policies = try await networkManager.fetch(.globalPolicies, attempts: 5)
+            let policies = try await networkManager.fetch(.globalPolicies, attempts: 5).policies
 
-            await MainActor.run {
-                updateCache(with: policies)
-                dataController.policiesLastUpdatedAt = .now
+            if let policies = policies {
+                await MainActor.run {
+                    updateCache(with: policies)
+                    dataController.policiesLastUpdatedAt = .now
+                }
             }
         } catch {
             switch error as? AuthManager.AuthError {
@@ -176,7 +231,7 @@ struct AllPoliciesView: View {
             cachedPolicy.authorId = Int16(downloadedPolicy.authorId)
             cachedPolicy.authorName = downloadedPolicy.authorName
             cachedPolicy.authorEmail = downloadedPolicy.authorEmail
-            cachedPolicy.teamId = Int16(downloadedPolicy.teamId)
+            cachedPolicy.teamId = Int16(downloadedPolicy.teamId ?? 0)
             cachedPolicy.resolution = downloadedPolicy.resolution
             cachedPolicy.platform = downloadedPolicy.platform
             cachedPolicy.createdAt = downloadedPolicy.createdAt
@@ -187,8 +242,4 @@ struct AllPoliciesView: View {
         }
         try? moc.save()
     }
-}
-
-#Preview {
-    AllPoliciesView()
 }

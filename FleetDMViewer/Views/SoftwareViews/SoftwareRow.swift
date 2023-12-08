@@ -31,8 +31,7 @@ struct SoftwareRow: View {
                     VStack(alignment: .trailing) {
                         Image(systemName: "exclamationmark.shield.fill")
                             .foregroundColor(.red)
-                        // swiftlint:disable:next line_length
-                            Text(vulnerabilities.count != 1 ? "\(vulnerabilities.count) Vulnerabilities" : "\(vulnerabilities.count) Vulnerability")
+                            Text("^[\(vulnerabilities.count) Vulnerability](inflect: true)")
                             .foregroundStyle(.secondary)
                             .font(.body.smallCaps())
 

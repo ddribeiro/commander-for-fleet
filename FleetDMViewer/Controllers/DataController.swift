@@ -188,12 +188,17 @@ class DataController: ObservableObject {
         let request2: NSFetchRequest<NSFetchRequestResult> = CachedUser.fetchRequest()
         delete(request2)
 
+        let request3: NSFetchRequest<NSFetchRequestResult> = CachedSoftware.fetchRequest()
+        delete(request3)
+
         let request4: NSFetchRequest<NSFetchRequestResult> = CachedHost.fetchRequest()
         delete(request4)
 
         let request5: NSFetchRequest<NSFetchRequestResult> = CachedCommandResponse.fetchRequest()
         delete(request5)
 
+        let request6: NSFetchRequest<NSFetchRequestResult> = CachedPolicy.fetchRequest()
+        delete(request6)
     }
 
     func policiesforSelectedFilter() -> [CachedPolicy] {

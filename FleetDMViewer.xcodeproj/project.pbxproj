@@ -11,6 +11,7 @@
 		5E028F4E2A4DCEF300D90456 /* CommandsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E028F4D2A4DCEF300D90456 /* CommandsView.swift */; };
 		5E028F512A4DE24400D90456 /* CommandRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E028F502A4DE24400D90456 /* CommandRow.swift */; };
 		5E028F532A4E26AD00D90456 /* NoHostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E028F522A4E26AD00D90456 /* NoHostsView.swift */; };
+		5E04FF8A2B20DE490088EADF /* PolicyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E04FF892B20DE490088EADF /* PolicyDetailView.swift */; };
 		5E0C87DF2B0C098800806EA8 /* Policy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0C87DE2B0C098800806EA8 /* Policy.swift */; };
 		5E2A7D0D2B05577200D1EFFE /* Date-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2A7D0C2B05577200D1EFFE /* Date-Extension.swift */; };
 		5E3336EB2B0D1402009FFF97 /* ContentViewToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3336EA2B0D1402009FFF97 /* ContentViewToolbar.swift */; };
@@ -43,7 +44,7 @@
 		5E8311382B1FD7800029480B /* AllPoliciesRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8311372B1FD7800029480B /* AllPoliciesRow.swift */; };
 		5E9038D52A4384F50077F3DC /* SoftwareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D42A4384F50077F3DC /* SoftwareView.swift */; };
 		5E9038D72A4387670077F3DC /* SoftwareRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D62A4387670077F3DC /* SoftwareRow.swift */; };
-		5E9038D92A43944B0077F3DC /* SoftwareDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D82A43944B0077F3DC /* SoftwareDetailView.swift */; };
+		5E9038D92A43944B0077F3DC /* HostSoftwareDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038D82A43944B0077F3DC /* HostSoftwareDetailView.swift */; };
 		5E9038DB2A43A0F60077F3DC /* ProfilesRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038DA2A43A0F60077F3DC /* ProfilesRow.swift */; };
 		5E9038DD2A43A3AE0077F3DC /* ProfilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038DC2A43A3AE0077F3DC /* ProfilesView.swift */; };
 		5E9038DF2A44AF6F0077F3DC /* MDMCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9038DE2A44AF6F0077F3DC /* MDMCommands.swift */; };
@@ -53,13 +54,14 @@
 		5E9B94E42A32320D00A7A0CE /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E32A32320D00A7A0CE /* Host.swift */; };
 		5E9B94E62A32321D00A7A0CE /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E52A32321D00A7A0CE /* Team.swift */; };
 		5E9B94E82A32323300A7A0CE /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E72A32323300A7A0CE /* Endpoint.swift */; };
+		5EBAAD9C2B22310400EC54BA /* SoftwareDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBAAD9B2B22310400EC54BA /* SoftwareDetailView.swift */; };
 		5ECF5D472AF405E200108411 /* SignedOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECF5D462AF405E200108411 /* SignedOutView.swift */; };
+		5ED2F5CA2B224DA6005CDD23 /* HostsForSoftwareList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED2F5C92B224DA6005CDD23 /* HostsForSoftwareList.swift */; };
 		5ED5596B2B1A65F600AC581E /* AllSoftwareTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED5596A2B1A65F600AC581E /* AllSoftwareTableView.swift */; };
 		5ED5596D2B1A668700AC581E /* AllSoftwareRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED5596C2B1A668700AC581E /* AllSoftwareRow.swift */; };
 		5EDA66BD2A2A4955006706CD /* FleetDMViewerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDA66BC2A2A4955006706CD /* FleetDMViewerApp.swift */; };
 		5EDA66C12A2A4955006706CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5EDA66C02A2A4955006706CD /* Assets.xcassets */; };
 		5EDA66C52A2A4955006706CD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5EDA66C42A2A4955006706CD /* Preview Assets.xcassets */; };
-		5EDA66D52A2A4979006706CD /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDA66CB2A2A4979006706CD /* SidebarView.swift */; };
 		5EDA66D82A2A4979006706CD /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDA66CE2A2A4979006706CD /* LoginView.swift */; };
 		5EDA66DA2A2A4979006706CD /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDA66D02A2A4979006706CD /* NetworkManager.swift */; };
 		5EDA66E12A2A4996006706CD /* KeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 5EDA66E02A2A4996006706CD /* KeychainWrapper */; };
@@ -90,6 +92,7 @@
 		5E028F4D2A4DCEF300D90456 /* CommandsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandsView.swift; sourceTree = "<group>"; };
 		5E028F502A4DE24400D90456 /* CommandRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandRow.swift; sourceTree = "<group>"; };
 		5E028F522A4E26AD00D90456 /* NoHostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoHostsView.swift; sourceTree = "<group>"; };
+		5E04FF892B20DE490088EADF /* PolicyDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyDetailView.swift; sourceTree = "<group>"; };
 		5E0C87DE2B0C098800806EA8 /* Policy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Policy.swift; sourceTree = "<group>"; };
 		5E2A7D0C2B05577200D1EFFE /* Date-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date-Extension.swift"; sourceTree = "<group>"; };
 		5E3336EA2B0D1402009FFF97 /* ContentViewToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewToolbar.swift; sourceTree = "<group>"; };
@@ -122,7 +125,7 @@
 		5E8311372B1FD7800029480B /* AllPoliciesRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllPoliciesRow.swift; sourceTree = "<group>"; };
 		5E9038D42A4384F50077F3DC /* SoftwareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareView.swift; sourceTree = "<group>"; };
 		5E9038D62A4387670077F3DC /* SoftwareRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareRow.swift; sourceTree = "<group>"; };
-		5E9038D82A43944B0077F3DC /* SoftwareDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareDetailView.swift; sourceTree = "<group>"; };
+		5E9038D82A43944B0077F3DC /* HostSoftwareDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostSoftwareDetailView.swift; sourceTree = "<group>"; };
 		5E9038DA2A43A0F60077F3DC /* ProfilesRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilesRow.swift; sourceTree = "<group>"; };
 		5E9038DC2A43A3AE0077F3DC /* ProfilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilesView.swift; sourceTree = "<group>"; };
 		5E9038DE2A44AF6F0077F3DC /* MDMCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDMCommands.swift; sourceTree = "<group>"; };
@@ -132,7 +135,9 @@
 		5E9B94E32A32320D00A7A0CE /* Host.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 		5E9B94E52A32321D00A7A0CE /* Team.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
 		5E9B94E72A32323300A7A0CE /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		5EBAAD9B2B22310400EC54BA /* SoftwareDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareDetailView.swift; sourceTree = "<group>"; };
 		5ECF5D462AF405E200108411 /* SignedOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SignedOutView.swift; path = FleetDMViewer/Views/SignedOutView.swift; sourceTree = SOURCE_ROOT; };
+		5ED2F5C92B224DA6005CDD23 /* HostsForSoftwareList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostsForSoftwareList.swift; sourceTree = "<group>"; };
 		5ED5596A2B1A65F600AC581E /* AllSoftwareTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllSoftwareTableView.swift; sourceTree = "<group>"; };
 		5ED5596C2B1A668700AC581E /* AllSoftwareRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllSoftwareRow.swift; sourceTree = "<group>"; };
 		5EDA66B92A2A4955006706CD /* FleetDMViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FleetDMViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,7 +145,6 @@
 		5EDA66C02A2A4955006706CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5EDA66C22A2A4955006706CD /* FleetDMViewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FleetDMViewer.entitlements; sourceTree = "<group>"; };
 		5EDA66C42A2A4955006706CD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		5EDA66CB2A2A4979006706CD /* SidebarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
 		5EDA66CE2A2A4979006706CD /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		5EDA66D02A2A4979006706CD /* NetworkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		5EDC18032A3A506200691C2E /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -197,7 +201,7 @@
 			children = (
 				5E9038D42A4384F50077F3DC /* SoftwareView.swift */,
 				5E9038D62A4387670077F3DC /* SoftwareRow.swift */,
-				5E9038D82A43944B0077F3DC /* SoftwareDetailView.swift */,
+				5E9038D82A43944B0077F3DC /* HostSoftwareDetailView.swift */,
 			);
 			path = SoftwareViews;
 			sourceTree = "<group>";
@@ -224,7 +228,6 @@
 		5E028F542A4E26B500D90456 /* Teams */ = {
 			isa = PBXGroup;
 			children = (
-				5EDA66CB2A2A4979006706CD /* SidebarView.swift */,
 				5E680A5E2B168E520024C757 /* Sidebar.swift */,
 				5E8260402AA1230B0021289B /* SmartFilterRow.swift */,
 				5E028F522A4E26AD00D90456 /* NoHostsView.swift */,
@@ -246,6 +249,8 @@
 				5E815EA82B1A606300E0E44A /* AllSoftwareView.swift */,
 				5ED5596A2B1A65F600AC581E /* AllSoftwareTableView.swift */,
 				5ED5596C2B1A668700AC581E /* AllSoftwareRow.swift */,
+				5EBAAD9B2B22310400EC54BA /* SoftwareDetailView.swift */,
+				5ED2F5C92B224DA6005CDD23 /* HostsForSoftwareList.swift */,
 			);
 			path = Software;
 			sourceTree = "<group>";
@@ -256,6 +261,7 @@
 				5E8311312B1FBCB40029480B /* AllPoliciesView.swift */,
 				5E8311332B1FD4130029480B /* AllPoliciesTableView.swift */,
 				5E8311372B1FD7800029480B /* AllPoliciesRow.swift */,
+				5E04FF892B20DE490088EADF /* PolicyDetailView.swift */,
 			);
 			path = "All Policies";
 			sourceTree = "<group>";
@@ -489,13 +495,12 @@
 				5E9B94E42A32320D00A7A0CE /* Host.swift in Sources */,
 				5EDA66BD2A2A4955006706CD /* FleetDMViewerApp.swift in Sources */,
 				5EEA90982A93E9D800FEA5E4 /* ServerSelectionView.swift in Sources */,
-				5E9038D92A43944B0077F3DC /* SoftwareDetailView.swift in Sources */,
+				5E9038D92A43944B0077F3DC /* HostSoftwareDetailView.swift in Sources */,
 				5E9038DF2A44AF6F0077F3DC /* MDMCommands.swift in Sources */,
 				5E680A5F2B168E520024C757 /* Sidebar.swift in Sources */,
 				5EDE46C22B1915A900BA99A4 /* UsersTableView.swift in Sources */,
 				5EDE46AF2B179B2400BA99A4 /* HostsListView.swift in Sources */,
 				5EDE46C42B19162500BA99A4 /* UserRow.swift in Sources */,
-				5EDA66D52A2A4979006706CD /* SidebarView.swift in Sources */,
 				5E028F4E2A4DCEF300D90456 /* CommandsView.swift in Sources */,
 				5E815E992B1A2DF300E0E44A /* CachedUser+CoreDataClass.swift in Sources */,
 				5E815EA22B1A2DF300E0E44A /* CachedCommandResponse+CoreDataProperties.swift in Sources */,
@@ -525,6 +530,7 @@
 				5ECF5D472AF405E200108411 /* SignedOutView.swift in Sources */,
 				5E8260412AA1230B0021289B /* SmartFilterRow.swift in Sources */,
 				5EDE46B52B17A80E00BA99A4 /* HostsTable.swift in Sources */,
+				5EBAAD9C2B22310400EC54BA /* SoftwareDetailView.swift in Sources */,
 				5E815E9C2B1A2DF300E0E44A /* CachedHost+CoreDataProperties.swift in Sources */,
 				5E9B94E82A32323300A7A0CE /* Endpoint.swift in Sources */,
 				5E815EA32B1A2DF300E0E44A /* CachedPolicy+CoreDataClass.swift in Sources */,
@@ -533,6 +539,8 @@
 				5E815E9F2B1A2DF300E0E44A /* CachedBattery+CoreDataClass.swift in Sources */,
 				5EDC180A2A3B961400691C2E /* ContentView.swift in Sources */,
 				5EDC180E2A409DB100691C2E /* PoliciesView.swift in Sources */,
+				5ED2F5CA2B224DA6005CDD23 /* HostsForSoftwareList.swift in Sources */,
+				5E04FF8A2B20DE490088EADF /* PolicyDetailView.swift in Sources */,
 				5E3336EB2B0D1402009FFF97 /* ContentViewToolbar.swift in Sources */,
 				5EEA90932A8EA24200FEA5E4 /* MDMCommandMenu.swift in Sources */,
 				5EDE46B72B17AC6800BA99A4 /* NewHostRow.swift in Sources */,

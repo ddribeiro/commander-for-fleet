@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @EnvironmentObject var dataContoller: DataController
+    @EnvironmentObject var dataController: DataController
+    @Environment(\.networkManager) var networkManager
     @Environment(\.dismiss) var dismiss
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
@@ -87,6 +88,12 @@ struct SettingsView: View {
                     }
                     .formStyle(.grouped)
                     .navigationTitle("Account")
+//                    .task {
+//                        if UserDefaults.standard.value(forKey: "loggedInUserID") as? Int16 == nil {
+//                            let response = try await networkManager.fetch(.meEndpoint)
+//                            
+//                        }
+//                    }
                     .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
                             Button("Done") {
@@ -99,21 +106,59 @@ struct SettingsView: View {
                     }
                 }
             } else {
-                Text("No user found")
-                    .font(.title)
-                    .foregroundColor(.secondary)
+                ContentUnavailableView {
+                    Label("No User Found", systemImage: "person.crop.circle.badge.exclamationmark")
+                } description: {
+                    Text("No current user found. Please sign out and sign back in again.")
+                } actions: {
+                    Button("Sign Out", role: .destructive) {
+                        isSignOutAlertPresented = true
+                    }
+                    .buttonStyle(.bordered)
+                    .alert(isPresented: $isSignOutAlertPresented) {
+                        signOutAlert
+                    }
+                }
             }
 
         }
 
     }
 
+//    func getMeInfo() async {
+//        guard dataController.activeEnvironment != nil else { return }
+//
+//        do {
+//            let response = try await networkManager.fetch(.meEndpoint)
+//            let user = response.user
+//            let teams = response.availableTeams
+//
+//            UserDefaults.standard.setValue(user.id, forKey: "loggedInUserID")
+//        } catch {
+//            switch error as? AuthManager.AuthError {
+//            case .missingCredentials:
+//                dataController.loadingState = .failed
+//                if !dataController.showingApiTokenAlert {
+//                    dataController.showingApiTokenAlert = true
+//                    dataController.alertTitle = "API Token Expired"
+//                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
+//                }
+//            case .missingToken:
+//                dataController.loadingState = .failed
+//                print(error.localizedDescription)
+//            case .none:
+//                dataController.loadingState = .failed
+//                print(error.localizedDescription)
+//            }
+//        }
+//    }
+
     private var signOutAlert: Alert {
         Alert(
             title: Text("Are you sure you want to sign out?"),
             primaryButton: .destructive(Text("Sign Out")) {
                 Task {
-                    await dataContoller.signOut()
+                    await dataController.signOut()
                 }
                 dismiss()
             },

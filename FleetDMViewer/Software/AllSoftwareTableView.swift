@@ -16,6 +16,32 @@ struct AllSoftwareTableView: View {
     @State private var sortOrder = [KeyPathComparator(\CachedSoftware.id, order: .reverse)]
 
     @Binding var selection: Set<CachedSoftware.ID>
+    @Binding var searchText: String
+    @Binding var isShowingVulnerableSoftware: Bool
+
+    var searchResults: [CachedSoftware] {
+        if searchText.isEmpty && !isShowingVulnerableSoftware {
+            return dataController.softwareForSelectedFilter().sorted {
+                $0.wrappedName < $1.wrappedName
+            }
+        } else if searchText.isEmpty && isShowingVulnerableSoftware {
+            return vulnerableSoftware.sorted {
+                $0.wrappedName < $1.wrappedName
+            }
+        } else if isShowingVulnerableSoftware {
+                return vulnerableSoftware.filter({ $0.wrappedName.localizedCaseInsensitiveContains(searchText) })
+            } else {
+            return dataController.softwareForSelectedFilter().filter {
+                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+
+    var vulnerableSoftware: [CachedSoftware] {
+        dataController.softwareForSelectedFilter().filter {
+            !$0.vulnerabilitiesArray.isEmpty
+        }
+    }
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
@@ -25,6 +51,7 @@ struct AllSoftwareTableView: View {
                     .layoutPriority(1)
 
             }
+            .width(400)
 
             TableColumn("Version", value: \.wrappedVersion) { software in
                 Text(software.wrappedVersion)
@@ -59,7 +86,7 @@ struct AllSoftwareTableView: View {
 
             TableColumn("Details") { software in
                 Menu {
-                    NavigationLink(value: software.id) {
+                    NavigationLink(value: software) {
                         Label("View Details", systemImage: "list.bullet.below.rectangle")
                     }
                 } label: {
@@ -75,7 +102,7 @@ struct AllSoftwareTableView: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(dataController.softwareForSelectedFilter(), id: \.id) { software in
+                ForEach(searchResults) { software in
                     TableRow(software)
                 }
             }

@@ -20,6 +20,8 @@ struct NewHostRow: View {
                 .frame(width: 20, height: 20)
 #endif
             Text(host.wrappedComputerName)
+                .font(.headline)
+                .layoutPriority(1)
         }
     }
 }

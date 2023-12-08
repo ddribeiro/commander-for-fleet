@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SoftwareDetailView: View {
+struct HostSoftwareDetailView: View {
     var software: Software
     var body: some View {
         Form {
@@ -57,8 +57,7 @@ struct SoftwareDetailView: View {
                             Spacer()
                             VStack {
                                 Image(systemName: "exclamationmark.shield.fill")
-
-                                    .foregroundColor(.red)
+                                    .foregroundStyle(.red)
                                 Text("Known Exploit")
                                     .font(.body.smallCaps())
                             }
@@ -70,7 +69,7 @@ struct SoftwareDetailView: View {
                     Text("No Known Vulnerabilities")
                 }
             } header: {
-                Label("Vulnerabilities", systemImage: "exclamationmark.shield")
+                Label("Vulnerabilities", systemImage: "dot.scope.laptopcomputer")
             }
         }
         .navigationTitle(software.name)
@@ -79,6 +78,6 @@ struct SoftwareDetailView: View {
 
 struct SoftwareDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        SoftwareDetailView(software: .example)
+        HostSoftwareDetailView(software: .example)
     }
 }

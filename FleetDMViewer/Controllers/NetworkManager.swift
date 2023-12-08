@@ -68,7 +68,7 @@ struct NetworkManager {
             throw URLError(.unsupportedURL)
         }
 
-        print(url.absoluteString)
+//        print(url.absoluteString)
 
         var request = URLRequest(url: url)
         request.httpMethod = resource.method.rawValue
@@ -86,6 +86,7 @@ struct NetworkManager {
 
         if let httpResponse = response as? HTTPURLResponse {
             if !(200...299).contains(httpResponse.statusCode) {
+                print(httpResponse.statusCode)
                 switch httpResponse.statusCode {
                 case 401:
                     if allowRetry {
@@ -111,9 +112,9 @@ struct NetworkManager {
             }
         }
 
-        if let responseString = String(data: responseData, encoding: .utf8) {
-            print(responseString)
-        }
+//        if let responseString = String(data: responseData, encoding: .utf8) {
+//            print(responseString)
+//        }
 
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase

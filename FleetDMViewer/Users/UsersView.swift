@@ -15,6 +15,7 @@ struct UsersView: View {
     @Environment(\.horizontalSizeClass) var sizeClass
 
     @State private var selection: Set<CachedUser.ID> = []
+    @State private var searchText = ""
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
@@ -33,12 +34,22 @@ struct UsersView: View {
         }
     }
 
+    var searchResults: [CachedUser] {
+        if searchText.isEmpty {
+            return dataController.usersForSelectedFilter()
+        } else {
+            return dataController.usersForSelectedFilter().filter {
+                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+
     var body: some View {
         ZStack {
             if displayAsList {
-                UsersListView()
+                list
             } else {
-                UsersTableView(selection: $selection)
+                UsersTableView(selection: $selection, searchText: $searchText)
             }
         }
         .navigationTitle(dataController.selectedFilter == .all ? "All Users" : dataController.selectedFilter.name)
@@ -60,7 +71,7 @@ struct UsersView: View {
             }
         }
         .searchable(
-            text: $dataController.filterText
+            text: $searchText
         )
 #if os(iOS)
         .toolbar {
@@ -80,18 +91,48 @@ struct UsersView: View {
             }
 
             ToolbarItem(placement: .bottomBar) {
-                if let updatedAt = dataController.usersLastUpdatedAt {
+                if dataController.loadingState == .loaded {
+
                     VStack {
-                        Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
-                            .font(.footnote)
-                        Text("^[\(dataController.usersForSelectedFilter().count) Users](inflect: true)")
+                        if let updatedAt = dataController.usersLastUpdatedAt {
+                            Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                                .font(.footnote)
+                            Text("^[\(searchResults.count) User](inflect: true)")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                if dataController.loadingState == .loading {
+                    HStack {
+                        ProgressView()
+                            .padding(.horizontal, 1)
+                            .controlSize(.mini)
+
+                        Text("Loading Users")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
+
                 }
             }
         }
 #endif
+    }
+
+    var list: some View {
+        List {
+            userRows(searchResults)
+            }
+        }
+
+    func userRows(_ users: [CachedUser]) -> some View {
+        ForEach(users) { user in
+            NavigationLink(value: user) {
+                UserRow(user: user)
+            }
+        }
     }
 
     @ViewBuilder
@@ -106,14 +147,17 @@ struct UsersView: View {
         guard dataController.activeEnvironment != nil else { return }
 
         do {
+            dataController.loadingState = .loading
             let users = try await networkManager.fetch(.users, attempts: 5)
 
             await MainActor.run {
                 updateCache(with: users)
                 dataController.usersLastUpdatedAt = .now
             }
+            dataController.loadingState = .loaded
 
         } catch {
+            dataController.loadingState = .failed
             switch error as? AuthManager.AuthError {
             case .missingCredentials:
                 if !dataController.showingApiTokenAlert {

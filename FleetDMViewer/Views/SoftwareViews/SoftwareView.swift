@@ -22,7 +22,7 @@ struct SoftwareView: View {
         Toggle("Only Show Software with Vulnerabilities", isOn: $isShowingVulnerableSoftware)
         ForEach(isShowingVulnerableSoftware ? vulnerableSoftware : software) { software in
             NavigationLink {
-                SoftwareDetailView(software: software)
+                HostSoftwareDetailView(software: software)
             } label: {
                 SoftwareRow(software: software)
             }

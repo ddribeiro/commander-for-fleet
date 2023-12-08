@@ -15,7 +15,35 @@ struct AllSoftwareView: View {
     @Environment(\.horizontalSizeClass) var sizeClass
 
     @State private var selection: Set<CachedSoftware.ID> = []
+    @State private var searchText = ""
+    @State private var isShowingVulnerableSoftware = false
+
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
+
+    var searchResults: [CachedSoftware] {
+        if searchText.isEmpty && !isShowingVulnerableSoftware {
+            return dataController.softwareForSelectedFilter().sorted {
+                $0.wrappedName < $1.wrappedName
+            }
+        } else if searchText.isEmpty && isShowingVulnerableSoftware {
+            return vulnerableSoftware.sorted {
+                $0.wrappedName < $1.wrappedName
+            }
+        } else if isShowingVulnerableSoftware {
+                return vulnerableSoftware.filter({ $0.wrappedName.localizedCaseInsensitiveContains(searchText) })
+            } else {
+            return dataController.softwareForSelectedFilter().filter {
+                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+
+    var vulnerableSoftware: [CachedSoftware] {
+        dataController.softwareForSelectedFilter().filter {
+            !$0.vulnerabilitiesArray.isEmpty
+        }
+    }
 
     var displayAsList: Bool {
 #if os(iOS)
@@ -28,20 +56,57 @@ struct AllSoftwareView: View {
     var body: some View {
         ZStack {
             if displayAsList {
-                EmptyView()
+                list
             } else {
-                AllSoftwareTableView(selection: $selection)
+                AllSoftwareTableView(
+                    selection: $selection,
+                    searchText: $searchText,
+                    isShowingVulnerableSoftware: $isShowingVulnerableSoftware
+                )
             }
         }
+        .navigationDestination(for: CachedSoftware.self) { software in
+            SoftwareDetailView(software: software)
+        }
+
         .navigationTitle("Software")
         .task {
             if let softwareLastUpdatedAt = dataController.softwareLastUpdatedAt {
                 guard softwareLastUpdatedAt < .now.addingTimeInterval(-43200) else { return }
             }
-            await fetchSoftware()
+
+            if let savedUserID = UserDefaults.standard.value(forKey: "loggedInUserID") as? Int16 {
+                if let loggedInUser = users.first(where: { $0.id == savedUserID}) {
+                    if loggedInUser.globalRole != "admin" {
+                        for team in loggedInUser.teamsArray {
+                            Task {
+                                await fetchSoftwareForTeam(id: Int(team.id))
+                            }
+                        }
+                    } else {
+                        Task {
+                            await fetchSoftware()
+                        }
+                    }
+                }
+            }
         }
         .refreshable {
-            await fetchSoftware()
+            if let savedUserID = UserDefaults.standard.value(forKey: "loggedInUserID") as? Int16 {
+                if let loggedInUser = users.first(where: { $0.id == savedUserID}) {
+                    if loggedInUser.globalRole != "admin" {
+                        for team in loggedInUser.teamsArray {
+                            Task {
+                                await fetchSoftwareForTeam(id: Int(team.id))
+                            }
+                        }
+                    } else {
+                        Task {
+                            await fetchSoftware()
+                        }
+                    }
+                }
+            }
         }
         .onAppear {
             dataController.filterText = ""
@@ -51,25 +116,51 @@ struct AllSoftwareView: View {
                 ContentUnavailableView.search
             }
         }
-        .searchable(text: $dataController.filterText)
+        .searchable(text: $searchText)
+//        .toolbar {
+//            if !displayAsList {
+//                toolbarButtons
+//            }
+//        }
+#if os(iOS)
         .toolbar {
-            if !displayAsList {
-                toolbarButtons
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    isShowingVulnerableSoftware.toggle()
+                } label: {
+                    Label("Show Vulnerable Software", systemImage: "exclamationmark.shield")
+                        .symbolVariant(isShowingVulnerableSoftware ? .fill : .none)
+                }
             }
-        }
-        .toolbar {
+
             ToolbarItem(placement: .bottomBar) {
-                if let updatedAt = dataController.softwareLastUpdatedAt {
+                if dataController.loadingState == .loaded {
                     VStack {
-                        Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
-                            .font(.footnote)
-                        Text("^[\(dataController.softwareForSelectedFilter().count) Software Titles](inflection: true)")
+                        if let updatedAt = dataController.softwareLastUpdatedAt {
+                            Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                                .font(.footnote)
+                            Text("^[\(searchResults.count) Software Titles](inflection: true)")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                if dataController.loadingState == .loading {
+                    HStack {
+                        ProgressView()
+                            .padding(.horizontal, 1)
+                            .controlSize(.mini)
+
+                        Text("Loading Software")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
+
                 }
             }
         }
+#endif
     }
 
     @ViewBuilder
@@ -80,10 +171,45 @@ struct AllSoftwareView: View {
         .disabled(selection.isEmpty)
     }
 
+    func fetchSoftwareForTeam(id: Int) async {
+        guard dataController.activeEnvironment != nil else { return }
+        let endpoint = Endpoint.getSoftwareForTeam(id: id)
+
+        do {
+            dataController.loadingState = .loading
+            let software = try await networkManager.fetch(endpoint, attempts: 5)
+
+            await MainActor.run {
+                moc.perform {
+                    updateCache(with: software)
+                }
+            }
+            dataController.softwareLastUpdatedAt = .now
+            dataController.loadingState = .loaded
+        } catch {
+            dataController.loadingState = .failed
+            switch error as? AuthManager.AuthError {
+            case .missingCredentials:
+                if !dataController.showingApiTokenAlert {
+                    dataController.showingApiTokenAlert = true
+                    dataController.alertTitle = "API Token Expired"
+                    // swiftlint:disable:next line_length
+                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
+                }
+            case .missingToken:
+                print(error.localizedDescription)
+            case .none:
+                print("Thise error")
+                print(error.localizedDescription)
+            }
+        }
+    }
+
     func fetchSoftware() async {
         guard dataController.activeEnvironment != nil else { return }
 
         do {
+            dataController.loadingState = .loading
             let software = try await networkManager.fetch(.software, attempts: 5)
 
             await MainActor.run {
@@ -92,7 +218,9 @@ struct AllSoftwareView: View {
                 }
             }
             dataController.softwareLastUpdatedAt = .now
+            dataController.loadingState = .loaded
         } catch {
+            dataController.loadingState = .failed
             switch error as? AuthManager.AuthError {
             case .missingCredentials:
                 if !dataController.showingApiTokenAlert {
@@ -105,6 +233,21 @@ struct AllSoftwareView: View {
                 print(error.localizedDescription)
             case .none:
                 print(error.localizedDescription)
+            }
+        }
+    }
+
+    var list: some View {
+        List {
+            softwareRows(searchResults)
+        }
+        .id(UUID())
+    }
+
+    func softwareRows(_ software: [CachedSoftware]) -> some View {
+        ForEach(software) { software in
+            NavigationLink(value: software) {
+                AllSoftwareRow(software: software)
             }
         }
     }

@@ -7,6 +7,10 @@
 
 import Foundation
 
+struct PolicyResponse: Codable {
+    var policies: [Policy]?
+}
+
 struct Policy: Codable, Identifiable, Hashable {
     let id: Int
     let name: String
@@ -16,7 +20,7 @@ struct Policy: Codable, Identifiable, Hashable {
     let authorId: Int
     let authorName: String
     let authorEmail: String
-    let teamId: Int
+    let teamId: Int?
     let resolution: String
     let platform: String
     let createdAt: Date
