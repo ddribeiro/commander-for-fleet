@@ -8,7 +8,7 @@
 import SwiftUI
 import KeychainWrapper
 
-struct CommandsView: View {
+struct HostCommandsView: View {
     @EnvironmentObject var dataController: DataController
 
     @Environment(\.networkManager) var networkManager
@@ -21,7 +21,7 @@ struct CommandsView: View {
         NavigationStack {
             List {
                 ForEach(commands) { command in
-                    CommandRow(command: command)
+                    HostCommandRow(command: command)
                 }
             }
             .navigationTitle("Command History for \(dataController.selectedHost?.computerName ?? "N/A")")

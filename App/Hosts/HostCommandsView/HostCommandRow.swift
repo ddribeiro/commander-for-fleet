@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CommandRow: View {
+struct HostCommandRow: View {
     var command: CachedCommandResponse
     var body: some View {
         HStack {

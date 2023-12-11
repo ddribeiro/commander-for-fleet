@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PoliciesView: View {
+struct HostPoliciesView: View {
     var policies: [Policy]
 
     var body: some View {
@@ -40,11 +40,5 @@ struct PoliciesView: View {
                 }
             }
         }
-    }
-}
-
-struct PoliciesView_Previews: PreviewProvider {
-    static var previews: some View {
-        PoliciesView(policies: [.example])
     }
 }

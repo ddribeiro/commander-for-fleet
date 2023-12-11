@@ -154,7 +154,7 @@ struct HostView: View {
                     switch selectedView {
                     case "Policies":
                         if let policies = host.policies {
-                            PoliciesView(policies: policies)
+                            HostPoliciesView(policies: policies)
                         } else {
                             ProgressView()
                         }
@@ -170,7 +170,7 @@ struct HostView: View {
                         }
                     case "Profiles":
                         if let profiles = host.mdm?.profiles {
-                            ProfilesView(profiles: profiles)
+                            HostProfilesView(profiles: profiles)
                         } else {
                             ContentUnavailableView(
                                 "No Profiles",

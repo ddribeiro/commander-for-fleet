@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ProfilesView: View {
+struct HostProfilesView: View {
     var profiles: [Profile]
 
     var body: some View {
@@ -19,7 +19,7 @@ struct ProfilesView: View {
             )
         } else {
             ForEach(profiles) { profile in
-                ProfilesRow(profile: profile)
+                HostProfilesRow(profile: profile)
             }
         }
     }
@@ -27,6 +27,6 @@ struct ProfilesView: View {
 
 struct ProfilesView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilesView(profiles: [.example, .example, .example])
+        HostProfilesView(profiles: [.example, .example, .example])
     }
 }

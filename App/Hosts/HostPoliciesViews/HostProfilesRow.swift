@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ProfilesRow: View {
+struct HostProfilesRow: View {
     var profile: Profile
     var body: some View {
         HStack {
@@ -29,6 +29,6 @@ struct ProfilesRow: View {
 
 struct ProfilesRow_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilesRow(profile: .example)
+        HostProfilesRow(profile: .example)
     }
 }

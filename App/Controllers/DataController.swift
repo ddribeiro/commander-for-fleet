@@ -181,6 +181,10 @@ class DataController: ObservableObject {
         }
     }
 
+    
+    /* Created a fetch request for each Core Data entity and deletes it. 
+     This function needs to be updated as more functionality is added to
+     the app and more data types are being saved.*/
     func deleteAll() {
         let request1: NSFetchRequest<NSFetchRequestResult> = CachedTeam.fetchRequest()
         delete(request1)
