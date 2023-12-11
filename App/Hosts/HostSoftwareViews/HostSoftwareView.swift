@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SoftwareView: View {
+struct HostSoftwareView: View {
 
     @State private var isShowingVulnerableSoftware = false
     let software: [Software]
@@ -24,7 +24,7 @@ struct SoftwareView: View {
             NavigationLink {
                 HostSoftwareDetailView(software: software)
             } label: {
-                SoftwareRow(software: software)
+                HostSoftwareRow(software: software)
             }
         }
     }

@@ -160,7 +160,7 @@ struct HostView: View {
                         }
                     case "Software":
                         if let software = host.software {
-                            SoftwareView(software: software)
+                            HostSoftwareView(software: software)
                         } else {
                             ContentUnavailableView(
                                 "No Software",

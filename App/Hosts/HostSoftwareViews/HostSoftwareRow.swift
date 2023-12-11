@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SoftwareRow: View {
+struct HostSoftwareRow: View {
     var software: Software
 
     var body: some View {
@@ -43,6 +43,6 @@ struct SoftwareRow: View {
 
 struct SoftwareRow_Previews: PreviewProvider {
     static var previews: some View {
-        SoftwareRow(software: .example)
+        HostSoftwareRow(software: .example)
     }
 }
