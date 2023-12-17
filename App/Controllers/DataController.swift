@@ -10,20 +10,28 @@ import Foundation
 import KeychainWrapper
 import SwiftUI
 
+// Enum to define the types that hosts can be sorted by.
 enum SortType: String {
     case name = "computerName"
     case enolledDate = "lastEnrolledAt"
     case updatedDate = "seenTime"
 }
 
+// Enum to define states that hosts can be filtered by.
 enum Status {
     case all, online, offline, missing, recentlyEnrolled
 }
 
+// Enum to define loading state when network calls are made across the app.
 enum LoadingState {
     case loading, loaded, failed
 }
 
+/* There's a lot in here and it should be cleaned up a bit.
+ Everything that is shared across the app is here and much
+ of it should proably be moved into a view model. There is
+ still a bunch of code that controls dataflow for CoreData
+ and that can probably stay. */
 @MainActor
 // swiftlint:disable:next type_body_length
 class DataController: ObservableObject {
@@ -37,8 +45,6 @@ class DataController: ObservableObject {
     @Published var filterStatus = Status.all
     @Published var sortOldestFirst = true
     @Published var sortType = SortType.name
-
-    @Published var currentUser: CachedUser?
 
     @Published var selectedTeam: CachedTeam?
     @Published var selectedHost: CachedHost?
@@ -118,10 +124,6 @@ class DataController: ObservableObject {
             self.policiesLastUpdatedAt = policiesLastUpdatedAt
         }
 
-        if let currentUser = UserDefaults.standard.value(forKey: "usersLastUpdatedAt") as? CachedUser {
-            self.currentUser = currentUser
-        }
-
         if let selectedFilter = UserDefaults.standard.value(forKey: "selectedFilter") as? Filter {
             self.selectedFilter = selectedFilter
         }
@@ -181,7 +183,6 @@ class DataController: ObservableObject {
         }
     }
 
-    
     /* Created a fetch request for each Core Data entity and deletes it. 
      This function needs to be updated as more functionality is added to
      the app and more data types are being saved.*/
