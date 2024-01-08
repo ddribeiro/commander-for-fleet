@@ -1,7 +1,7 @@
 # Commander for FleetDM
-Commander is a native iOS app that uses the FleetDM REST API to display information about your hosts. A native experience combined with the speed of the Fleet API means you can get to the information you’re looking for fast.
+Commander is an iOS app that uses the FleetDM REST API to display information about your hosts. A native experience combined with the speed of the Fleet API means you can get to the information you’re looking for fast.
 
-I’ve created Commander as a project to help me continue learning Swift and SwiftUI. As such, I welcome contributors to offer improvements to help me with my learning.
+I’ve created Commander as a project to help me continue learning Swift and SwiftUI. I welcome contributors to offer improvements to help me with my learning.
 
 Crashes and bugs are expected. If you encounter any while using the app, please create an issue!
 
@@ -42,4 +42,4 @@ Software shows all known software titles running on your enrolled hosts. You can
 ### Policies
 If you are using policies in your Fleet environment, you’ll be able to see them in this view. Policies will show you the number of hosts passing or failing that policy. You can tap into a policy to see the query it’s running as well as which individual hosts are passing/failing.
 
-Right now, policies are segmented by team. Commander gives you the option to see ALL policies (policies assigned globally AND to team) or policies assigned to a team. Policies inherited as a global policy do appear when you have a team selected.
+Right now, policies are segmented by team. Commander gives you the option to see ALL policies (policies assigned globally AND to team) or policies assigned to a team. Policies inherited as a global policy do not appear when you have a team selected.
