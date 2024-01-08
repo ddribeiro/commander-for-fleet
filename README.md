@@ -21,13 +21,13 @@ If you signed in with an API token, Commander will notify you and prompt you to 
 
 ## Features
 ### Hosts
-Hosts allows you to view all your enrolled hosts. If you have an environment with multiple teams, you can view hosts 
-If you select an individual host, you’ll be able to see more details about it, including disk space, OS version, IP Address and more.
-At the bottom of every host record, you’ll be able to see which policies are scoped to that host and if they’re pass/failing, and which software titles are installed on that host. If you’re using MDM, you’ll also be able to see which configuration profiles are scoped to that host and what their status is.
+Hosts allows you to view all your enrolled hosts. If you have an environment with multiple teams, you can filter hosts by those teams.
+When you select an individual host, you’ll be able to see more details about it, including disk space, OS version, IP Address and more.
+At the bottom of every host details view, you’ll be able to see which policies are scoped to that host and if they’re pass/failing, and which software titles are installed on that host. If you’re using MDM, you’ll also be able to see which configuration profiles are scoped to that host and what their status is.
 
 ### Users
 Users allows you to view all the users in your Fleet instance.
-If you filter by Team, you’ll see all the users that have access to that team in additional to global users. Tap into a user to see more information about them, including which teams they have access to and what permissions they have.
+If you filter by Team, you’ll see all the users that have access to that team in addition to global users. Tap into a user to see more information about them, including which teams they have access to and what permissions they have.
 
 ### Software
 Software shows all known software titles running on your enrolled hosts. You can tap into any software title to see which hosts are running that title and version. If that version has known vulnerabilities, you’ll be able to see them and their severity.
