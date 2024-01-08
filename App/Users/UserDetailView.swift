@@ -36,7 +36,7 @@ struct UserDetailView: View {
                         )
                     )
                     if user.globalRole != nil {
-                        LabeledContent("Global Role", value: user.wrappedGlobalRole)
+                        LabeledContent("Global Role", value: user.wrappedGlobalRole.capitalized)
                     }
                 }
 
@@ -44,6 +44,15 @@ struct UserDetailView: View {
                     ForEach(user.teamsArray) { team in
                         HStack {
                             Text(team.wrappedName)
+                            Spacer()
+                            if team.wrappedRole != "" {
+                                Text(team.wrappedRole.capitalized)
+                                    .font(.smallCaps(.body)())
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 8)
+                                    .background(.tertiary)
+                                    .clipShape(.capsule)
+                            }
                         }
                     }
                 }

@@ -232,9 +232,9 @@ struct HostView: View {
                     dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
                 }
             case .missingToken:
-                print(error.localizedDescription)
+                print(error)
             case .none:
-                print(error.localizedDescription)
+                print(error)
             }
         }
     }
@@ -246,7 +246,7 @@ struct HostView: View {
             let host = try await networkManager.fetch(endpoint, attempts: 5)
             return host
         } catch {
-            print(error.localizedDescription)
+            print(error)
             throw error
         }
     }

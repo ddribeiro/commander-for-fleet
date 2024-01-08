@@ -77,18 +77,18 @@ struct Battery: Codable, Hashable {
 }
 
 struct Profile: Codable, Identifiable, Hashable {
-    var profileId: Int
+    var profileUuid: String
     var name: String
     var status: String
     var operationType: String
     var detail: String
 
-    var id: Int {
-        profileId
+    var id: String {
+        profileUuid
     }
 
     static let example = Profile(
-        profileId: 841493,
+        profileUuid: UUID().uuidString,
         name: "Automatically Install App Updates",
         status: "verified",
         operationType: "install",

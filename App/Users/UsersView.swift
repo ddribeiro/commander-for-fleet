@@ -194,6 +194,7 @@ struct UsersView: View {
                 let cachedTeam = CachedTeam(context: moc)
                 cachedTeam.id = Int16(team.id)
                 cachedTeam.name = team.name
+                cachedTeam.role = team.role
 
                 cachedUser.addToTeams(cachedTeam)
 
