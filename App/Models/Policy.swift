@@ -21,6 +21,7 @@ struct Policy: Codable, Identifiable, Hashable {
     let authorName: String
     let authorEmail: String
     let teamId: Int?
+    let team: String?
     let resolution: String
     let platform: String
     let createdAt: Date
@@ -39,6 +40,7 @@ struct Policy: Codable, Identifiable, Hashable {
         authorName: "Dale Ribeiro",
         authorEmail: "dale@harmonize.io",
         teamId: 35,
+        team: "Harmonize",
         // swiftlint:disable:next line_length
         resolution: "To enable full disk encryption, on the failing device, select System Preferences > Security & Privacy > FileVault > Turn On FileVault.",
         platform: "darwin",

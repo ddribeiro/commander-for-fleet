@@ -51,6 +51,7 @@
 		5E9B94E42A32320D00A7A0CE /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E32A32320D00A7A0CE /* Host.swift */; };
 		5E9B94E62A32321D00A7A0CE /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E52A32321D00A7A0CE /* Team.swift */; };
 		5E9B94E82A32323300A7A0CE /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E72A32323300A7A0CE /* Endpoint.swift */; };
+		5EABE6572B4C77D1007A335C /* Activities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EABE6562B4C77D1007A335C /* Activities.swift */; };
 		5EBAAD9C2B22310400EC54BA /* SoftwareDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBAAD9B2B22310400EC54BA /* SoftwareDetailView.swift */; };
 		5ECF5D472AF405E200108411 /* SignedOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECF5D462AF405E200108411 /* SignedOutView.swift */; };
 		5ED2F5CA2B224DA6005CDD23 /* HostsForSoftwareList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED2F5C92B224DA6005CDD23 /* HostsForSoftwareList.swift */; };
@@ -128,6 +129,7 @@
 		5E9B94E32A32320D00A7A0CE /* Host.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 		5E9B94E52A32321D00A7A0CE /* Team.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
 		5E9B94E72A32323300A7A0CE /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		5EABE6562B4C77D1007A335C /* Activities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Activities.swift; path = App/Models/Activities.swift; sourceTree = "<group>"; };
 		5EBAAD9B2B22310400EC54BA /* SoftwareDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareDetailView.swift; sourceTree = "<group>"; };
 		5ECF5D462AF405E200108411 /* SignedOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SignedOutView.swift; path = App/Authentication/SignedOutView.swift; sourceTree = SOURCE_ROOT; };
 		5ED2F5C92B224DA6005CDD23 /* HostsForSoftwareList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostsForSoftwareList.swift; sourceTree = "<group>"; };
@@ -275,6 +277,7 @@
 		5EDA66B02A2A4955006706CD = {
 			isa = PBXGroup;
 			children = (
+				5EABE6562B4C77D1007A335C /* Activities.swift */,
 				5E12A0052B278DC6003D2EDB /* App */,
 				5EDA66BA2A2A4955006706CD /* Products */,
 			);
@@ -513,6 +516,7 @@
 				5E9B94E22A3231F900A7A0CE /* LoginRequestBody.swift in Sources */,
 				5E680A5D2B1657EA0024C757 /* APITokenRefreshView.swift in Sources */,
 				5E8311342B1FD4130029480B /* AllPoliciesTableView.swift in Sources */,
+				5EABE6572B4C77D1007A335C /* Activities.swift in Sources */,
 				5E028F452A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift in Sources */,
 				5ECF5D472AF405E200108411 /* SignedOutView.swift in Sources */,
 				5EDE46B52B17A80E00BA99A4 /* HostsTable.swift in Sources */,
