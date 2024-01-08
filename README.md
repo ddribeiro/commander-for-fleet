@@ -17,7 +17,7 @@ To use the app, you’ll need to prove the URL to your Fleet server and valid cr
 
 If you have SSO authentication enabled on your account, you’ll need to sign in with an API token. Just flip the toggle on the login screen to enter your API token.
 
-Unfortunately, at the moment you can’t sign in to the Fleet UI on mobile to get your API token. The Universal Clipboard feature works great if you have a Mac nearby to copy your API token and paste it into Commander on your mobile device.
+Unfortunately, at the moment you can’t sign in to the Fleet UI on mobile to get your API token. The [Universal Clipboard](https://support.apple.com/en-us/102430) feature works great if you have a Mac nearby to copy your API token and paste it into Commander on your mobile device.
 
 ### Token Renewal
 When your API Token expires, Commander will attempt to handle it depending on your initial authentication method.
