@@ -5,7 +5,7 @@ I’ve created Commander as a project to help me continue learning Swift and Swi
 
 Crashes and bugs are expected. If you encounter any while using the app, please create an issue!
 
-##Availability
+## Availability
 Commander is currently available on [TestFlight](https://testflight.apple.com). You can download TestFlight on your device from the App Store.
 
 Once you have TestFlight installed, you can join the Commander for FleetDM public beta by clicking [here](https://testflight.apple.com/join/VH22aGlx).
