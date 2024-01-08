@@ -6,21 +6,21 @@
 //
 //
 
-import Foundation
-import CoreData
-
-extension CachedBattery {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<CachedBattery> {
-        return NSFetchRequest<CachedBattery>(entityName: "CachedBattery")
-    }
-
-    @NSManaged public var cycleCount: Int16
-    @NSManaged public var health: String?
-    @NSManaged public var host: CachedHost?
-
-}
-
-extension CachedBattery: Identifiable {
-
-}
+//import Foundation
+//import CoreData
+//
+//extension CachedBattery {
+//
+//    @nonobjc public class func fetchRequest() -> NSFetchRequest<CachedBattery> {
+//        return NSFetchRequest<CachedBattery>(entityName: "CachedBattery")
+//    }
+//
+//    @NSManaged public var cycleCount: Int16
+//    @NSManaged public var health: String?
+//    @NSManaged public var host: CachedHost?
+//
+//}
+//
+//extension CachedBattery: Identifiable {
+//
+//}

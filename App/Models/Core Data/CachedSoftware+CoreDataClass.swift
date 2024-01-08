@@ -6,10 +6,10 @@
 //
 //
 
-import Foundation
-import CoreData
-
-@objc(CachedSoftware)
-public class CachedSoftware: NSManagedObject {
-
-}
+//import Foundation
+//import CoreData
+//
+//@objc(CachedSoftware)
+//public class CachedSoftware: NSManagedObject {
+//
+//}

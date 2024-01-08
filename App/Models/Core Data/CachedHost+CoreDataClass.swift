@@ -6,10 +6,10 @@
 //
 //
 
-import Foundation
-import CoreData
-
-@objc(CachedHost)
-public class CachedHost: NSManagedObject {
-
-}
+//import Foundation
+//import CoreData
+//
+//@objc(CachedHost)
+//public class CachedHost: NSManagedObject {
+//
+//}

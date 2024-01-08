@@ -6,10 +6,10 @@
 //
 //
 
-import Foundation
-import CoreData
-
-@objc(CachedProfile)
-public class CachedProfile: NSManagedObject {
-
-}
+//import Foundation
+//import CoreData
+//
+//@objc(CachedProfile)
+//public class CachedProfile: NSManagedObject {
+//
+//}

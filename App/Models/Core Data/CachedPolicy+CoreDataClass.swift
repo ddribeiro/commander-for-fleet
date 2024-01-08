@@ -6,10 +6,10 @@
 //
 //
 
-import Foundation
-import CoreData
-
-@objc(CachedPolicy)
-public class CachedPolicy: NSManagedObject {
-
-}
+//import Foundation
+//import CoreData
+//
+//@objc(CachedPolicy)
+//public class CachedPolicy: NSManagedObject {
+//
+//}

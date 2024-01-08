@@ -6,10 +6,10 @@
 //
 //
 
-import Foundation
-import CoreData
-
-@objc(CachedCommandResponse)
-public class CachedCommandResponse: NSManagedObject {
-
-}
+//import Foundation
+//import CoreData
+//
+//@objc(CachedCommandResponse)
+//public class CachedCommandResponse: NSManagedObject {
+//
+//}

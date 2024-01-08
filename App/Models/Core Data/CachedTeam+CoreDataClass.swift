@@ -6,10 +6,10 @@
 //
 //
 
-import Foundation
-import CoreData
-
-@objc(CachedTeam)
-public class CachedTeam: NSManagedObject {
-
-}
+//import Foundation
+//import CoreData
+//
+//@objc(CachedTeam)
+//public class CachedTeam: NSManagedObject {
+//
+//}

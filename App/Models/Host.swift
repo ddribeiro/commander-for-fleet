@@ -119,7 +119,8 @@ struct Software: Codable, Identifiable, Hashable {
     )
 }
 
-struct Vulnerability: Codable, Hashable {
+struct Vulnerability: Identifiable, Codable, Hashable {
+    var id: String { cve }
     var cveDescription: String?
     var detailsLink: String
     var cvssScore: Double?

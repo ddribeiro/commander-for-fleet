@@ -6,10 +6,10 @@
 //
 //
 
-import Foundation
-import CoreData
-
-@objc(CachedBattery)
-public class CachedBattery: NSManagedObject {
-
-}
+//import Foundation
+//import CoreData
+//
+//@objc(CachedBattery)
+//public class CachedBattery: NSManagedObject {
+//
+//}

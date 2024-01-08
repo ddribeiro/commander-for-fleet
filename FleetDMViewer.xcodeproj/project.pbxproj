@@ -51,6 +51,15 @@
 		5E9B94E42A32320D00A7A0CE /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E32A32320D00A7A0CE /* Host.swift */; };
 		5E9B94E62A32321D00A7A0CE /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E52A32321D00A7A0CE /* Team.swift */; };
 		5E9B94E82A32323300A7A0CE /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E72A32323300A7A0CE /* Endpoint.swift */; };
+		5EABE6612B4C88ED007A335C /* CachedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EABE6582B4C88ED007A335C /* CachedUser.swift */; };
+		5EABE6622B4C88ED007A335C /* CachedProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EABE6592B4C88ED007A335C /* CachedProfile.swift */; };
+		5EABE6632B4C88ED007A335C /* CachedPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EABE65A2B4C88ED007A335C /* CachedPolicy.swift */; };
+		5EABE6642B4C88ED007A335C /* CachedHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EABE65B2B4C88ED007A335C /* CachedHost.swift */; };
+		5EABE6652B4C88ED007A335C /* CachedVulnerability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EABE65C2B4C88ED007A335C /* CachedVulnerability.swift */; };
+		5EABE6662B4C88ED007A335C /* CachedTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EABE65D2B4C88ED007A335C /* CachedTeam.swift */; };
+		5EABE6672B4C88ED007A335C /* CachedCommandResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EABE65E2B4C88ED007A335C /* CachedCommandResponse.swift */; };
+		5EABE6682B4C88ED007A335C /* CachedSoftware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EABE65F2B4C88ED007A335C /* CachedSoftware.swift */; };
+		5EABE6692B4C88ED007A335C /* CachedBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EABE6602B4C88ED007A335C /* CachedBattery.swift */; };
 		5EBAAD9C2B22310400EC54BA /* SoftwareDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBAAD9B2B22310400EC54BA /* SoftwareDetailView.swift */; };
 		5ECF5D472AF405E200108411 /* SignedOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECF5D462AF405E200108411 /* SignedOutView.swift */; };
 		5ED2F5CA2B224DA6005CDD23 /* HostsForSoftwareList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED2F5C92B224DA6005CDD23 /* HostsForSoftwareList.swift */; };
@@ -128,6 +137,15 @@
 		5E9B94E32A32320D00A7A0CE /* Host.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 		5E9B94E52A32321D00A7A0CE /* Team.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
 		5E9B94E72A32323300A7A0CE /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		5EABE6582B4C88ED007A335C /* CachedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedUser.swift; path = App/SwiftData/CachedUser.swift; sourceTree = "<group>"; };
+		5EABE6592B4C88ED007A335C /* CachedProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedProfile.swift; path = App/SwiftData/CachedProfile.swift; sourceTree = "<group>"; };
+		5EABE65A2B4C88ED007A335C /* CachedPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedPolicy.swift; path = App/SwiftData/CachedPolicy.swift; sourceTree = "<group>"; };
+		5EABE65B2B4C88ED007A335C /* CachedHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedHost.swift; path = App/SwiftData/CachedHost.swift; sourceTree = "<group>"; };
+		5EABE65C2B4C88ED007A335C /* CachedVulnerability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedVulnerability.swift; path = App/SwiftData/CachedVulnerability.swift; sourceTree = "<group>"; };
+		5EABE65D2B4C88ED007A335C /* CachedTeam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedTeam.swift; path = App/SwiftData/CachedTeam.swift; sourceTree = "<group>"; };
+		5EABE65E2B4C88ED007A335C /* CachedCommandResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedCommandResponse.swift; path = App/SwiftData/CachedCommandResponse.swift; sourceTree = "<group>"; };
+		5EABE65F2B4C88ED007A335C /* CachedSoftware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedSoftware.swift; path = App/SwiftData/CachedSoftware.swift; sourceTree = "<group>"; };
+		5EABE6602B4C88ED007A335C /* CachedBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedBattery.swift; path = App/SwiftData/CachedBattery.swift; sourceTree = "<group>"; };
 		5EBAAD9B2B22310400EC54BA /* SoftwareDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareDetailView.swift; sourceTree = "<group>"; };
 		5ECF5D462AF405E200108411 /* SignedOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SignedOutView.swift; path = App/Authentication/SignedOutView.swift; sourceTree = SOURCE_ROOT; };
 		5ED2F5C92B224DA6005CDD23 /* HostsForSoftwareList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostsForSoftwareList.swift; sourceTree = "<group>"; };
@@ -275,6 +293,15 @@
 		5EDA66B02A2A4955006706CD = {
 			isa = PBXGroup;
 			children = (
+				5EABE6582B4C88ED007A335C /* CachedUser.swift */,
+				5EABE6592B4C88ED007A335C /* CachedProfile.swift */,
+				5EABE65A2B4C88ED007A335C /* CachedPolicy.swift */,
+				5EABE65B2B4C88ED007A335C /* CachedHost.swift */,
+				5EABE65C2B4C88ED007A335C /* CachedVulnerability.swift */,
+				5EABE65D2B4C88ED007A335C /* CachedTeam.swift */,
+				5EABE65E2B4C88ED007A335C /* CachedCommandResponse.swift */,
+				5EABE65F2B4C88ED007A335C /* CachedSoftware.swift */,
+				5EABE6602B4C88ED007A335C /* CachedBattery.swift */,
 				5E12A0052B278DC6003D2EDB /* App */,
 				5EDA66BA2A2A4955006706CD /* Products */,
 			);
@@ -482,9 +509,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				5E9B94E42A32320D00A7A0CE /* Host.swift in Sources */,
+				5EABE6632B4C88ED007A335C /* CachedPolicy.swift in Sources */,
 				5EDA66BD2A2A4955006706CD /* FleetDMViewerApp.swift in Sources */,
+				5EABE6612B4C88ED007A335C /* CachedUser.swift in Sources */,
 				5EEA90982A93E9D800FEA5E4 /* ServerSelectionView.swift in Sources */,
 				5E9038D92A43944B0077F3DC /* HostSoftwareDetailView.swift in Sources */,
+				5EABE6642B4C88ED007A335C /* CachedHost.swift in Sources */,
 				5E9038DF2A44AF6F0077F3DC /* MDMCommands.swift in Sources */,
 				5E680A5F2B168E520024C757 /* Sidebar.swift in Sources */,
 				5EDE46C22B1915A900BA99A4 /* UsersTableView.swift in Sources */,
@@ -500,9 +530,11 @@
 				5EDE46BA2B17E44C00BA99A4 /* UsersView.swift in Sources */,
 				5EEA909A2A94FEF700FEA5E4 /* SettingsView.swift in Sources */,
 				5E9038D72A4387670077F3DC /* HostSoftwareRow.swift in Sources */,
+				5EABE6652B4C88ED007A335C /* CachedVulnerability.swift in Sources */,
 				5E815EA62B1A2DF300E0E44A /* CachedProfile+CoreDataProperties.swift in Sources */,
 				5EDE46B32B17A62500BA99A4 /* HostsView.swift in Sources */,
 				5E9039322A45FC250077F3DC /* HostView.swift in Sources */,
+				5EABE6672B4C88ED007A335C /* CachedCommandResponse.swift in Sources */,
 				5E815E9E2B1A2DF300E0E44A /* CachedSoftware+CoreDataProperties.swift in Sources */,
 				5EEA90952A93C37100FEA5E4 /* DataController.swift in Sources */,
 				5EDA66D82A2A4979006706CD /* LoginView.swift in Sources */,
@@ -524,6 +556,7 @@
 				5E815E562B1944CD00E0E44A /* UserDetailView.swift in Sources */,
 				5E815E9F2B1A2DF300E0E44A /* CachedBattery+CoreDataClass.swift in Sources */,
 				5EDC180A2A3B961400691C2E /* ContentView.swift in Sources */,
+				5EABE6682B4C88ED007A335C /* CachedSoftware.swift in Sources */,
 				5EDC180E2A409DB100691C2E /* HostPoliciesView.swift in Sources */,
 				5ED2F5CA2B224DA6005CDD23 /* HostsForSoftwareList.swift in Sources */,
 				5E04FF8A2B20DE490088EADF /* PolicyDetailView.swift in Sources */,
@@ -540,12 +573,15 @@
 				5E815E962B1A2DF300E0E44A /* CachedVulnerability+CoreDataProperties.swift in Sources */,
 				5E9038DB2A43A0F60077F3DC /* HostProfilesRow.swift in Sources */,
 				5E94DCC42B11358300C09185 /* AuthManager.swift in Sources */,
+				5EABE6692B4C88ED007A335C /* CachedBattery.swift in Sources */,
+				5EABE6622B4C88ED007A335C /* CachedProfile.swift in Sources */,
 				5ED5596D2B1A668700AC581E /* AllSoftwareRow.swift in Sources */,
 				5EDC18042A3A506200691C2E /* User.swift in Sources */,
 				5E815EA42B1A2DF300E0E44A /* CachedPolicy+CoreDataProperties.swift in Sources */,
 				5EDC18082A3B8FDF00691C2E /* HostRow.swift in Sources */,
 				5E815E9D2B1A2DF300E0E44A /* CachedSoftware+CoreDataClass.swift in Sources */,
 				5E9038DD2A43A3AE0077F3DC /* HostProfilesView.swift in Sources */,
+				5EABE6662B4C88ED007A335C /* CachedTeam.swift in Sources */,
 				5EDE46B12B179CC100BA99A4 /* DetailColumn.swift in Sources */,
 				5E815E9A2B1A2DF300E0E44A /* CachedUser+CoreDataProperties.swift in Sources */,
 				5EFC7ADF2A9E8F9A00C2ED06 /* Filter.swift in Sources */,
