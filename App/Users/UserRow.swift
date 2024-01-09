@@ -14,8 +14,8 @@ struct UserRow: View {
 
     var body: some View {
         HStack {
-            if user.wrappedGravatarUrl.isEmpty {
-                if let firstCharacter = user.wrappedName.first?.lowercased() {
+            if user.gravatarUrl.isEmpty {
+                if let firstCharacter = user.name.first?.lowercased() {
                     Image(systemName: "\(firstCharacter).circle.fill")
                         .font(.system(.largeTitle))
                         .symbolRenderingMode(.hierarchical)
@@ -27,7 +27,7 @@ struct UserRow: View {
 #endif
                 }
             } else {
-                AsyncImage(url: URL(string: "\(user.wrappedGravatarUrl)?s=240")) { image in
+                AsyncImage(url: URL(string: "\(user.gravatarUrl)?s=240")) { image in
                     image
                         .resizable()
                         .scaledToFit()
@@ -50,17 +50,17 @@ struct UserRow: View {
             }
 
             VStack(alignment: .leading) {
-                Text(user.wrappedName)
+                Text(user.name)
                     .font(.headline)
                     .layoutPriority(1)
 
                 if sizeClass == .compact {
-                    Text(user.wrappedEmail)
+                    Text(user.email)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
 
-                    if user.wrappedGlobalRole != "N/A" {
-                        Text(user.wrappedGlobalRole.capitalized)
+                    if let globalRole = user.globalRole {
+                        Text(globalRole.capitalized)
                             .font(.smallCaps(.body)())
                             .foregroundStyle(.white)
                             .padding(.horizontal, 8)

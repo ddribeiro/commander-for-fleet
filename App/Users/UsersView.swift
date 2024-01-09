@@ -9,8 +9,9 @@ import SwiftData
 import SwiftUI
 
 struct UsersView: View {
-    @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
+    
+    @Environment(\.modelContext) var modelContext
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
@@ -179,32 +180,30 @@ struct UsersView: View {
 
     func updateCache(with downloadedUsers: [User]) {
         for downloadedUser in downloadedUsers {
-            let cachedUser = CachedUser(context: moc)
-
-            cachedUser.createdAt = downloadedUser.createdAt
-            cachedUser.updatedAt = downloadedUser.updatedAt
-            cachedUser.id = Int16(downloadedUser.id)
-            cachedUser.name = downloadedUser.name
-            cachedUser.email = downloadedUser.email
-            cachedUser.gravatarUrl = downloadedUser.gravatarUrl
-            cachedUser.ssoEnabled = downloadedUser.ssoEnabled
-            cachedUser.globalRole = downloadedUser.globalRole
-            cachedUser.apiOnly = downloadedUser.apiOnly
-
-            cachedUser.removeFromTeams(cachedUser.teams ?? [] as NSSet)
+            let cachedUser = CachedUser(
+                apiOnly: downloadedUser.apiOnly,
+                createdAt: downloadedUser.createdAt,
+                email: downloadedUser.email,
+                gravatarUrl: downloadedUser.gravatarUrl,
+                id: downloadedUser.id,
+                name: downloadedUser.name,
+                ssoEnabled: downloadedUser.ssoEnabled,
+                updatedAt: downloadedUser.updatedAt,
+                teams: []
+            )
 
             for team in downloadedUser.teams {
-                let cachedTeam = CachedTeam(context: moc)
-                cachedTeam.id = Int16(team.id)
-                cachedTeam.name = team.name
-                cachedTeam.role = team.role
-
-                cachedUser.addToTeams(cachedTeam)
-
+                let cachedTeam = CachedTeam(
+                    id: team.id,
+                    name: team.name,
+                    role: team.role
+                )
+                
+                cachedUser.teams.append(cachedTeam)
             }
+            
+            modelContext.insert(cachedUser)
         }
-
-        try? moc.save()
     }
 }
 

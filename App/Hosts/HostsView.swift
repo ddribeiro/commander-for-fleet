@@ -16,11 +16,15 @@ struct HostsView: View {
     @Environment(\.horizontalSizeClass) var sizeClass
 
     @State private var selection: Set<CachedHost.ID> = []
+    
+    @State private var searchText = ""
+    @State private var sortOrder = [SortDescriptor(\CachedHost.computerName)]
+    @State private var selectedFilter = Filter.all
 
     let smartFilters: [Filter] = [.all, .recentlyEnrolled]
 
-//    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
-    @Query var teams: [CachedTeam]
+    @Query(sort: \CachedTeam.name, order: .reverse) var teams: [CachedTeam]
+    @Query var hosts: [CachedHost]
 
     var teamFilters: [Filter] {
         teams.map { team in
@@ -39,12 +43,12 @@ struct HostsView: View {
     var body: some View {
         ZStack {
             if displayAsList {
-                HostsListView()
+                HostsListView(searchString: searchText, sortOrder: sortOrder)
             } else {
                 HostsTable(selection: $selection)
             }
         }
-        .navigationTitle(dataController.selectedFilter == .all ? "All Hosts" : dataController.selectedFilter.name)
+        .navigationTitle(selectedFilter == .all ? "All Hosts" : selectedFilter.name)
         .navigationDestination(for: CachedHost.ID.self) { id in
             HostView(id: id)
         }
@@ -60,11 +64,8 @@ struct HostsView: View {
             await fetchTeams()
             await fetchHosts()
         }
-//        .onAppear {
-//            dataController.filterText = ""
-//        }
         .overlay {
-            if dataController.hostsForSelectedFilter().isEmpty {
+            if hosts.isEmpty {
                 ContentUnavailableView.search
             }
         }
@@ -88,7 +89,7 @@ struct HostsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
-                    Picker("Team", selection: $dataController.selectedFilter) {
+                    Picker("Team", selection: $selectedFilter) {
                         Text("All Hosts").tag(Filter.all)
                         Divider()
                         ForEach(teamFilters) { filter in
@@ -97,7 +98,7 @@ struct HostsView: View {
                     }
                 } label: {
                     Label("Teams", systemImage: "person.3")
-                        .symbolVariant(dataController.selectedFilter != .all ? .fill : .none)
+                        .symbolVariant(selectedFilter != .all ? .fill : .none)
                 }
             }
 

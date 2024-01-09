@@ -5,6 +5,7 @@
 //  Created by Dale Ribeiro on 6/2/23.
 //
 
+import SwiftData
 import SwiftUI
 
 @main
@@ -25,7 +26,11 @@ struct FleetDMViewerApp: App {
                 SignedOutView()
                     .environmentObject(dataController)
                     .environment(\.networkManager, networkManager)
-                    .environment(\.managedObjectContext, dataController.container.viewContext)
+                    .modelContainer(for: CachedHost.self)
+                    .modelContainer(for: CachedTeam.self)
+                    .modelContainer(for: CachedUser.self)
+                    .modelContainer(for: CachedSoftware.self)
+                    .modelContainer(for: CachedPolicy.self)
 
             }
         }

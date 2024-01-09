@@ -10,7 +10,7 @@ import Foundation
 import SwiftData
 
 
-@Model class CachedPolicy {
+@Model class CachedPolicy: Identifiable {
     var authorEmail: String
     var authorId: Int
     var authorName: String

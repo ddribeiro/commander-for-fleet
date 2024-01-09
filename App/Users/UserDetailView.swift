@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct UserDetailView: View {
-    @Environment(\.managedObjectContext) var moc
+    @Environment(\.modelContext) var modelContext
     @EnvironmentObject var dataController: DataController
     @Environment(\.networkManager) var networkManager
 
@@ -78,17 +78,14 @@ struct UserDetailView: View {
             if let downloadedUser = downloadedUser {
                 if downloadedUser.user.teams.isEmpty {
                     for team in downloadedUser.availableTeams {
-                        let cachedTeam = CachedTeam(context: moc)
-                        cachedTeam.id = Int16(team.id)
-                        cachedTeam.name = team.name
+                        let cachedTeam = CachedTeam(id: team.id, name: team.name)
 
-                        user.teams.insert(cachedTeam)
+                        user.teams.append(cachedTeam)
                     }
                 }
                 user.lastFetched = .now
-                user.objectWillChange.send()
+                modelContext.insert(user)
             }
-            try? moc.save()
         }
 
         private func updateUser() async {

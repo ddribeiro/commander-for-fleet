@@ -23,7 +23,7 @@ struct UsersTableView: View {
             return dataController.usersForSelectedFilter()
         } else {
             return dataController.usersForSelectedFilter().filter {
-                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
+                $0.name.localizedCaseInsensitiveContains(searchText)
             }
         }
     }
@@ -36,16 +36,16 @@ struct UsersTableView: View {
                     .layoutPriority(1)
             }
 
-            TableColumn("Global Role", value: \.wrappedGlobalRole) { user in
-                Text(user.wrappedGlobalRole.capitalized)
+            TableColumn("Global Role", value: \.globalRole) { user in
+                Text(user.globalRole?.capitalized ?? "")
 #if os(macOS)
                     .frame(maxWidth: .infinity, alignment: . trailing)
                     .foregroundStyle(.secondary)
 #endif
             }
 
-            TableColumn("Email Address", value: \.wrappedEmail) { user in
-                Text(user.wrappedEmail)
+            TableColumn("Email Address", value: \.email) { user in
+                Text(user.email)
 #if os(macOS)
                     .frame(maxWidth: .infinity, alignment: . trailing)
                     .foregroundStyle(.secondary)

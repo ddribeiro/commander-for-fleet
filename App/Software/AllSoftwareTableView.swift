@@ -22,24 +22,24 @@ struct AllSoftwareTableView: View {
     var searchResults: [CachedSoftware] {
         if searchText.isEmpty && !isShowingVulnerableSoftware {
             return dataController.softwareForSelectedFilter().sorted {
-                $0.wrappedName < $1.wrappedName
+                $0.name < $1.name
             }
         } else if searchText.isEmpty && isShowingVulnerableSoftware {
             return vulnerableSoftware.sorted {
-                $0.wrappedName < $1.wrappedName
+                $0.name < $1.name
             }
         } else if isShowingVulnerableSoftware {
-                return vulnerableSoftware.filter({ $0.wrappedName.localizedCaseInsensitiveContains(searchText) })
+                return vulnerableSoftware.filter({ $0.name.localizedCaseInsensitiveContains(searchText) })
             } else {
             return dataController.softwareForSelectedFilter().filter {
-                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
+                $0.name.localizedCaseInsensitiveContains(searchText)
             }
         }
     }
 
     var vulnerableSoftware: [CachedSoftware] {
         dataController.softwareForSelectedFilter().filter {
-            !$0.vulnerabilitiesArray.isEmpty
+            !$0.vulnerabilities.isEmpty
         }
     }
 
@@ -53,8 +53,8 @@ struct AllSoftwareTableView: View {
             }
             .width(400)
 
-            TableColumn("Version", value: \.wrappedVersion) { software in
-                Text(software.wrappedVersion)
+            TableColumn("Version", value: \.version) { software in
+                Text(software.version)
 #if os(macOS)
                     .frame(maxWidth: .infinity, alignment: . trailing)
                     .foregroundStyle(.secondary)
@@ -62,8 +62,8 @@ struct AllSoftwareTableView: View {
                     .monospacedDigit()
             }
 
-            TableColumn("Source", value: \.wrappedSource) { software in
-                Text(software.wrappedSource)
+            TableColumn("Source", value: \.source) { software in
+                Text(software.source)
             }
 
             TableColumn("Hosts", value: \.hostCount) { software in
@@ -71,15 +71,15 @@ struct AllSoftwareTableView: View {
                     .monospacedDigit()
             }
 
-            TableColumn("Vulnerabilties", value: \.vulnerabilitiesArray.count) { software in
+            TableColumn("Vulnerabilties", value: \.vulnerabilities.count) { software in
                 HStack {
 
                         Image(systemName: "exclamationmark.shield.fill")
-                            .opacity(software.vulnerabilitiesArray.count != 0 ? 1 : 0)
+                            .opacity(software.vulnerabilities.count != 0 ? 1 : 0)
                             .imageScale(.large)
                             .foregroundStyle(.red)
 
-                    Text("\(software.vulnerabilitiesArray.count)")
+                    Text("\(software.vulnerabilities.count)")
                         .monospacedDigit()
                 }
             }

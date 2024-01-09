@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Filter: Identifiable, Hashable {
+@Model
+class Filter: Identifiable, Hashable {
     var id: Int
     var name: String
     var icon: String
@@ -16,6 +18,14 @@ struct Filter: Identifiable, Hashable {
 
     var hostCount: Int {
         Int(team?.hostCount ?? 0)
+    }
+    
+    init(id: Int, name: String, icon: String, minEnrollmentDate: Foundation.Date = Date.distantPast, team: CachedTeam? = nil) {
+        self.id = id
+        self.name = name
+        self.icon = icon
+        self.minEnrollmentDate = minEnrollmentDate
+        self.team = team
     }
 
     static var all = Filter(

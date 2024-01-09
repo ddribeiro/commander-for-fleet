@@ -23,7 +23,7 @@ struct AllPoliciesTableView: View {
             return dataController.policiesforSelectedFilter()
         } else {
             return dataController.policiesforSelectedFilter().filter {
-                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
+                $0.name.localizedCaseInsensitiveContains(searchText)
             }
         }
     }

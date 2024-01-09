@@ -5,17 +5,18 @@
 //  Created by Dale Ribeiro on 6/29/23.
 //
 
+import SwiftData
 import SwiftUI
 import KeychainWrapper
 
 struct HostCommandsView: View {
     @EnvironmentObject var dataController: DataController
 
+    @Environment(\.modelContext) var modelContext
     @Environment(\.networkManager) var networkManager
-    @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
-
-    @FetchRequest var commands: FetchedResults<CachedCommandResponse>
+    
+    @Query var commands: [CachedCommandResponse]
 
     var body: some View {
         NavigationStack {
@@ -80,31 +81,26 @@ struct HostCommandsView: View {
             }
         }
     }
+    
     init(host: Host) {
-        _commands = FetchRequest<CachedCommandResponse>(
-            sortDescriptors: [
-                SortDescriptor(
-                    \.updatedAt,
-                     order: .reverse
-                )
-            ],
-            predicate: NSPredicate(
-                format: "deviceID CONTAINS %@", host.uuid
-            )
-        )
+        _commands = Query(filter: #Predicate { command in
+            command.deviceID.localizedStandardContains(host.uuid)
+        }, sort: [SortDescriptor(\.updatedAt, order: .reverse)])
     }
+
 
     func updateCache(with downloadedCommands: [CommandResponse]) {
         for downloadedCommand in downloadedCommands {
-            let cachedCommand = CachedCommandResponse(context: moc)
-
-            cachedCommand.status = downloadedCommand.status
-            cachedCommand.commandUUID = downloadedCommand.commandUuid
-            cachedCommand.deviceID = downloadedCommand.deviceId
-            cachedCommand.updatedAt = downloadedCommand.updatedAt
-            cachedCommand.requestType = downloadedCommand.requestType
-            cachedCommand.hostname = downloadedCommand.hostname
+            let cachedCommand = CachedCommandResponse(
+                commandUUID: downloadedCommand.commandUuid,
+                deviceID: downloadedCommand.deviceId,
+                hostname: downloadedCommand.hostname,
+                requestType: downloadedCommand.requestType,
+                status: downloadedCommand.status,
+                updatedAt: downloadedCommand.updatedAt
+            )
+            
+            modelContext.insert(cachedCommand)
         }
-        try? moc.save()
     }
 }

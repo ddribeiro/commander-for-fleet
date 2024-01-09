@@ -10,7 +10,7 @@ import Foundation
 import SwiftData
 
 
-@Model class CachedSoftware {
+@Model class CachedSoftware: Identifiable {
     var bundleIdentifier: String?
     var hostCount: Int
     @Attribute(.unique) var id: Int

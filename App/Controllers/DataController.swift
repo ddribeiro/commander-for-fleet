@@ -5,9 +5,9 @@
 //  Created by Dale Ribeiro on 8/21/23.
 //
 
-import CoreData
 import Foundation
 import KeychainWrapper
+import SwiftData
 import SwiftUI
 
 // Enum to define the types that hosts can be sorted by.
@@ -35,7 +35,8 @@ enum LoadingState {
 @MainActor
 // swiftlint:disable:next type_body_length
 class DataController: ObservableObject {
-    let container = NSPersistentContainer(name: "FleetDMViewer")
+    @Environment(\.modelContext) var modelContext
+//    let container = NSPersistentContainer(name: "FleetDMViewer")
 
     @Published var selectedFilter = Filter.all
 
@@ -132,14 +133,6 @@ class DataController: ObservableObject {
             self.isAuthenticated = isAuthenticated
         }
 
-        container.loadPersistentStores { _, error in
-            if let error = error {
-                print("Core Data failed to load: \(error.localizedDescription)")
-            }
-
-            self.container.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        }
-
         if let data = UserDefaults.standard.data(forKey: "activeEnvironment") {
             let decoded = try? JSONDecoder().decode(AppEnvironment.self, from: data)
             self.activeEnvironment = decoded
@@ -151,59 +144,19 @@ class DataController: ObservableObject {
         UserDefaults.standard.set(encoded, forKey: "activeEnvironment")
     }
 
-    func save() {
-        saveTask?.cancel()
-
-        if container.viewContext.hasChanges {
-            try? container.viewContext.save()
-        }
-    }
-
-    func queueSave() {
-        saveTask?.cancel()
-
-        saveTask = Task { @MainActor in
-            try await Task.sleep(for: .seconds(3))
-            save()
-        }
-    }
-
-    func delete(_ object: NSManagedObject) {
-        container.viewContext.delete(object)
-        save()
-    }
-
-    private func delete(_ fetchRequest: NSFetchRequest<NSFetchRequestResult>) {
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        batchDeleteRequest.resultType = .resultTypeObjectIDs
-
-        if let delete = try? container.viewContext.execute(batchDeleteRequest) as? NSBatchDeleteResult {
-            let changes = [NSDeletedObjectsKey: delete.result as? [NSManagedObjectID] ?? []]
-            NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [container.viewContext])
-        }
-    }
-
-    /* Created a fetch request for each Core Data entity and deletes it. 
-     This function needs to be updated as more functionality is added to
-     the app and more data types are being saved.*/
+    /* Attempts to delete all persisent data by calling the delete
+     method on the Swift Data modelContext. */
     func deleteAll() {
-        let request1: NSFetchRequest<NSFetchRequestResult> = CachedTeam.fetchRequest()
-        delete(request1)
-
-        let request2: NSFetchRequest<NSFetchRequestResult> = CachedUser.fetchRequest()
-        delete(request2)
-
-        let request3: NSFetchRequest<NSFetchRequestResult> = CachedSoftware.fetchRequest()
-        delete(request3)
-
-        let request4: NSFetchRequest<NSFetchRequestResult> = CachedHost.fetchRequest()
-        delete(request4)
-
-        let request5: NSFetchRequest<NSFetchRequestResult> = CachedCommandResponse.fetchRequest()
-        delete(request5)
-
-        let request6: NSFetchRequest<NSFetchRequestResult> = CachedPolicy.fetchRequest()
-        delete(request6)
+        do { 
+            try modelContext.delete(model: CachedTeam.self)
+            try modelContext.delete(model: CachedHost.self)
+            try modelContext.delete(model: CachedUser.self)
+            try modelContext.delete(model: CachedSoftware.self)
+            try modelContext.delete(model: CachedCommandResponse.self)
+            try modelContext.delete(model: CachedPolicy.self)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
 
     func policiesforSelectedFilter() -> [CachedPolicy] {

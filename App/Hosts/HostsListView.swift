@@ -5,29 +5,31 @@
 //  Created by Dale Ribeiro on 11/29/23.
 //
 
+import SwiftData
 import SwiftUI
 import KeychainWrapper
 
 struct HostsListView: View {
     @EnvironmentObject var dataController: DataController
 
-    @Environment(\.managedObjectContext) var moc
+    @Environment(\.modelContext) var modelContext
     @Environment(\.networkManager) var networkManager
 
     @State private var isShowingSignInSheet = false
-
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
+    
+    @Query var teams: [CachedTeam]
+    @Query var hosts: [CachedHost]
 
     var teamFilters: [Filter] {
         teams.map { team in
-            Filter(id: Int(team.id), name: team.wrappedName, icon: "person.3", team: team)
+            Filter(id: Int(team.id), name: team.name, icon: "person.3", team: team)
         }
     }
 
     var body: some View {
         if dataController.isAuthenticated {
             List(selection: $dataController.selectedHost) {
-                ForEach(dataController.hostsForSelectedFilter()) { host in
+                ForEach(hosts) { host in
                     HostRow(host: host)
                 }
             }
@@ -40,6 +42,17 @@ struct HostsListView: View {
                     isShowingSignInSheet = true
                 }
         }
+    }
+    
+    init(searchString: String = "", sortOrder: [SortDescriptor<CachedHost>] = [], filter: Filter = .all) {
+        _hosts = Query(filter: #Predicate { host in
+            if searchString.isEmpty {
+                true
+            } else {
+                host.computerName.localizedStandardContains(searchString)
+                || host.hardwareSerial.localizedStandardContains(searchString)
+            }
+        }, sort: sortOrder)
     }
 
     func fetchHosts() async {
@@ -71,32 +84,32 @@ struct HostsListView: View {
 
     func updateCache(with downloadedHosts: [Host]) {
         for downloadedHost in downloadedHosts {
-            let cachedHost = CachedHost(context: moc)
-
-            cachedHost.id = Int16(downloadedHost.id)
-            cachedHost.platform = downloadedHost.platform
-            cachedHost.lastEnrolledAt = downloadedHost.lastEnrolledAt
-            cachedHost.seenTime = downloadedHost.seenTime
-            cachedHost.uuid = downloadedHost.uuid
-            cachedHost.osVersion = downloadedHost.osVersion
-            cachedHost.uptime = Int64(downloadedHost.uptime)
-            cachedHost.memory = Int64(downloadedHost.memory)
-            cachedHost.cpuBrand = downloadedHost.cpuBrand
-            cachedHost.hardwareModel = downloadedHost.hardwareModel
-            cachedHost.hardwareSerial = downloadedHost.hardwareSerial
-            cachedHost.computerName = downloadedHost.computerName
-            cachedHost.publicIp = downloadedHost.publicIp
-            cachedHost.primaryIp = downloadedHost.primaryIp
-            cachedHost.primaryMac = downloadedHost.primaryMac
-            cachedHost.teamId = Int16(downloadedHost.teamId ?? 0)
-            cachedHost.gigsDiskSpaceAvailable = downloadedHost.gigsDiskSpaceAvailable
-            cachedHost.percentDiskSpaceAvailable = Double(downloadedHost.percentDiskSpaceAvailable)
-            cachedHost.diskEncryptionEnabled = downloadedHost.diskEncryptionEnabled ?? false
-            cachedHost.status = downloadedHost.status
-            cachedHost.teamName = downloadedHost.teamName
+            let cachedHost = CachedHost(
+                computerName: downloadedHost.computerName,
+                cpuBrand: downloadedHost.cpuBrand,
+                diskEncryptionEnabled: downloadedHost.diskEncryptionEnabled ?? false,
+                gigsDiskSpaceAvailable: downloadedHost.gigsDiskSpaceAvailable,
+                hardwareModel: downloadedHost.hardwareModel,
+                hardwareSerial: downloadedHost.hardwareSerial,
+                id: downloadedHost.id,
+                lastEnrolledAt: downloadedHost.lastEnrolledAt,
+                memory: downloadedHost.memory,
+                osVersion: downloadedHost.osVersion,
+                percentDiskSpaceAvailable: downloadedHost.percentDiskSpaceAvailable,
+                platform: downloadedHost.platform,
+                primaryIp: downloadedHost.primaryIp,
+                primaryMac: downloadedHost.primaryMac,
+                publicIp: downloadedHost.publicIp,
+                seenTime: downloadedHost.seenTime,
+                status: downloadedHost.status,
+                teamId: downloadedHost.teamId ?? 0,
+                teamName: downloadedHost.teamName ?? "",
+                uptime: downloadedHost.uptime,
+                uuid: downloadedHost.uuid
+            )
+            
+            modelContext.insert(cachedHost)
         }
-
-        try? moc.save()
     }
 }
 
