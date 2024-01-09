@@ -24,7 +24,7 @@ struct AllPoliciesRow: View {
 #else
                 .frame(width: 20, height: 20)
 #endif
-            Text(policy.wrappedName)
+            Text(policy.name)
                 .font(.headline)
             if sizeClass == .compact {
                 Spacer()

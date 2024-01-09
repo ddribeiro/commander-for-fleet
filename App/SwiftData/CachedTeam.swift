@@ -10,15 +10,20 @@ import Foundation
 import SwiftData
 
 
-@Model public class CachedTeam {
-    var hostCount: Int16? = 0
-    @Attribute(.unique) var id: Int16? = 0
-    var name: String?
+@Model class CachedTeam {
+    var hostCount: Int?
+    @Attribute(.unique) var id: Int
+    var name: String
     var role: String?
     var hosts: [CachedHost]?
     @Relationship(inverse: \CachedUser.teams) var users: [CachedUser]?
-    public init() {
-
-    }
     
+    init(hostCount: Int? = nil, id: Int, name: String, role: String? = nil, hosts: [CachedHost]? = nil, users: [CachedUser]? = nil) {
+        self.hostCount = hostCount
+        self.id = id
+        self.name = name
+        self.role = role
+        self.hosts = hosts
+        self.users = users
+    }
 }

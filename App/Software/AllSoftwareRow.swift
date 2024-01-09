@@ -22,13 +22,12 @@ struct AllSoftwareRow: View {
                 .frame(width: 20, height: 20)
 #endif
             VStack(alignment: .leading) {
-                Text(software.wrappedName)
+                Text(software.name)
                     .font(.headline)
                     .lineLimit(1)
 
                 if sizeClass == .compact {
-
-                    Text("Version: \(software.wrappedVersion)")
+                    Text("Version: \(software.version)")
                         .foregroundStyle(.secondary)
                         .font(.body.smallCaps())
 
@@ -40,11 +39,11 @@ struct AllSoftwareRow: View {
 
             Spacer()
             if sizeClass == .compact {
-                if software.vulnerabilitiesArray.count != 0 {
+                if software.vulnerabilities.count != 0 {
                     VStack(alignment: .trailing) {
                         Image(systemName: "exclamationmark.shield.fill")
                             .foregroundColor(.red)
-                        Text("^[\(software.vulnerabilitiesArray.count) Vulnerability](inflect: true)")
+                        Text("^[\(software.vulnerabilities.count) Vulnerability](inflect: true)")
                             .lineLimit(1)
                             .foregroundStyle(.secondary)
                             .font(.body.smallCaps())

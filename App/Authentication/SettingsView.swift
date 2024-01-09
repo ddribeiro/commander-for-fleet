@@ -5,6 +5,7 @@
 //  Created by Dale Ribeiro on 8/22/23.
 //
 
+import SwiftData
 import SwiftUI
 
 struct SettingsView: View {
@@ -12,7 +13,7 @@ struct SettingsView: View {
     @Environment(\.networkManager) var networkManager
     @Environment(\.dismiss) var dismiss
 
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
+    @Query var users: [CachedUser]
 
     @State private var isSignOutAlertPresented = false
 
@@ -23,7 +24,7 @@ struct SettingsView: View {
                     Form {
                         Section {
                             HStack {
-                                if user.wrappedGravatarUrl.isEmpty {
+                                if user.gravatarUrl.isEmpty {
                                     Image(systemName: "person.fill")
                                         .font(.system(.largeTitle, design: .rounded))
                                         .fontWeight(.semibold)
@@ -31,7 +32,7 @@ struct SettingsView: View {
                                         .frame(width: 60, height: 60)
                                         .background(Color.accentColor.gradient, in: Circle())
                                 } else {
-                                    AsyncImage(url: URL(string: "\(user.wrappedGravatarUrl)?s=240")) { image in
+                                    AsyncImage(url: URL(string: "\(user.gravatarUrl)?s=240")) { image in
                                         image
                                             .resizable()
                                             .scaledToFit()
@@ -50,11 +51,11 @@ struct SettingsView: View {
                                 }
 
                                 VStack(alignment: .leading) {
-                                    Text(user.wrappedName)
+                                    Text(user.name)
                                         .font(.system(.title3, design: .rounded))
                                         .fontWeight(.medium)
 
-                                    Text(user.wrappedEmail)
+                                    Text(user.email)
                                         .font(.system(.subheadline, design: .rounded))
                                         .fontWeight(.medium)
                                         .foregroundStyle(.secondary)
@@ -63,9 +64,11 @@ struct SettingsView: View {
                         }
 
                         Section {
-                            LabeledContent("Global Role", value: user.wrappedGlobalRole.capitalized)
+                            LabeledContent("Global Role") {
+                                Text(user.globalRole?.capitalized ?? "")
+                            }
                             // swiftlint:disable:next line_length
-                            LabeledContent("Created On", value: user.wrappedCreatedAt.formatted(date: .abbreviated, time: .omitted))
+                            LabeledContent("Created On", value: user.createdAt.formatted(date: .abbreviated, time: .omitted))
                         }
 
                         Section {
@@ -79,8 +82,8 @@ struct SettingsView: View {
                         }
 
                         Section {
-                            ForEach(user.teamsArray) { team in
-                                Text(team.wrappedName)
+                            ForEach(user.teams) { team in
+                                Text(team.name)
                             }
                         } header: {
                             Text("Available Teams")

@@ -5,6 +5,7 @@
 //  Created by Dale Ribeiro on 11/29/23.
 //
 
+import SwiftData
 import SwiftUI
 
 struct UsersView: View {
@@ -17,8 +18,10 @@ struct UsersView: View {
     @State private var selection: Set<CachedUser.ID> = []
     @State private var searchText = ""
 
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
+    @Query var users: [CachedUser]
+    @Query var teams: [CachedTeam]
+//    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
+//    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
     var displayAsList: Bool {
 #if os(iOS)
@@ -30,7 +33,7 @@ struct UsersView: View {
 
     var teamFilters: [Filter] {
         teams.map { team in
-            Filter(id: Int(team.id), name: team.wrappedName, icon: "person.3", team: team)
+            Filter(id: Int(team.id), name: team.name, icon: "person.3", team: team)
         }
     }
 
@@ -39,7 +42,7 @@ struct UsersView: View {
             return dataController.usersForSelectedFilter()
         } else {
             return dataController.usersForSelectedFilter().filter {
-                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
+                $0.name.localizedCaseInsensitiveContains(searchText)
             }
         }
     }

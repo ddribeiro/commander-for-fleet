@@ -15,10 +15,10 @@ struct SoftwareDetailView: View {
     var body: some View {
         Form {
             Section {
-                LabeledContent("Name", value: software.wrappedName)
+                LabeledContent("Name", value: software.name)
                     .multilineTextAlignment(.trailing)
 
-                LabeledContent("Version", value: software.wrappedVersion)
+                LabeledContent("Version", value: software.version)
 
                 if let bundleIdentifier = software.bundleIdentifier {
                     LabeledContent("Bundle Identifier", value: bundleIdentifier)
@@ -32,7 +32,7 @@ struct SoftwareDetailView: View {
                     NavigationLink {
                         HostsForSoftwareList(software: software)
                     } label: {
-                        Text("^[View \(software.hostCount) hosts](inflect: true) with version \(software.wrappedVersion) of \(software.wrappedName)")
+                        Text("^[View \(software.hostCount) host](inflect: true) with version \(software.version) of \(software.name)")
                     }
                 } else {
                     ContentUnavailableView(
@@ -47,11 +47,11 @@ struct SoftwareDetailView: View {
             }
 
             Section {
-                if !software.vulnerabilitiesArray.isEmpty {
-                    ForEach(software.vulnerabilitiesArray, id: \.cve) { vulnerability in
+                if !software.vulnerabilities.isEmpty {
+                    ForEach(software.vulnerabilities, id: \.cve) { vulnerability in
                         HStack {
                             VStack(alignment: .leading) {
-                                Text(vulnerability.wrappedCve)
+                                Text(vulnerability.cve)
                                 if vulnerability.cvssScore != 0 {
                                     Text("CVSS Score: \(vulnerability.cvssScore)")
                                         .foregroundStyle(.secondary)
@@ -90,6 +90,6 @@ struct SoftwareDetailView: View {
                 Label("Vulnerabilities", systemImage: "dot.scope.laptopcomputer")
             }
         }
-        .navigationTitle(software.wrappedName)
+        .navigationTitle(software.name)
     }
 }

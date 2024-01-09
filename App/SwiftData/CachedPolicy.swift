@@ -16,10 +16,10 @@ import SwiftData
     var authorName: String
     var createdAt: Date
     var critical: Bool
-    var failingHostCount: Int?
+    var failingHostCount: Int
     @Attribute(.unique) var id: Int
     var name: String
-    var passingHostCount: Int?
+    var passingHostCount: Int
     var platform: String
     var policyDescription: String
     var query: String
@@ -29,7 +29,7 @@ import SwiftData
     var updatedAt: Date
     var hosts: [CachedHost]?
     
-    init(authorEmail: String, authorId: Int, authorName: String, createdAt: Date, critical: Bool, failingHostCount: Int? = nil, id: Int, name: String, passingHostCount: Int? = nil, platform: String, policyDescription: String, query: String, resolution: String, response: String, teamId: Int? = nil, updatedAt: Date, hosts: [CachedHost]? = nil) {
+    init(authorEmail: String, authorId: Int, authorName: String, createdAt: Date, critical: Bool, failingHostCount: Int, id: Int, name: String, passingHostCount: Int, platform: String, policyDescription: String, query: String, resolution: String, response: String, teamId: Int? = nil, updatedAt: Date, hosts: [CachedHost]? = nil) {
         self.authorEmail = authorEmail
         self.authorId = authorId
         self.authorName = authorName

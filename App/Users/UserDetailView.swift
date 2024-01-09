@@ -12,8 +12,6 @@ struct UserDetailView: View {
     @EnvironmentObject var dataController: DataController
     @Environment(\.networkManager) var networkManager
 
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
-
     @State private var downloadedUser: UserReponse?
     @State private var updatedUser: CachedUser?
     @State private var teams: [Team]?
@@ -27,26 +25,28 @@ struct UserDetailView: View {
         if refreshing || !refreshing {
             Form {
                 Section {
-                    LabeledContent("Email", value: user.wrappedEmail)
+                    LabeledContent("Email", value: user.email)
                     LabeledContent(
                         "Created At",
-                        value: user.wrappedCreatedAt.formatted(
+                        value: user.createdAt.formatted(
                             date: .abbreviated,
                             time: .shortened
                         )
                     )
                     if user.globalRole != nil {
-                        LabeledContent("Global Role", value: user.wrappedGlobalRole.capitalized)
+                        LabeledContent("Global Role") {
+                            Text(user.globalRole?.capitalized ?? "")
+                        }
                     }
                 }
 
                 Section("Teams") {
-                    ForEach(user.teamsArray) { team in
+                    ForEach(user.teams) { team in
                         HStack {
-                            Text(team.wrappedName)
+                            Text(team.name)
                             Spacer()
-                            if team.wrappedRole != "" {
-                                Text(team.wrappedRole.capitalized)
+                            if team.role != "" && team.role != nil {
+                                Text(team.role?.capitalized ?? "")
                                     .font(.smallCaps(.body)())
                                     .foregroundStyle(.white)
                                     .padding(.horizontal, 8)
@@ -63,9 +63,9 @@ struct UserDetailView: View {
             .onReceive(didSave) { _ in
                 refreshing.toggle()
             }
-            .navigationTitle(user.wrappedName)
+            .navigationTitle(user.name)
             .task {
-                if user.teamsArray.isEmpty {
+                if user.teams.isEmpty {
                     Task {
                         await updateUser()
                     }
@@ -82,7 +82,7 @@ struct UserDetailView: View {
                         cachedTeam.id = Int16(team.id)
                         cachedTeam.name = team.name
 
-                        user.addToTeams(cachedTeam)
+                        user.teams.insert(cachedTeam)
                     }
                 }
                 user.lastFetched = .now

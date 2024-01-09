@@ -5,6 +5,7 @@
 //  Created by Dale Ribeiro on 11/28/23.
 //
 
+import SwiftData
 import SwiftUI
 
 enum Panel: Hashable {
@@ -25,12 +26,11 @@ struct Sidebar: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
-
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
+    
+    @Query var users: [CachedUser]
 
     let smartFilters: [Filter] = [.all, .recentlyEnrolled]
-
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
+    @Query var teams: [CachedTeam]
 
     @State private var showingSettings = false
     @State private var showingLogin = false
@@ -40,7 +40,7 @@ struct Sidebar: View {
 
     var teamFilters: [Filter] {
         teams.map { team in
-            Filter(id: Int(team.id), name: team.wrappedName, icon: "person.3", team: team)
+            Filter(id: Int(team.id), name: team.name, icon: "person.3", team: team)
         }
     }
 

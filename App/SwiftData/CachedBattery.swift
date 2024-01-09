@@ -10,12 +10,14 @@ import Foundation
 import SwiftData
 
 
-@Model public class CachedBattery {
-    var cycleCount: Int16? = 0
-    var health: String?
-    @Relationship(inverse: \CachedHost.battery) var host: CachedHost?
-    public init() {
-
-    }
+@Model class CachedBattery {
+    var cycleCount: Int
+    var health: String
+    @Relationship(inverse: \CachedHost.battery) var host: CachedHost
     
+    init(cycleCount: Int, health: String, host: CachedHost) {
+        self.cycleCount = cycleCount
+        self.health = health
+        self.host = host
+    }
 }

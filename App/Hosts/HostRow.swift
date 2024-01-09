@@ -17,27 +17,27 @@ struct HostRow: View {
                     .imageScale(.large)
 
                 VStack(alignment: .leading) {
-                    Text(host.wrappedComputerName)
+                    Text(host.computerName)
                         .font(.headline)
                         .lineLimit(1)
 
                     if dataController.selectedFilter == .all || dataController.selectedFilter == .recentlyEnrolled {
-                        Text(host.wrappedTeamName)
+                        Text(host.teamName)
                             .font(.headline)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
 
-                    Text(host.wrappedHardwareSerial)
+                    Text(host.hardwareSerial)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
 
                     if dataController.selectedFilter != .recentlyEnrolled {
-                        Text(host.wrappedHardwareModel)
+                        Text(host.hardwareModel)
                             .foregroundColor(.secondary)
                             .lineLimit(1)
                     } else {
-                        Text("Enrolled on \(host.wrappedLastEnrolledAt.formatted(date: .abbreviated, time: .omitted))")
+                        Text("Enrolled on \(host.lastEnrolledAt.formatted(date: .abbreviated, time: .omitted))")
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -49,7 +49,7 @@ struct HostRow: View {
                         .imageScale(.small)
                         .foregroundStyle(host.status == "online" ? .green : .red)
 
-                    Text(host.wrappedStatus)
+                    Text(host.status)
                         .font(.body.smallCaps())
                         .foregroundStyle(.secondary)
                 }

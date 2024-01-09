@@ -57,7 +57,7 @@ struct HostsForSoftwareList: View {
             try? await fetchHostsForSoftware()
         }
         .searchable(text: $searchText)
-        .navigationTitle("Hosts for \(software.wrappedName)")
+        .navigationTitle("Hosts for \(software.name)")
     }
 
 var searchResults: [Host] {

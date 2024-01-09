@@ -5,6 +5,7 @@
 //  Created by Dale Ribeiro on 11/29/23.
 //
 
+import SwiftData
 import SwiftUI
 
 struct UsersListView: View {
@@ -15,11 +16,11 @@ struct UsersListView: View {
 
     @State private var isShowingSignInSheet = false
 
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
+    @Query var teams: [CachedTeam]
 
     var teamFilters: [Filter] {
         teams.map { team in
-            Filter(id: Int(team.id), name: team.wrappedName, icon: "person.3", team: team)
+            Filter(id: Int(team.id), name: team.name, icon: "person.3", team: team)
         }
     }
 

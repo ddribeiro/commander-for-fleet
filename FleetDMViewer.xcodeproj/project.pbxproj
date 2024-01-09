@@ -88,7 +88,6 @@
 		5EEA90952A93C37100FEA5E4 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90942A93C37100FEA5E4 /* DataController.swift */; };
 		5EEA90982A93E9D800FEA5E4 /* ServerSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90972A93E9D800FEA5E4 /* ServerSelectionView.swift */; };
 		5EEA909A2A94FEF700FEA5E4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA90992A94FEF700FEA5E4 /* SettingsView.swift */; };
-		5EEA909F2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5EEA909D2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld */; };
 		5EFC7ADF2A9E8F9A00C2ED06 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFC7ADE2A9E8F9A00C2ED06 /* Filter.swift */; };
 /* End PBXBuildFile section */
 
@@ -175,7 +174,6 @@
 		5EEA90942A93C37100FEA5E4 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DataController.swift; path = "/Users/daleribeiro/Developer/fleet-dm-viewer/App/Controllers/DataController.swift"; sourceTree = "<absolute>"; };
 		5EEA90972A93E9D800FEA5E4 /* ServerSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectionView.swift; sourceTree = "<group>"; };
 		5EEA90992A94FEF700FEA5E4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		5EEA909E2A96701500FEA5E4 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		5EFC7ADE2A9E8F9A00C2ED06 /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -350,7 +348,6 @@
 		5EEA90F22A97DA3500FEA5E4 /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
-				5EEA909D2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld */,
 				5E815E7F2B1A2DF200E0E44A /* CachedTeam+CoreDataClass.swift */,
 				5E815E802B1A2DF200E0E44A /* CachedTeam+CoreDataProperties.swift */,
 				5E815E812B1A2DF200E0E44A /* CachedVulnerability+CoreDataClass.swift */,
@@ -568,7 +565,6 @@
 				5E815EA12B1A2DF300E0E44A /* CachedCommandResponse+CoreDataClass.swift in Sources */,
 				5E815E942B1A2DF300E0E44A /* CachedTeam+CoreDataProperties.swift in Sources */,
 				5E028F512A4DE24400D90456 /* HostCommandRow.swift in Sources */,
-				5EEA909F2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld in Sources */,
 				5E8311382B1FD7800029480B /* AllPoliciesRow.swift in Sources */,
 				5E815E962B1A2DF300E0E44A /* CachedVulnerability+CoreDataProperties.swift in Sources */,
 				5E9038DB2A43A0F60077F3DC /* HostProfilesRow.swift in Sources */,
@@ -832,19 +828,6 @@
 			productName = KeychainWrapper;
 		};
 /* End XCSwiftPackageProductDependency section */
-
-/* Begin XCVersionGroup section */
-		5EEA909D2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				5EEA909E2A96701500FEA5E4 /* DataModel.xcdatamodel */,
-			);
-			currentVersion = 5EEA909E2A96701500FEA5E4 /* DataModel.xcdatamodel */;
-			path = FleetDMViewer.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 5EDA66B12A2A4955006706CD /* Project object */;
 }

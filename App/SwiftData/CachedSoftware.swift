@@ -10,19 +10,28 @@ import Foundation
 import SwiftData
 
 
-@Model public class CachedSoftware {
+@Model class CachedSoftware {
     var bundleIdentifier: String?
-    var hostCount: Int16? = 0
-    @Attribute(.unique) var id: Int32? = 0
-    var installedPaths: String?
+    var hostCount: Int
+    @Attribute(.unique) var id: Int
+    var installedPaths: [String]?
     var lastOpenedAt: Date?
-    var name: String?
-    var source: String?
-    var version: String?
+    var name: String
+    var source: String
+    var version: String
     var hosts: [CachedHost]?
-    @Relationship(inverse: \CachedVulnerability.software) var vulnerabilities: [CachedVulnerability]?
-    public init() {
-
-    }
+    @Relationship(inverse: \CachedVulnerability.software) var vulnerabilities: [CachedVulnerability]
     
+    init(bundleIdentifier: String? = nil, hostCount: Int, id: Int, installedPaths: [String]? = nil, lastOpenedAt: Date? = nil, name: String, source: String, version: String, hosts: [CachedHost]? = nil, vulnerabilities: [CachedVulnerability]) {
+        self.bundleIdentifier = bundleIdentifier
+        self.hostCount = hostCount
+        self.id = id
+        self.installedPaths = installedPaths
+        self.lastOpenedAt = lastOpenedAt
+        self.name = name
+        self.source = source
+        self.version = version
+        self.hosts = hosts
+        self.vulnerabilities = vulnerabilities
+    }
 }

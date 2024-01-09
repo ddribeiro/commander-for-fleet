@@ -20,13 +20,13 @@ struct PolicyDetailView: View {
     var body: some View {
         Form {
             Section("Description") {
-                Text(policy.wrappedPolicyDescription)
+                Text(policy.policyDescription)
                     .foregroundStyle(.secondary)
             }
             .headerProminence(.increased)
 
             Section("Query") {
-                Text(policy.wrappedQuery)
+                Text(policy.query)
                     .monospaced()
                     .foregroundStyle(.secondary)
             }
@@ -133,7 +133,7 @@ struct PolicyDetailView: View {
             .headerProminence(.increased)
 
             Section("Resolution") {
-                Text(policy.wrappedResolution)
+                Text(policy.resolution)
                     .foregroundStyle(.secondary)
             }
             .headerProminence(.increased)
@@ -141,18 +141,18 @@ struct PolicyDetailView: View {
             Section {
                 LabeledContent(
                     "Created At",
-                    value: policy.wrappedCreatedAt.formatted(
+                    value: policy.createdAt.formatted(
                         date: .abbreviated,
                         time: .shortened
                     )
                 )
-                LabeledContent("Created By", value: policy.wrappedAuthorName)
+                LabeledContent("Created By", value: policy.authorName)
             }
         }
         .task {
             try? await fetchHostsForPolicy()
         }
-        .navigationTitle(policy.wrappedName)
+        .navigationTitle(policy.name)
     }
 
     func fetchHostsForPolicy() async throws {

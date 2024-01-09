@@ -5,10 +5,11 @@
 //  Created by Dale Ribeiro on 11/29/23.
 //
 
+import SwiftData
 import SwiftUI
 
 struct HostsView: View {
-    @Environment(\.managedObjectContext) var moc
+    @Environment(\.modelContext) var modelContext
     @EnvironmentObject var dataController: DataController
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.networkManager) var networkManager
@@ -18,11 +19,12 @@ struct HostsView: View {
 
     let smartFilters: [Filter] = [.all, .recentlyEnrolled]
 
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
+//    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
+    @Query var teams: [CachedTeam]
 
     var teamFilters: [Filter] {
         teams.map { team in
-            Filter(id: Int(team.id), name: team.wrappedName, icon: "person.3", team: team)
+            Filter(id: Int(team.id), name: team.name, icon: "person.3", team: team)
         }
     }
 
@@ -156,32 +158,10 @@ struct HostsView: View {
 
     func updateCache(with downloadedHosts: [Host]) {
         for downloadedHost in downloadedHosts {
-            let cachedHost = CachedHost(context: moc)
-
-            cachedHost.id = Int16(downloadedHost.id)
-            cachedHost.platform = downloadedHost.platform
-            cachedHost.lastEnrolledAt = downloadedHost.lastEnrolledAt
-            cachedHost.seenTime = downloadedHost.seenTime
-            cachedHost.uuid = downloadedHost.uuid
-            cachedHost.osVersion = downloadedHost.osVersion
-            cachedHost.uptime = Int64(downloadedHost.uptime)
-            cachedHost.memory = Int64(downloadedHost.memory)
-            cachedHost.cpuBrand = downloadedHost.cpuBrand
-            cachedHost.hardwareModel = downloadedHost.hardwareModel
-            cachedHost.hardwareSerial = downloadedHost.hardwareSerial
-            cachedHost.computerName = downloadedHost.computerName
-            cachedHost.publicIp = downloadedHost.publicIp
-            cachedHost.primaryIp = downloadedHost.primaryIp
-            cachedHost.primaryMac = downloadedHost.primaryMac
-            cachedHost.teamId = Int16(downloadedHost.teamId ?? 0)
-            cachedHost.gigsDiskSpaceAvailable = downloadedHost.gigsDiskSpaceAvailable
-            cachedHost.percentDiskSpaceAvailable = Double(downloadedHost.percentDiskSpaceAvailable)
-            cachedHost.diskEncryptionEnabled = downloadedHost.diskEncryptionEnabled ?? false
-            cachedHost.status = downloadedHost.status
-            cachedHost.teamName = downloadedHost.teamName
+            let cachedHost = CachedHost(computerName: downloadedHost.computerName, cpuBrand: downloadedHost.cpuBrand, gigsDiskSpaceAvailable: downloadedHost.gigsDiskSpaceAvailable, hardwareModel: downloadedHost.hardwareModel, hardwareSerial: downloadedHost.hardwareSerial, id: downloadedHost.id, lastEnrolledAt: downloadedHost.lastEnrolledAt, memory: downloadedHost.memory, osVersion: downloadedHost.osVersion, percentDiskSpaceAvailable: downloadedHost.percentDiskSpaceAvailable, platform: downloadedHost.platform, primaryIp: downloadedHost.primaryIp, primaryMac: downloadedHost.primaryMac, publicIp: downloadedHost.publicIp, seenTime: downloadedHost.seenTime, status: downloadedHost.status, teamId: downloadedHost.teamId ?? 0, teamName: downloadedHost.teamName ?? "", uptime: downloadedHost.uptime, uuid: downloadedHost.uuid)
+            
+            modelContext.insert(cachedHost)
         }
-
-        try? moc.save()
     }
 
     func fetchTeams() async {
@@ -213,15 +193,10 @@ struct HostsView: View {
 
     func updateCache(with downloadedTeams: [Team]) {
         for downloadedTeam in downloadedTeams {
-            let cachedTeam = CachedTeam(context: moc)
-
-            cachedTeam.hostCount = Int16(downloadedTeam.hostCount ?? 0)
-            cachedTeam.id = Int16(downloadedTeam.id)
-            cachedTeam.name = downloadedTeam.name
-            cachedTeam.role = downloadedTeam.role
+            let cachedTeam = CachedTeam(hostCount: downloadedTeam.hostCount ?? 0, id: downloadedTeam.id, name: downloadedTeam.name, role: downloadedTeam.role)
+            
+            modelContext.insert(cachedTeam)
         }
-
-        try? moc.save()
     }
 }
 

@@ -16,7 +16,7 @@ struct HostView: View {
     @State private var selectedView = "Policies"
     @State private var lockCode: String = ""
 
-    var id: Int16?
+    var id: Int?
     var views = ["Policies", "Software", "Profiles"]
 
     var body: some View {
