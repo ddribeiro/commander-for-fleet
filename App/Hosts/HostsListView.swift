@@ -45,14 +45,27 @@ struct HostsListView: View {
     }
     
     init(searchString: String = "", sortOrder: [SortDescriptor<CachedHost>] = [], filter: Filter = .all) {
-        _hosts = Query(filter: #Predicate { host in
-            if searchString.isEmpty {
-                true
-            } else {
-                host.computerName.localizedStandardContains(searchString)
-                || host.hardwareSerial.localizedStandardContains(searchString)
-            }
-        }, sort: sortOrder)
+        switch filter {
+        case .all:
+            _hosts = Query(filter: #Predicate { host in
+                if searchString.isEmpty {
+                    true
+                } else {
+                    host.computerName.localizedStandardContains(searchString)
+                    || host.hardwareSerial.localizedStandardContains(searchString)
+                }
+            }, sort: sortOrder)
+        default:
+            _hosts = Query(filter: #Predicate { host in
+                if searchString.isEmpty {
+                    host.teamId == filter.team?.id
+                } else {
+                    host.computerName.localizedStandardContains(searchString)
+                    || host.hardwareSerial.localizedStandardContains(searchString)
+                }
+            }, sort: sortOrder)
+        }
+        
     }
 
     func fetchHosts() async {

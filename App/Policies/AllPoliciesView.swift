@@ -9,8 +9,9 @@ import SwiftData
 import SwiftUI
 
 struct AllPoliciesView: View {
-    @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
+    
+    @Environment(\.modelContext) var modelContext
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
@@ -223,25 +224,26 @@ struct AllPoliciesView: View {
 
     func updateCache(with downloadedPolicies: [Policy]) {
         for downloadedPolicy in downloadedPolicies {
-            let cachedPolicy = CachedPolicy(context: moc)
-
-            cachedPolicy.id = Int16(downloadedPolicy.id)
-            cachedPolicy.name = downloadedPolicy.name
-            cachedPolicy.query = downloadedPolicy.query
-            cachedPolicy.critical = downloadedPolicy.critical
-            cachedPolicy.policyDescription = downloadedPolicy.description
-            cachedPolicy.authorId = Int16(downloadedPolicy.authorId)
-            cachedPolicy.authorName = downloadedPolicy.authorName
-            cachedPolicy.authorEmail = downloadedPolicy.authorEmail
-            cachedPolicy.teamId = Int16(downloadedPolicy.teamId ?? 0)
-            cachedPolicy.resolution = downloadedPolicy.resolution
-            cachedPolicy.platform = downloadedPolicy.platform
-            cachedPolicy.createdAt = downloadedPolicy.createdAt
-            cachedPolicy.updatedAt = downloadedPolicy.updatedAt
-            cachedPolicy.passingHostCount = Int16(downloadedPolicy.passingHostCount ?? 0)
-            cachedPolicy.failingHostCount = Int16(downloadedPolicy.failingHostCount ?? 0)
-
+            let cachedPolicy = CachedPolicy(
+                authorEmail: downloadedPolicy.authorEmail,
+                authorId: downloadedPolicy.authorId,
+                authorName: downloadedPolicy.authorName,
+                createdAt: downloadedPolicy.createdAt,
+                critical: downloadedPolicy.critical,
+                failingHostCount: downloadedPolicy.failingHostCount ?? 0,
+                id: downloadedPolicy.id,
+                name: downloadedPolicy.name,
+                passingHostCount: downloadedPolicy.passingHostCount ?? 0,
+                platform: downloadedPolicy.platform,
+                policyDescription: downloadedPolicy.description,
+                query: downloadedPolicy.query,
+                resolution: downloadedPolicy.resolution,
+                response: downloadedPolicy.response ?? "",
+                teamId: downloadedPolicy.teamId ?? 0,
+                updatedAt: downloadedPolicy.updatedAt
+            )
+            
+            modelContext.insert(cachedPolicy)
         }
-        try? moc.save()
     }
 }
