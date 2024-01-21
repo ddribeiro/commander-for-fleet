@@ -162,7 +162,7 @@ struct SettingsView: View {
             title: Text("Are you sure you want to sign out?"),
             primaryButton: .destructive(Text("Sign Out")) {
                 Task {
-                    await dataController.signOut()
+                    await dataController.signOut(modelContext: modelContext)
                 }
                 dismiss()
             },

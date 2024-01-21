@@ -33,10 +33,7 @@ enum LoadingState {
  still a bunch of code that controls dataflow for CoreData
  and that can probably stay. */
 @MainActor
-// swiftlint:disable:next type_body_length
 class DataController: ObservableObject {
-    @Environment(\.modelContext) var modelContext
-//    let container = NSPersistentContainer(name: "FleetDMViewer")
 
     @Published var selectedFilter = Filter.all
 
@@ -146,7 +143,7 @@ class DataController: ObservableObject {
 
     /* Attempts to delete all persisent data by calling the delete
      method on the Swift Data modelContext. */
-    func deleteAll() {
+    func deleteAll(modelContext: ModelContext) {
         do {
             try modelContext.delete(model: CachedTeam.self)
             try modelContext.delete(model: CachedHost.self)
@@ -190,7 +187,8 @@ class DataController: ObservableObject {
         email: String,
         password: String,
         serverURL: String,
-        networkManager: NetworkManager
+        networkManager: NetworkManager,
+        modelContext: ModelContext
     ) async throws {
 
         KeychainWrapper.default.removeAllKeys()
@@ -226,10 +224,10 @@ class DataController: ObservableObject {
                 return response.user.teams
             }
 
-            deleteAll()
+            deleteAll(modelContext: modelContext)
 
             await MainActor.run {
-                updateCache(with: user, downloadedTeams: teams)
+                updateCache(with: user, downloadedTeams: teams, modelContext: modelContext)
                 activeEnvironment = environment
             }
             loadingState = .loaded
@@ -247,7 +245,7 @@ class DataController: ObservableObject {
         }
     }
 
-    func loginWithApiKey(apiKey: String, serverURL: String, networkManager: NetworkManager) async throws {
+    func loginWithApiKey(apiKey: String, serverURL: String, networkManager: NetworkManager, modelContext: ModelContext) async throws {
         KeychainWrapper.default.removeAllKeys()
 
         let environment = AppEnvironment(
@@ -264,10 +262,10 @@ class DataController: ObservableObject {
             let user = response.user
             let teams = response.availableTeams
 
-            deleteAll()
+            deleteAll(modelContext: modelContext)
 
             await MainActor.run {
-                updateCache(with: user, downloadedTeams: teams)
+                updateCache(with: user, downloadedTeams: teams, modelContext: modelContext)
                 activeEnvironment = environment
             }
 
@@ -316,8 +314,8 @@ class DataController: ObservableObject {
         }
     }
 
-    func signOut() async {
-        deleteAll()
+    func signOut(modelContext: ModelContext) async {
+        deleteAll(modelContext: modelContext)
         activeEnvironment = nil
         isAuthenticated = false
         teamsLastUpdatedAt = nil
@@ -331,7 +329,7 @@ class DataController: ObservableObject {
         }
     }
 
-    func updateCache(with downloadedUser: User, downloadedTeams: [Team]) {
+    func updateCache(with downloadedUser: User, downloadedTeams: [Team], modelContext: ModelContext) {
         let cachedUser = CachedUser(
             apiOnly: downloadedUser.apiOnly,
             createdAt: downloadedUser.createdAt,
@@ -341,8 +339,7 @@ class DataController: ObservableObject {
             id: downloadedUser.id,
             name: downloadedUser.name,
             ssoEnabled: downloadedUser.ssoEnabled,
-            updatedAt: downloadedUser.updatedAt,
-            teams: []
+            updatedAt: downloadedUser.updatedAt
         )
 
         UserDefaults.standard.setValue(cachedUser.id, forKey: "loggedInUserID")

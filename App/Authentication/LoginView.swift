@@ -6,10 +6,11 @@
 //
 
 import KeychainWrapper
+import SwiftData
 import SwiftUI
 
 struct LoginView: View {
-    @Environment(\.managedObjectContext) var moc
+    @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     @Environment(\.networkManager) var networkManager
 
@@ -91,13 +92,15 @@ struct LoginView: View {
                                         email: emailAddress,
                                         password: password,
                                         serverURL: serverURL,
-                                        networkManager: networkManager
+                                        networkManager: networkManager,
+                                        modelContext: modelContext
                                     )
                                 } else {
                                     try await dataController.loginWithApiKey(
                                         apiKey: apiKey,
                                         serverURL: serverURL,
-                                        networkManager: networkManager
+                                        networkManager: networkManager,
+                                        modelContext: modelContext
                                     )
                                 }
 
@@ -134,13 +137,15 @@ struct LoginView: View {
                                     email: emailAddress,
                                     password: password,
                                     serverURL: serverURL,
-                                    networkManager: networkManager
+                                    networkManager: networkManager,
+                                    modelContext: modelContext
                                 )
                             } else {
                                 try await dataController.loginWithApiKey(
                                     apiKey: apiKey,
                                     serverURL: serverURL,
-                                    networkManager: networkManager
+                                    networkManager: networkManager,
+                                    modelContext: modelContext
                                 )
                             }
 

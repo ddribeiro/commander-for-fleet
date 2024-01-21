@@ -179,8 +179,7 @@ struct UsersView: View {
                 id: downloadedUser.id,
                 name: downloadedUser.name,
                 ssoEnabled: downloadedUser.ssoEnabled,
-                updatedAt: downloadedUser.updatedAt,
-                teams: []
+                updatedAt: downloadedUser.updatedAt
             )
 
             for team in downloadedUser.teams {

@@ -14,15 +14,13 @@ import SwiftData
     @Attribute(.unique) var id: Int
     var name: String
     var role: String?
-    var hosts: [CachedHost]?
-    @Relationship(inverse: \CachedUser.teams) var users: [CachedUser]?
+    @Relationship(deleteRule: .cascade, inverse: \CachedHost.team) var hosts: [CachedHost]? = [CachedHost]()
+    @Relationship(deleteRule: .cascade, inverse: \CachedUser.teams) var users: [CachedUser]? = [CachedUser]()
 
-    init(hostCount: Int? = nil, id: Int, name: String, role: String? = nil, hosts: [CachedHost]? = nil, users: [CachedUser]? = nil) {
+    init(hostCount: Int? = nil, id: Int, name: String, role: String? = nil) {
         self.hostCount = hostCount
         self.id = id
         self.name = name
         self.role = role
-        self.hosts = hosts
-        self.users = users
     }
 }

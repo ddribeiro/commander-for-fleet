@@ -26,10 +26,10 @@ import SwiftData
     var response: String
     var teamId: Int?
     var updatedAt: Date
-    var hosts: [CachedHost]?
+    var hosts = [CachedHost]()
 
     // swiftlint:disable:next line_length
-    init(authorEmail: String, authorId: Int, authorName: String, createdAt: Date, critical: Bool, failingHostCount: Int, id: Int, name: String, passingHostCount: Int, platform: String, policyDescription: String, query: String, resolution: String, response: String, teamId: Int? = nil, updatedAt: Date, hosts: [CachedHost]? = nil) {
+    init(authorEmail: String, authorId: Int, authorName: String, createdAt: Date, critical: Bool, failingHostCount: Int, id: Int, name: String, passingHostCount: Int, platform: String, policyDescription: String, query: String, resolution: String, response: String, teamId: Int? = nil, updatedAt: Date) {
         self.authorEmail = authorEmail
         self.authorId = authorId
         self.authorName = authorName
@@ -46,6 +46,5 @@ import SwiftData
         self.response = response
         self.teamId = teamId
         self.updatedAt = updatedAt
-        self.hosts = hosts
     }
 }

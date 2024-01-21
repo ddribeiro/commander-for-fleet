@@ -18,11 +18,11 @@ import SwiftData
     var name: String
     var source: String
     var version: String
-    var hosts: [CachedHost]?
-    @Relationship(inverse: \CachedVulnerability.software) var vulnerabilities: [CachedVulnerability]
+    var hosts =  [CachedHost]()
+    @Relationship(inverse: \CachedVulnerability.software) var vulnerabilities = [CachedVulnerability]()
 
     // swiftlint:disable:next line_length
-    init(bundleIdentifier: String? = nil, hostCount: Int, id: Int, installedPaths: [String]? = nil, lastOpenedAt: Date? = nil, name: String, source: String, version: String, hosts: [CachedHost]? = nil, vulnerabilities: [CachedVulnerability]) {
+    init(bundleIdentifier: String? = nil, hostCount: Int, id: Int, installedPaths: [String]? = nil, lastOpenedAt: Date? = nil, name: String, source: String, version: String) {
         self.bundleIdentifier = bundleIdentifier
         self.hostCount = hostCount
         self.id = id
@@ -31,7 +31,5 @@ import SwiftData
         self.name = name
         self.source = source
         self.version = version
-        self.hosts = hosts
-        self.vulnerabilities = vulnerabilities
     }
 }

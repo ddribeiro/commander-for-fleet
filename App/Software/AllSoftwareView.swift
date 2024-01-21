@@ -259,8 +259,7 @@ struct AllSoftwareView: View {
                 id: downloadedSoftware.id,
                 name: downloadedSoftware.name,
                 source: downloadedSoftware.source,
-                version: downloadedSoftware.version,
-                vulnerabilities: []
+                version: downloadedSoftware.version
             )
 
             if let vulnerabilities = downloadedSoftware.vulnerabilities {

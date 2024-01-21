@@ -16,15 +16,14 @@ import SwiftData
     var requestType: String
     var status: String
     var updatedAt: Date
-    @Relationship(inverse: \CachedHost.commands) var hosts: [CachedHost]?
+    @Relationship(inverse: \CachedHost.commands) var hosts =  [CachedHost]()
 
-    init(commandUUID: String, deviceID: String, hostname: String, requestType: String, status: String, updatedAt: Date, hosts: [CachedHost]? = nil) {
+    init(commandUUID: String, deviceID: String, hostname: String, requestType: String, status: String, updatedAt: Date) {
         self.commandUUID = commandUUID
         self.deviceID = deviceID
         self.hostname = hostname
         self.requestType = requestType
         self.status = status
         self.updatedAt = updatedAt
-        self.hosts = hosts
     }
 }
