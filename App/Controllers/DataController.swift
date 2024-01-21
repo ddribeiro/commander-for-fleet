@@ -345,10 +345,12 @@ class DataController: ObservableObject {
         UserDefaults.standard.setValue(cachedUser.id, forKey: "loggedInUserID")
 
         for team in downloadedTeams {
-            let cachedTeam = CachedTeam(id: team.id, name: team.name, role: team.role)
-
+            let cachedTeam = CachedTeam(id: team.id, name: team.name)
+            modelContext.insert(cachedTeam)
             cachedUser.teams.append(cachedTeam)
+
         }
+
         modelContext.insert(cachedUser)
 
     }

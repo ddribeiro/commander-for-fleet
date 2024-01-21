@@ -12,7 +12,7 @@ import SwiftData
 @Model class CachedBattery {
     var cycleCount: Int
     var health: String
-    @Relationship(inverse: \CachedHost.battery) var host: CachedHost
+    var host: CachedHost
 
     init(cycleCount: Int, health: String, host: CachedHost) {
         self.cycleCount = cycleCount

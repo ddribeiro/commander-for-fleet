@@ -14,8 +14,8 @@ import SwiftData
     @Attribute(.unique) var id: Int
     var name: String
     var role: String?
-    @Relationship(deleteRule: .cascade, inverse: \CachedHost.team) var hosts: [CachedHost]? = [CachedHost]()
-    @Relationship(deleteRule: .cascade, inverse: \CachedUser.teams) var users: [CachedUser]? = [CachedUser]()
+    @Relationship(deleteRule: .cascade, inverse: \CachedHost.team) var hosts = [CachedHost]()
+    var users = [CachedUser]()
 
     init(hostCount: Int? = nil, id: Int, name: String, role: String? = nil) {
         self.hostCount = hostCount

@@ -31,7 +31,7 @@ import SwiftData
     var teamName: String
     var uptime: Int
     var uuid: String
-    @Relationship(deleteRule: .cascade) var battery: CachedBattery?
+    var battery: CachedBattery?
     var commands: CachedCommandResponse?
     @Relationship(inverse: \CachedPolicy.hosts) var policies = [CachedPolicy]()
     @Relationship(inverse: \CachedProfile.hosts) var profiles =  [CachedProfile]()

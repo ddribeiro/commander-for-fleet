@@ -21,7 +21,7 @@ class CachedUser: Identifiable {
     var name: String
     var ssoEnabled: Bool
     var updatedAt: Date
-    var teams = [CachedTeam]()
+    @Relationship(inverse: \CachedTeam.users) var teams = [CachedTeam]()
 
     // swiftlint:disable:next line_length
     init(apiOnly: Bool, createdAt: Date, email: String, globalRole: String, gravatarUrl: String, id: Int, lastFetched: Date? = nil, name: String, ssoEnabled: Bool, updatedAt: Date) {
