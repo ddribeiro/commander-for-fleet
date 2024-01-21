@@ -21,18 +21,17 @@ struct FleetDMViewerApp: App {
                 ContentView()
                 .environmentObject(dataController)
                 .environment(\.networkManager, networkManager)
-                .environment(\.managedObjectContext, dataController.container.viewContext)
             } else {
                 SignedOutView()
                     .environmentObject(dataController)
                     .environment(\.networkManager, networkManager)
-                    .modelContainer(for: CachedHost.self)
-                    .modelContainer(for: CachedTeam.self)
-                    .modelContainer(for: CachedUser.self)
-                    .modelContainer(for: CachedSoftware.self)
-                    .modelContainer(for: CachedPolicy.self)
 
             }
         }
+        .modelContainer(for: CachedHost.self)
+        .modelContainer(for: CachedTeam.self)
+        .modelContainer(for: CachedUser.self)
+        .modelContainer(for: CachedSoftware.self)
+        .modelContainer(for: CachedPolicy.self)
     }
 }

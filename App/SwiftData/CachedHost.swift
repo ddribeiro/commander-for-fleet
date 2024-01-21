@@ -9,7 +9,6 @@
 import Foundation
 import SwiftData
 
-
 @Model class CachedHost: Identifiable {
     var computerName: String
     var cpuBrand: String
@@ -32,13 +31,13 @@ import SwiftData
     var teamName: String
     var uptime: Int
     var uuid: String
-    var battery: CachedBattery?
+    @Relationship(deleteRule: .cascade) var battery: CachedBattery?
     var commands: CachedCommandResponse?
     @Relationship(inverse: \CachedPolicy.hosts) var policies: [CachedPolicy]?
     @Relationship(inverse: \CachedProfile.hosts) var profiles: [CachedProfile]?
     @Relationship(inverse: \CachedSoftware.hosts) var software: [CachedSoftware]?
     var team: CachedTeam?
-    
+
     var formattedDate: String {
         let date: String = {
             if Calendar.current.isDateInToday(seenTime) {
@@ -52,8 +51,8 @@ import SwiftData
         let time = seenTime.formatted(date: .omitted, time: .shortened)
         return "\(date), \(time)"
     }
-    
-    
+
+    // swiftlint:disable:next line_length
     init(computerName: String, cpuBrand: String, diskEncryptionEnabled: Bool? = nil, gigsDiskSpaceAvailable: Double, hardwareModel: String, hardwareSerial: String, id: Int, lastEnrolledAt: Date, memory: Int, osVersion: String, percentDiskSpaceAvailable: Int, platform: String, primaryIp: String, primaryMac: String, publicIp: String, seenTime: Date, status: String, teamId: Int, teamName: String, uptime: Int, uuid: String, battery: CachedBattery? = nil, commands: CachedCommandResponse? = nil, policies: [CachedPolicy]? = nil, profiles: [CachedProfile]? = nil, software: [CachedSoftware]? = nil, team: CachedTeam? = nil) {
         self.computerName = computerName
         self.cpuBrand = cpuBrand

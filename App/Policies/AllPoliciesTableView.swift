@@ -5,6 +5,7 @@
 //  Created by Dale Ribeiro on 12/5/23.
 //
 
+import SwiftData
 import SwiftUI
 
 struct AllPoliciesTableView: View {
@@ -14,19 +15,9 @@ struct AllPoliciesTableView: View {
     @Environment(\.networkManager) var networkManager
 
     @Binding var selection: Set<CachedPolicy.ID>
-    @Binding var searchText: String
+    @State private var sortOrder = [KeyPathComparator(\CachedPolicy.name)]
 
-    @State private var sortOrder = [KeyPathComparator(\CachedPolicy.id, order: .reverse)]
-
-    var searchResults: [CachedPolicy] {
-        if searchText.isEmpty {
-            return dataController.policiesforSelectedFilter()
-        } else {
-            return dataController.policiesforSelectedFilter().filter {
-                $0.name.localizedCaseInsensitiveContains(searchText)
-            }
-        }
-    }
+    @Query var policies: [CachedPolicy]
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
@@ -72,10 +63,24 @@ struct AllPoliciesTableView: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(searchResults, id: \.id) { policy in
+                ForEach(policies.sorted(using: sortOrder), id: \.id) { policy in
                     TableRow(policy)
                 }
             }
         }
+    }
+
+    init(sort: [SortDescriptor<CachedPolicy>], searchString: String, filter: Filter) {
+        _policies = Query(filter: #Predicate {
+            if searchString.isEmpty {
+                return true
+            } else {
+                return $0.name.localizedStandardContains(searchString)
+            }
+        }, sort: sort)
+
+        _selection = .constant([])
+        _sortOrder = State(initialValue: [KeyPathComparator(\CachedPolicy.name)])
+
     }
 }

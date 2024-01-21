@@ -9,7 +9,6 @@
 import Foundation
 import SwiftData
 
-
 @Model class CachedPolicy: Identifiable {
     var authorEmail: String
     var authorId: Int
@@ -28,7 +27,8 @@ import SwiftData
     var teamId: Int?
     var updatedAt: Date
     var hosts: [CachedHost]?
-    
+
+    // swiftlint:disable:next line_length
     init(authorEmail: String, authorId: Int, authorName: String, createdAt: Date, critical: Bool, failingHostCount: Int, id: Int, name: String, passingHostCount: Int, platform: String, policyDescription: String, query: String, resolution: String, response: String, teamId: Int? = nil, updatedAt: Date, hosts: [CachedHost]? = nil) {
         self.authorEmail = authorEmail
         self.authorId = authorId

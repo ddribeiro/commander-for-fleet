@@ -10,7 +10,7 @@ import SwiftUI
 
 struct UsersView: View {
     @EnvironmentObject var dataController: DataController
-    
+
     @Environment(\.modelContext) var modelContext
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.networkManager) var networkManager
@@ -38,16 +38,6 @@ struct UsersView: View {
         }
     }
 
-    var searchResults: [CachedUser] {
-        if searchText.isEmpty {
-            return dataController.usersForSelectedFilter()
-        } else {
-            return dataController.usersForSelectedFilter().filter {
-                $0.name.localizedCaseInsensitiveContains(searchText)
-            }
-        }
-    }
-
     var body: some View {
         ZStack {
             if displayAsList {
@@ -69,11 +59,11 @@ struct UsersView: View {
         .refreshable {
             await fetchUsers()
         }
-        .overlay {
-            if dataController.usersForSelectedFilter().isEmpty {
-                ContentUnavailableView.search
-            }
-        }
+//        .overlay {
+//            if users.isEmpty {
+//                ContentUnavailableView.search
+//            }
+//        }
         .searchable(
             text: $searchText
         )
@@ -101,7 +91,7 @@ struct UsersView: View {
                         if let updatedAt = dataController.usersLastUpdatedAt {
                             Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
                                 .font(.footnote)
-                            Text("^[\(searchResults.count) User](inflect: true)")
+                            Text("^[\(users.count) User](inflect: true)")
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
                         }
@@ -127,7 +117,7 @@ struct UsersView: View {
 
     var list: some View {
         List {
-            userRows(searchResults)
+            userRows(users)
             }
         }
 
@@ -184,6 +174,7 @@ struct UsersView: View {
                 apiOnly: downloadedUser.apiOnly,
                 createdAt: downloadedUser.createdAt,
                 email: downloadedUser.email,
+                globalRole: downloadedUser.globalRole ?? "",
                 gravatarUrl: downloadedUser.gravatarUrl,
                 id: downloadedUser.id,
                 name: downloadedUser.name,
@@ -198,10 +189,10 @@ struct UsersView: View {
                     name: team.name,
                     role: team.role
                 )
-                
+
                 cachedUser.teams.append(cachedTeam)
             }
-            
+
             modelContext.insert(cachedUser)
         }
     }

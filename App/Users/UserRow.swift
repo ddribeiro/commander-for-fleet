@@ -59,8 +59,8 @@ struct UserRow: View {
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
 
-                    if let globalRole = user.globalRole {
-                        Text(globalRole.capitalized)
+                    if user.globalRole.isEmpty == false {
+                        Text(user.globalRole.capitalized)
                             .font(.smallCaps(.body)())
                             .foregroundStyle(.white)
                             .padding(.horizontal, 8)

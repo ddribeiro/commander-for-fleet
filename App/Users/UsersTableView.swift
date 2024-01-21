@@ -5,6 +5,7 @@
 //  Created by Dale Ribeiro on 11/30/23.
 //
 
+import SwiftData
 import SwiftUI
 
 struct UsersTableView: View {
@@ -13,20 +14,12 @@ struct UsersTableView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.networkManager) var networkManager
 
-    @State private var sortOrder = [KeyPathComparator(\CachedUser.id, order: .reverse)]
+    @State private var sortOrder = [KeyPathComparator(\CachedUser.name, order: .reverse)]
 
     @Binding var selection: Set<CachedUser.ID>
     @Binding var searchText: String
 
-    var searchResults: [CachedUser] {
-        if searchText.isEmpty {
-            return dataController.usersForSelectedFilter()
-        } else {
-            return dataController.usersForSelectedFilter().filter {
-                $0.name.localizedCaseInsensitiveContains(searchText)
-            }
-        }
-    }
+    @Query var users: [CachedUser]
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
@@ -37,7 +30,7 @@ struct UsersTableView: View {
             }
 
             TableColumn("Global Role", value: \.globalRole) { user in
-                Text(user.globalRole?.capitalized ?? "")
+                Text(user.globalRole.capitalized)
 #if os(macOS)
                     .frame(maxWidth: .infinity, alignment: . trailing)
                     .foregroundStyle(.secondary)
@@ -70,7 +63,7 @@ struct UsersTableView: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(searchResults, id: \.id) { user in
+                ForEach(users, id: \.id) { user in
                     TableRow(user)
                 }
             }

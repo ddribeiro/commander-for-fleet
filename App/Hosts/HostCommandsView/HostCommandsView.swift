@@ -15,7 +15,7 @@ struct HostCommandsView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.networkManager) var networkManager
     @Environment(\.dismiss) var dismiss
-    
+
     @Query var commands: [CachedCommandResponse]
 
     var body: some View {
@@ -81,13 +81,12 @@ struct HostCommandsView: View {
             }
         }
     }
-    
+
     init(host: Host) {
         _commands = Query(filter: #Predicate { command in
             command.deviceID.localizedStandardContains(host.uuid)
         }, sort: [SortDescriptor(\.updatedAt, order: .reverse)])
     }
-
 
     func updateCache(with downloadedCommands: [CommandResponse]) {
         for downloadedCommand in downloadedCommands {
@@ -99,7 +98,7 @@ struct HostCommandsView: View {
                 status: downloadedCommand.status,
                 updatedAt: downloadedCommand.updatedAt
             )
-            
+
             modelContext.insert(cachedCommand)
         }
     }

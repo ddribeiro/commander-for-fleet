@@ -9,7 +9,6 @@
 import Foundation
 import SwiftData
 
-
 @Model class CachedCommandResponse {
     @Attribute(.unique) var commandUUID: String
     var deviceID: String
@@ -18,7 +17,7 @@ import SwiftData
     var status: String
     var updatedAt: Date
     @Relationship(inverse: \CachedHost.commands) var hosts: [CachedHost]?
-    
+
     init(commandUUID: String, deviceID: String, hostname: String, requestType: String, status: String, updatedAt: Date, hosts: [CachedHost]? = nil) {
         self.commandUUID = commandUUID
         self.deviceID = deviceID

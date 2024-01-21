@@ -10,7 +10,7 @@ import SwiftUI
 
 struct AllPoliciesView: View {
     @EnvironmentObject var dataController: DataController
-    
+
     @Environment(\.modelContext) var modelContext
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.networkManager) var networkManager
@@ -19,6 +19,7 @@ struct AllPoliciesView: View {
     @State private var selection: Set<CachedPolicy.ID> = []
     @State private var searchText = ""
 
+    @Query var policies: [CachedPolicy]
     @Query var teams: [CachedTeam]
 //    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
@@ -30,9 +31,9 @@ struct AllPoliciesView: View {
 
     var searchResults: [CachedPolicy] {
         if searchText.isEmpty {
-            return dataController.policiesforSelectedFilter()
+            return policies
         } else {
-            return dataController.policiesforSelectedFilter().filter {
+            return policies.filter {
                 $0.name.localizedCaseInsensitiveContains(searchText)
             }
         }
@@ -51,7 +52,7 @@ struct AllPoliciesView: View {
             if displayAsList {
                 list
             } else {
-                AllPoliciesTableView(selection: $selection, searchText: $searchText)
+                AllPoliciesTableView(sort: [SortDescriptor(\CachedPolicy.name)], searchString: searchText, filter: Filter.all)
             }
         }
         .navigationDestination(for: CachedPolicy.self) { policy in
@@ -84,11 +85,11 @@ struct AllPoliciesView: View {
                 await fetchTeamPolicies(id: dataController.selectedFilter.id)
             }
         }
-        .overlay {
-            if dataController.policiesforSelectedFilter().isEmpty {
-                ContentUnavailableView.search
-            }
-        }
+//        .overlay {
+//            if policies.isEmpty {
+//                ContentUnavailableView.search
+//            }
+//        }
         .searchable(text: $searchText)
 #if os(iOS)
         .toolbar {
@@ -242,7 +243,7 @@ struct AllPoliciesView: View {
                 teamId: downloadedPolicy.teamId ?? 0,
                 updatedAt: downloadedPolicy.updatedAt
             )
-            
+
             modelContext.insert(cachedPolicy)
         }
     }

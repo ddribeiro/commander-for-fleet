@@ -5,6 +5,7 @@
 //  Created by Dale Ribeiro on 11/29/23.
 //
 
+import SwiftData
 import SwiftUI
 
 struct HostsTable: View {
@@ -17,6 +18,8 @@ struct HostsTable: View {
     @State private var sortOrder = [KeyPathComparator(\CachedHost.computerName, order: .reverse)]
 
     @Binding var selection: Set<CachedHost.ID>
+
+    @Query var hosts: [CachedHost]
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
@@ -81,7 +84,7 @@ struct HostsTable: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(dataController.hostsForSelectedFilter(), id: \.id) { host in
+                ForEach(hosts, id: \.id) { host in
                     TableRow(host)
                 }
             }

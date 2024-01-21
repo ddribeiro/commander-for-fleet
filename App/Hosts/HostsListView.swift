@@ -16,7 +16,7 @@ struct HostsListView: View {
     @Environment(\.networkManager) var networkManager
 
     @State private var isShowingSignInSheet = false
-    
+
     @Query var teams: [CachedTeam]
     @Query var hosts: [CachedHost]
 
@@ -43,29 +43,16 @@ struct HostsListView: View {
                 }
         }
     }
-    
+
     init(searchString: String = "", sortOrder: [SortDescriptor<CachedHost>] = [], filter: Filter = .all) {
-        switch filter {
-        case .all:
             _hosts = Query(filter: #Predicate { host in
                 if searchString.isEmpty {
-                    true
+                   return true
                 } else {
-                    host.computerName.localizedStandardContains(searchString)
+                    return host.computerName.localizedStandardContains(searchString)
                     || host.hardwareSerial.localizedStandardContains(searchString)
                 }
             }, sort: sortOrder)
-        default:
-            _hosts = Query(filter: #Predicate { host in
-                if searchString.isEmpty {
-                    host.teamId == filter.team?.id
-                } else {
-                    host.computerName.localizedStandardContains(searchString)
-                    || host.hardwareSerial.localizedStandardContains(searchString)
-                }
-            }, sort: sortOrder)
-        }
-        
     }
 
     func fetchHosts() async {
@@ -120,7 +107,7 @@ struct HostsListView: View {
                 uptime: downloadedHost.uptime,
                 uuid: downloadedHost.uuid
             )
-            
+
             modelContext.insert(cachedHost)
         }
     }

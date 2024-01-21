@@ -9,12 +9,12 @@
 import Foundation
 import SwiftData
 
-
-@Model class CachedUser {
+@Model
+class CachedUser: Identifiable {
     var apiOnly: Bool
     var createdAt: Date
     var email: String
-    var globalRole: String?
+    var globalRole: String = ""
     var gravatarUrl: String
     @Attribute(.unique) var id: Int
     var lastFetched: Date?
@@ -22,8 +22,9 @@ import SwiftData
     var ssoEnabled: Bool
     var updatedAt: Date
     var teams: [CachedTeam]
-    
-    init(apiOnly: Bool, createdAt: Date, email: String, globalRole: String? = nil, gravatarUrl: String, id: Int, lastFetched: Date? = nil, name: String, ssoEnabled: Bool, updatedAt: Date, teams: [CachedTeam]) {
+
+    // swiftlint:disable:next line_length
+    init(apiOnly: Bool, createdAt: Date, email: String, globalRole: String, gravatarUrl: String, id: Int, lastFetched: Date? = nil, name: String, ssoEnabled: Bool, updatedAt: Date, teams: [CachedTeam]) {
         self.apiOnly = apiOnly
         self.createdAt = createdAt
         self.email = email
@@ -36,5 +37,5 @@ import SwiftData
         self.updatedAt = updatedAt
         self.teams = teams
     }
-    
+
 }

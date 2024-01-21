@@ -8,7 +8,6 @@
 import Foundation
 import SwiftData
 
-@Model
 class Filter: Identifiable, Hashable {
     var id: Int
     var name: String
@@ -19,7 +18,7 @@ class Filter: Identifiable, Hashable {
     var hostCount: Int {
         Int(team?.hostCount ?? 0)
     }
-    
+
     init(id: Int, name: String, icon: String, minEnrollmentDate: Foundation.Date = Date.distantPast, team: CachedTeam? = nil) {
         self.id = id
         self.name = name

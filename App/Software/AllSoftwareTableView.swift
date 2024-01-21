@@ -5,6 +5,7 @@
 //  Created by Dale Ribeiro on 12/1/23.
 //
 
+import SwiftData
 import SwiftUI
 
 struct AllSoftwareTableView: View {
@@ -16,29 +17,30 @@ struct AllSoftwareTableView: View {
     @State private var sortOrder = [KeyPathComparator(\CachedSoftware.id, order: .reverse)]
 
     @Binding var selection: Set<CachedSoftware.ID>
-    @Binding var searchText: String
-    @Binding var isShowingVulnerableSoftware: Bool
+    @State private var isShowingVulnerableSoftware: Bool
 
-    var searchResults: [CachedSoftware] {
-        if searchText.isEmpty && !isShowingVulnerableSoftware {
-            return dataController.softwareForSelectedFilter().sorted {
-                $0.name < $1.name
-            }
-        } else if searchText.isEmpty && isShowingVulnerableSoftware {
-            return vulnerableSoftware.sorted {
-                $0.name < $1.name
-            }
-        } else if isShowingVulnerableSoftware {
-                return vulnerableSoftware.filter({ $0.name.localizedCaseInsensitiveContains(searchText) })
-            } else {
-            return dataController.softwareForSelectedFilter().filter {
-                $0.name.localizedCaseInsensitiveContains(searchText)
-            }
-        }
-    }
+    @Query var software: [CachedSoftware]
+
+//    var searchResults: [CachedSoftware] {
+//        if searchText.isEmpty && !isShowingVulnerableSoftware {
+//            return dataController.softwareForSelectedFilter().sorted {
+//                $0.name < $1.name
+//            }
+//        } else if searchText.isEmpty && isShowingVulnerableSoftware {
+//            return vulnerableSoftware.sorted {
+//                $0.name < $1.name
+//            }
+//        } else if isShowingVulnerableSoftware {
+//                return vulnerableSoftware.filter({ $0.name.localizedCaseInsensitiveContains(searchText) })
+//            } else {
+//            return dataController.softwareForSelectedFilter().filter {
+//                $0.name.localizedCaseInsensitiveContains(searchText)
+//            }
+//        }
+//    }
 
     var vulnerableSoftware: [CachedSoftware] {
-        dataController.softwareForSelectedFilter().filter {
+        software.filter {
             !$0.vulnerabilities.isEmpty
         }
     }
@@ -102,11 +104,25 @@ struct AllSoftwareTableView: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(searchResults) { software in
+                ForEach(software) { software in
                     TableRow(software)
                 }
             }
         }
         .id(UUID())
+    }
+
+    init(sort: [SortDescriptor<CachedSoftware>], searchString: String, filter: Filter, isShowingVulnerableSoftware: Bool) {
+        _software = Query(filter: #Predicate {
+            if searchString.isEmpty {
+                return true
+            } else {
+                return $0.name.localizedStandardContains(searchString)
+            }
+        }, sort: sort)
+
+        _selection = .constant([])
+        _sortOrder = State(initialValue: [KeyPathComparator(\CachedSoftware.name)])
+        _isShowingVulnerableSoftware = State(initialValue: isShowingVulnerableSoftware)
     }
 }

@@ -9,7 +9,6 @@
 import Foundation
 import SwiftData
 
-
 @Model class CachedTeam {
     var hostCount: Int?
     @Attribute(.unique) var id: Int
@@ -17,7 +16,7 @@ import SwiftData
     var role: String?
     var hosts: [CachedHost]?
     @Relationship(inverse: \CachedUser.teams) var users: [CachedUser]?
-    
+
     init(hostCount: Int? = nil, id: Int, name: String, role: String? = nil, hosts: [CachedHost]? = nil, users: [CachedUser]? = nil) {
         self.hostCount = hostCount
         self.id = id

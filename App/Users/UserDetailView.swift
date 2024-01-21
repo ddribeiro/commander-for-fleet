@@ -33,9 +33,9 @@ struct UserDetailView: View {
                             time: .shortened
                         )
                     )
-                    if user.globalRole != nil {
+                    if user.globalRole.isEmpty == false {
                         LabeledContent("Global Role") {
-                            Text(user.globalRole?.capitalized ?? "")
+                            Text(user.globalRole.capitalized)
                         }
                     }
                 }

@@ -147,7 +147,7 @@ class DataController: ObservableObject {
     /* Attempts to delete all persisent data by calling the delete
      method on the Swift Data modelContext. */
     func deleteAll() {
-        do { 
+        do {
             try modelContext.delete(model: CachedTeam.self)
             try modelContext.delete(model: CachedHost.self)
             try modelContext.delete(model: CachedUser.self)
@@ -159,95 +159,32 @@ class DataController: ObservableObject {
         }
     }
 
-    func policiesforSelectedFilter() -> [CachedPolicy] {
-        let filter = selectedFilter
-        var predicates = [NSPredicate]()
-
-        if let team = filter.team {
-            let teamPredicate = NSPredicate(format: "teamId == %@", "\(team.id)")
-            predicates.append(teamPredicate)
-        }
-
-        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
-
-        if trimmedFilterText.isEmpty == false {
-            let userNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
-            let emailPredicate = NSPredicate(format: "authorName CONTAINS[c] %@", trimmedFilterText)
-            let combinedPredicate = NSCompoundPredicate(
-                orPredicateWithSubpredicates: [userNamePredicate, emailPredicate]
-            )
-
-            predicates.append(combinedPredicate)
-        }
-
-        let request = CachedPolicy.fetchRequest()
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        let allPolicies = (try? container.viewContext.fetch(request)) ?? []
-        return allPolicies
-    }
-
-    func usersForSelectedFilter() -> [CachedUser] {
-        let filter = selectedFilter
-        var predicates = [NSPredicate]()
-
-        if let team = filter.team {
-            let teamPredicate = NSPredicate(format: "ANY teams.id = %@ OR teams.@count == 0", "\(team.id)")
-            predicates.append(teamPredicate)
-        }
-
-        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
-
-        if trimmedFilterText.isEmpty == false {
-            let userNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
-            let emailPredicate = NSPredicate(format: "email CONTAINS[c] %@", trimmedFilterText)
-            let combinedPredicate = NSCompoundPredicate(
-                orPredicateWithSubpredicates: [userNamePredicate, emailPredicate]
-            )
-
-            predicates.append(combinedPredicate)
-        }
-
-        let request = CachedUser.fetchRequest()
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        let allUsers = (try? container.viewContext.fetch(request)) ?? []
-        return allUsers
-    }
-
-    func softwareForSelectedFilter() -> [CachedSoftware] {
-        var predicates = [NSPredicate]()
-
-        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
-
-        if trimmedFilterText.isEmpty == false {
-            let softwareNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
-            let combinedPredicate = NSCompoundPredicate(
-                orPredicateWithSubpredicates: [softwareNamePredicate]
-            )
-
-            predicates.append(combinedPredicate)
-        }
-        let request = CachedSoftware.fetchRequest()
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        let allSoftware = (try? container.viewContext.fetch(request)) ?? []
-        return allSoftware
-    }
-
-    func commandsForSelectedHost() -> [CachedCommandResponse] {
-        guard let host = selectedHost else { return [] }
-
-        var predicates = [NSPredicate]()
-
-        if let hostID = host.uuid {
-            let hostPredicate = NSPredicate(format: "deviceID CONTAINS %@", "\(hostID)")
-            predicates.append(hostPredicate)
-        }
-
-        let request = CachedCommandResponse.fetchRequest()
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        request.sortDescriptors = [NSSortDescriptor(key: "updatedAt", ascending: false)]
-        let commandsForHost = (try? container.viewContext.fetch(request)) ?? []
-        return commandsForHost
-    }
+//    func usersForSelectedFilter() -> [CachedUser] {
+//        let filter = selectedFilter
+//        var predicates = [NSPredicate]()
+//
+//        if let team = filter.team {
+//            let teamPredicate = NSPredicate(format: "ANY teams.id = %@ OR teams.@count == 0", "\(team.id)")
+//            predicates.append(teamPredicate)
+//        }
+//
+//        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
+//
+//        if trimmedFilterText.isEmpty == false {
+//            let userNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
+//            let emailPredicate = NSPredicate(format: "email CONTAINS[c] %@", trimmedFilterText)
+//            let combinedPredicate = NSCompoundPredicate(
+//                orPredicateWithSubpredicates: [userNamePredicate, emailPredicate]
+//            )
+//
+//            predicates.append(combinedPredicate)
+//        }
+//
+//        let request = CachedUser.fetchRequest()
+//        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+//        let allUsers = (try? container.viewContext.fetch(request)) ?? []
+//        return allUsers
+//    }
 
     func loginWithEmail(
         email: String,
@@ -395,32 +332,28 @@ class DataController: ObservableObject {
     }
 
     func updateCache(with downloadedUser: User, downloadedTeams: [Team]) {
-        let viewContext = container.viewContext
-        let cachedUser = CachedUser(context: viewContext)
-
-        cachedUser.createdAt = downloadedUser.createdAt
-        cachedUser.updatedAt = downloadedUser.updatedAt
-        cachedUser.id = Int16(downloadedUser.id)
-        cachedUser.name = downloadedUser.name
-        cachedUser.email = downloadedUser.email
-        cachedUser.globalRole = downloadedUser.globalRole
-        cachedUser.gravatarUrl = downloadedUser.gravatarUrl
-        cachedUser.ssoEnabled = downloadedUser.ssoEnabled
-        cachedUser.apiOnly = downloadedUser.apiOnly
+        let cachedUser = CachedUser(
+            apiOnly: downloadedUser.apiOnly,
+            createdAt: downloadedUser.createdAt,
+            email: downloadedUser.email,
+            globalRole: downloadedUser.globalRole ?? "",
+            gravatarUrl: downloadedUser.gravatarUrl,
+            id: downloadedUser.id,
+            name: downloadedUser.name,
+            ssoEnabled: downloadedUser.ssoEnabled,
+            updatedAt: downloadedUser.updatedAt,
+            teams: []
+        )
 
         UserDefaults.standard.setValue(cachedUser.id, forKey: "loggedInUserID")
 
         for team in downloadedTeams {
-            let cachedTeam = CachedTeam(context: viewContext)
-            cachedTeam.id = Int16(team.id)
-            cachedTeam.name = team.name
-            cachedTeam.role = team.role
+            let cachedTeam = CachedTeam(id: team.id, name: team.name, role: team.role)
 
-            cachedUser.addToTeams(cachedTeam)
+            cachedUser.teams.append(cachedTeam)
         }
+        modelContext.insert(cachedUser)
 
-        print(cachedUser.teamsArray)
-        try? viewContext.save()
     }
 
     func validateServerURL(_ urlString: String) throws -> String {

@@ -17,6 +17,7 @@ struct UsersListView: View {
     @State private var isShowingSignInSheet = false
 
     @Query var teams: [CachedTeam]
+    @Query var users: [CachedUser]
 
     var teamFilters: [Filter] {
         teams.map { team in
@@ -27,7 +28,7 @@ struct UsersListView: View {
     var body: some View {
         if dataController.isAuthenticated {
             List(selection: $dataController.selectedUser) {
-                ForEach(dataController.usersForSelectedFilter()) { user in
+                ForEach(users) { user in
                     UserRow(user: user)
                 }
             }

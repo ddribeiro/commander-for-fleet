@@ -26,7 +26,7 @@ struct Sidebar: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
-    
+
     @Query var users: [CachedUser]
 
     let smartFilters: [Filter] = [.all, .recentlyEnrolled]

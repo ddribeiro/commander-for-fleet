@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.modelContext) var modelContext
     @EnvironmentObject var dataController: DataController
     @Environment(\.networkManager) var networkManager
     @Environment(\.dismiss) var dismiss
@@ -65,7 +66,7 @@ struct SettingsView: View {
 
                         Section {
                             LabeledContent("Global Role") {
-                                Text(user.globalRole?.capitalized ?? "")
+                                Text(user.globalRole.capitalized)
                             }
                             // swiftlint:disable:next line_length
                             LabeledContent("Created On", value: user.createdAt.formatted(date: .abbreviated, time: .omitted))
@@ -168,7 +169,6 @@ struct SettingsView: View {
             secondaryButton: .cancel()
         )
     }
-
 }
 
 struct SettingsView_Previews: PreviewProvider {

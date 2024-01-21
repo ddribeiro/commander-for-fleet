@@ -9,7 +9,6 @@
 import Foundation
 import SwiftData
 
-
 @Model class CachedProfile {
     var detail: String
     var name: String
@@ -17,7 +16,7 @@ import SwiftData
     @Attribute(.unique) var profileId: Int
     var status: String
     var hosts: [CachedHost]?
-    
+
     init(detail: String, name: String, operationType: String, profileId: Int, status: String, hosts: [CachedHost]? = nil) {
         self.detail = detail
         self.name = name

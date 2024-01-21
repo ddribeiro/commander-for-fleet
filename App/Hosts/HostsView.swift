@@ -16,7 +16,7 @@ struct HostsView: View {
     @Environment(\.horizontalSizeClass) var sizeClass
 
     @State private var selection: Set<CachedHost.ID> = []
-    
+
     @State private var searchText = ""
     @State private var sortOrder = [SortDescriptor(\CachedHost.computerName)]
     @State private var selectedFilter = Filter.all
@@ -111,7 +111,7 @@ struct HostsView: View {
                     VStack {
                         Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
                             .font(.footnote)
-                        Text("^[\(dataController.hostsForSelectedFilter().count) Computers](inflection: true)")
+                        Text("^[\(hosts.count) Computers](inflection: true)")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
@@ -159,8 +159,29 @@ struct HostsView: View {
 
     func updateCache(with downloadedHosts: [Host]) {
         for downloadedHost in downloadedHosts {
-            let cachedHost = CachedHost(computerName: downloadedHost.computerName, cpuBrand: downloadedHost.cpuBrand, gigsDiskSpaceAvailable: downloadedHost.gigsDiskSpaceAvailable, hardwareModel: downloadedHost.hardwareModel, hardwareSerial: downloadedHost.hardwareSerial, id: downloadedHost.id, lastEnrolledAt: downloadedHost.lastEnrolledAt, memory: downloadedHost.memory, osVersion: downloadedHost.osVersion, percentDiskSpaceAvailable: downloadedHost.percentDiskSpaceAvailable, platform: downloadedHost.platform, primaryIp: downloadedHost.primaryIp, primaryMac: downloadedHost.primaryMac, publicIp: downloadedHost.publicIp, seenTime: downloadedHost.seenTime, status: downloadedHost.status, teamId: downloadedHost.teamId ?? 0, teamName: downloadedHost.teamName ?? "", uptime: downloadedHost.uptime, uuid: downloadedHost.uuid)
-            
+            let cachedHost = CachedHost(
+                computerName: downloadedHost.computerName,
+                cpuBrand: downloadedHost.cpuBrand,
+                gigsDiskSpaceAvailable: downloadedHost.gigsDiskSpaceAvailable,
+                hardwareModel: downloadedHost.hardwareModel,
+                hardwareSerial: downloadedHost.hardwareSerial,
+                id: downloadedHost.id,
+                lastEnrolledAt: downloadedHost.lastEnrolledAt,
+                memory: downloadedHost.memory,
+                osVersion: downloadedHost.osVersion,
+                percentDiskSpaceAvailable: downloadedHost.percentDiskSpaceAvailable,
+                platform: downloadedHost.platform,
+                primaryIp: downloadedHost.primaryIp,
+                primaryMac: downloadedHost.primaryMac,
+                publicIp: downloadedHost.publicIp,
+                seenTime: downloadedHost.seenTime,
+                status: downloadedHost.status,
+                teamId: downloadedHost.teamId ?? 0,
+                teamName: downloadedHost.teamName ?? "",
+                uptime: downloadedHost.uptime,
+                uuid: downloadedHost.uuid
+            )
+
             modelContext.insert(cachedHost)
         }
     }
@@ -195,7 +216,7 @@ struct HostsView: View {
     func updateCache(with downloadedTeams: [Team]) {
         for downloadedTeam in downloadedTeams {
             let cachedTeam = CachedTeam(hostCount: downloadedTeam.hostCount ?? 0, id: downloadedTeam.id, name: downloadedTeam.name, role: downloadedTeam.role)
-            
+
             modelContext.insert(cachedTeam)
         }
     }

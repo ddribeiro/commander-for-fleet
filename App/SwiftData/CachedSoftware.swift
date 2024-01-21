@@ -9,7 +9,6 @@
 import Foundation
 import SwiftData
 
-
 @Model class CachedSoftware: Identifiable {
     var bundleIdentifier: String?
     var hostCount: Int
@@ -21,7 +20,8 @@ import SwiftData
     var version: String
     var hosts: [CachedHost]?
     @Relationship(inverse: \CachedVulnerability.software) var vulnerabilities: [CachedVulnerability]
-    
+
+    // swiftlint:disable:next line_length
     init(bundleIdentifier: String? = nil, hostCount: Int, id: Int, installedPaths: [String]? = nil, lastOpenedAt: Date? = nil, name: String, source: String, version: String, hosts: [CachedHost]? = nil, vulnerabilities: [CachedVulnerability]) {
         self.bundleIdentifier = bundleIdentifier
         self.hostCount = hostCount
