@@ -33,11 +33,11 @@ struct HostsView: View {
     }
 
     var displayAsList: Bool {
-        #if os(iOS)
+#if os(iOS)
         return sizeClass == .compact
-        #else
+#else
         return false
-        #endif
+#endif
     }
 
     var body: some View {
@@ -136,10 +136,9 @@ struct HostsView: View {
         do {
             let hosts = try await networkManager.fetch(.hosts, attempts: 5)
 
-            await MainActor.run {
-                updateCache(with: hosts)
-                dataController.hostsLastUpdatedAt = .now
-            }
+            updateCache(with: hosts)
+            dataController.hostsLastUpdatedAt = .now
+
         } catch {
             switch error as? AuthManager.AuthError {
             case .missingCredentials:
@@ -215,7 +214,12 @@ struct HostsView: View {
 
     func updateCache(with downloadedTeams: [Team]) {
         for downloadedTeam in downloadedTeams {
-            let cachedTeam = CachedTeam(hostCount: downloadedTeam.hostCount ?? 0, id: downloadedTeam.id, name: downloadedTeam.name, role: downloadedTeam.role)
+            let cachedTeam = CachedTeam(
+                hostCount: downloadedTeam.hostCount ?? 0,
+                id: downloadedTeam.id,
+                name: downloadedTeam.name,
+                role: downloadedTeam.role
+            )
 
             modelContext.insert(cachedTeam)
         }

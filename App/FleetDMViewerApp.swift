@@ -19,19 +19,18 @@ struct FleetDMViewerApp: App {
         WindowGroup {
             if dataController.isAuthenticated {
                 ContentView()
-                .environmentObject(dataController)
-                .environment(\.networkManager, networkManager)
             } else {
                 SignedOutView()
-                    .environmentObject(dataController)
-                    .environment(\.networkManager, networkManager)
-
             }
         }
-        .modelContainer(for: CachedHost.self)
-        .modelContainer(for: CachedTeam.self)
-        .modelContainer(for: CachedUser.self)
-        .modelContainer(for: CachedSoftware.self)
-        .modelContainer(for: CachedPolicy.self)
+        .environmentObject(dataController)
+        .environment(\.networkManager, networkManager)
+        .modelContainer(for: [
+            CachedHost.self,
+            CachedTeam.self,
+            CachedUser.self,
+            CachedSoftware.self,
+            CachedPolicy.self
+            ])
     }
 }
