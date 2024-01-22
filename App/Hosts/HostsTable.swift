@@ -15,12 +15,12 @@ struct HostsTable: View {
     @State private var isShowingSignInSheet = false
     @State private var sortOrder = [KeyPathComparator(\CachedHost.computerName, order: .reverse)]
 
-    @Binding var selection: Set<CachedHost.ID>
+//    @Binding var selection: Set<CachedHost.ID>
 
     @Query var hosts: [CachedHost]
 
     var body: some View {
-        Table(selection: $selection, sortOrder: $sortOrder) {
+        Table(sortOrder: $sortOrder) {
             TableColumn("Name", value: \.id) { host in
                 NewHostRow(host: host)
                     .frame(maxWidth: .infinity, alignment: .leading)

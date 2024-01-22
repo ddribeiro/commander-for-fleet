@@ -6,10 +6,10 @@
 //
 //
 
-import Foundation
 import SwiftData
+import OSLog
 
-@Model class CachedHost: Identifiable {
+@Model class CachedHost {
     var computerName: String
     var cpuBrand: String
     var diskEncryptionEnabled: Bool?
@@ -52,8 +52,32 @@ import SwiftData
         return "\(date), \(time)"
     }
 
-    // swiftlint:disable:next line_length
-    init(computerName: String, cpuBrand: String, diskEncryptionEnabled: Bool? = nil, gigsDiskSpaceAvailable: Double, hardwareModel: String, hardwareSerial: String, id: Int, lastEnrolledAt: Date, memory: Int, osVersion: String, percentDiskSpaceAvailable: Int, platform: String, primaryIp: String, primaryMac: String, publicIp: String, seenTime: Date, status: String, teamId: Int, teamName: String, uptime: Int, uuid: String, battery: CachedBattery? = nil, commands: CachedCommandResponse? = nil, team: CachedTeam? = nil) {
+    init(
+        computerName: String,
+        cpuBrand: String,
+        diskEncryptionEnabled: Bool? = nil,
+        gigsDiskSpaceAvailable: Double,
+        hardwareModel: String,
+        hardwareSerial: String,
+        id: Int,
+        lastEnrolledAt: Date,
+        memory: Int,
+        osVersion: String,
+        percentDiskSpaceAvailable: Int,
+        platform: String,
+        primaryIp: String,
+        primaryMac: String,
+        publicIp: String,
+        seenTime: Date,
+        status: String,
+        teamId: Int,
+        teamName: String,
+        uptime: Int,
+        uuid: String,
+        battery: CachedBattery? = nil,
+        commands: CachedCommandResponse? = nil,
+        team: CachedTeam? = nil
+    ) {
         self.computerName = computerName
         self.cpuBrand = cpuBrand
         self.diskEncryptionEnabled = diskEncryptionEnabled
@@ -78,5 +102,74 @@ import SwiftData
         self.battery = battery
         self.commands = commands
         self.team = team
+    }
+}
+
+extension CachedHost {
+    static func fetchHosts() async throws -> [Host] {
+        guard await DataController().activeEnvironment != nil else { throw HTTPError.invalidURL }
+
+        do {
+            return try await NetworkManager(authManager: AuthManager()).fetch(.hosts, attempts: 5)
+        } catch {
+            throw error
+        }
+
+    }
+}
+
+extension CachedHost {
+    convenience init(from host: Host) {
+        self.init(
+            computerName: host.computerName,
+            cpuBrand: host.cpuBrand,
+            gigsDiskSpaceAvailable: host.gigsDiskSpaceAvailable,
+            hardwareModel: host.hardwareModel,
+            hardwareSerial: host.hardwareSerial,
+            id: host.id,
+            lastEnrolledAt: host.lastEnrolledAt,
+            memory: host.memory,
+            osVersion: host.osVersion,
+            percentDiskSpaceAvailable: host.percentDiskSpaceAvailable,
+            platform: host.platform,
+            primaryIp: host.primaryIp,
+            primaryMac: host.primaryMac,
+            publicIp: host.publicIp,
+            seenTime: host.seenTime,
+            status: host.status,
+            teamId: host.teamId ?? 0,
+            teamName: host.teamName ?? "",
+            uptime: host.uptime,
+            uuid: host.uuid
+        )
+    }
+}
+
+extension CachedHost {
+    fileprivate static let logger = Logger(subsystem: "com.daleribeiro.FleetDMViewer", category: "parsing")
+
+    @MainActor
+    static func refresh(modelContext: ModelContext) async {
+        do {
+            logger.debug("Refreshing the data store...")
+            let downloadedHosts = try await fetchHosts()
+            logger.debug("Loaded: \(downloadedHosts.count) hosts")
+
+            for host in downloadedHosts {
+                let cachedHost = CachedHost(from: host)
+
+                logger.debug("Inserting \(cachedHost.computerName)")
+                modelContext.insert(cachedHost)
+            }
+            logger.debug("Refresh complete.")
+        } catch let error {
+            logger.error("\(error.localizedDescription)")
+        }
+    }
+}
+
+extension Array where Element: CachedHost {
+    subscript(id: CachedHost.ID?) -> CachedHost? {
+        first { $0.id == id }
     }
 }

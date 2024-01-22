@@ -15,7 +15,7 @@ struct HostsView: View {
     @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
 
-    @State private var selection: Set<CachedHost.ID> = []
+//    @State private var selection: Set<CachedHost.ID> = []
 
     @State private var searchText = ""
     @State private var sortOrder = [SortDescriptor(\CachedHost.computerName)]
@@ -45,24 +45,24 @@ struct HostsView: View {
             if displayAsList {
                 HostsListView(searchString: searchText, sortOrder: sortOrder)
             } else {
-                HostsTable(selection: $selection)
+                HostsTable()
             }
         }
         .navigationTitle(selectedFilter == .all ? "All Hosts" : selectedFilter.name)
         .navigationDestination(for: CachedHost.ID.self) { id in
             HostView(id: id)
         }
-        .toolbar {
-            if !displayAsList {
-                toolbarButtons
-            }
-        }
+//        .toolbar {
+//            if !displayAsList {
+//                toolbarButtons
+//            }
+//        }
         .task {
             if let hostsLastUpdatedAt = dataController.hostsLastUpdatedAt {
                 guard hostsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
             }
             await fetchTeams()
-            await fetchHosts()
+            await CachedHost.refresh(modelContext: modelContext)
         }
         .overlay {
             if hosts.isEmpty {
@@ -78,7 +78,7 @@ struct HostsView: View {
             Text(token.name)
         }
         .refreshable {
-            await fetchHosts()
+            await CachedHost.refresh(modelContext: modelContext)
             await fetchTeams()
         }
         .sheet(isPresented: $dataController.showingApiTokenAlert) {
@@ -122,68 +122,13 @@ struct HostsView: View {
 
     }
 
-    @ViewBuilder
-    var toolbarButtons: some View {
-        NavigationLink(value: selection.first) {
-            Label("View Details", systemImage: "list.bullet.below.rectangle")
-        }
-        .disabled(selection.isEmpty)
-    }
-
-    func fetchHosts() async {
-        guard dataController.activeEnvironment != nil else { return }
-
-        do {
-            let hosts = try await networkManager.fetch(.hosts, attempts: 5)
-
-            updateCache(with: hosts)
-            dataController.hostsLastUpdatedAt = .now
-
-        } catch {
-            switch error as? AuthManager.AuthError {
-            case .missingCredentials:
-                if !dataController.showingApiTokenAlert {
-                    dataController.showingApiTokenAlert = true
-                    dataController.alertTitle = "API Token Expired"
-                    // swiftlint:disable:next line_length
-                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
-                }
-            case .missingToken:
-                print(error.localizedDescription)
-            case .none:
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    func updateCache(with downloadedHosts: [Host]) {
-        for downloadedHost in downloadedHosts {
-            let cachedHost = CachedHost(
-                computerName: downloadedHost.computerName,
-                cpuBrand: downloadedHost.cpuBrand,
-                gigsDiskSpaceAvailable: downloadedHost.gigsDiskSpaceAvailable,
-                hardwareModel: downloadedHost.hardwareModel,
-                hardwareSerial: downloadedHost.hardwareSerial,
-                id: downloadedHost.id,
-                lastEnrolledAt: downloadedHost.lastEnrolledAt,
-                memory: downloadedHost.memory,
-                osVersion: downloadedHost.osVersion,
-                percentDiskSpaceAvailable: downloadedHost.percentDiskSpaceAvailable,
-                platform: downloadedHost.platform,
-                primaryIp: downloadedHost.primaryIp,
-                primaryMac: downloadedHost.primaryMac,
-                publicIp: downloadedHost.publicIp,
-                seenTime: downloadedHost.seenTime,
-                status: downloadedHost.status,
-                teamId: downloadedHost.teamId ?? 0,
-                teamName: downloadedHost.teamName ?? "",
-                uptime: downloadedHost.uptime,
-                uuid: downloadedHost.uuid
-            )
-
-            modelContext.insert(cachedHost)
-        }
-    }
+//    @ViewBuilder
+//    var toolbarButtons: some View {
+//        NavigationLink(value: selection.first) {
+//            Label("View Details", systemImage: "list.bullet.below.rectangle")
+//        }
+//        .disabled(selection.isEmpty)
+//    }
 
     func fetchTeams() async {
         guard dataController.activeEnvironment != nil else { return }

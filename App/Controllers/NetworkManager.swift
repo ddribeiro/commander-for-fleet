@@ -112,9 +112,9 @@ struct NetworkManager {
             }
         }
 
-        if let responseString = String(data: responseData, encoding: .utf8) {
-            print(responseString)
-        }
+//        if let responseString = String(data: responseData, encoding: .utf8) {
+//            print(responseString)
+//        }
 
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
