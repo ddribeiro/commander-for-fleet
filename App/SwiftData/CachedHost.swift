@@ -6,8 +6,8 @@
 //
 //
 
-import SwiftData
 import OSLog
+import SwiftData
 
 @Model class CachedHost {
     var computerName: String
@@ -114,7 +114,6 @@ extension CachedHost {
         } catch {
             throw error
         }
-
     }
 }
 
@@ -151,7 +150,7 @@ extension CachedHost {
     @MainActor
     static func refresh(modelContext: ModelContext) async {
         do {
-            logger.debug("Refreshing the data store...")
+            logger.debug("Refreshing the data store for hosts...")
             let downloadedHosts = try await fetchHosts()
             logger.debug("Loaded: \(downloadedHosts.count) hosts")
 
@@ -162,11 +161,25 @@ extension CachedHost {
                 modelContext.insert(cachedHost)
             }
             logger.debug("Refresh complete.")
-        } catch let error {
-            logger.error("\(error.localizedDescription)")
+        } catch {
+            switch error as? AuthManager.AuthError {
+            case .missingCredentials:
+                let dataController = DataController()
+
+                if !dataController.showingApiTokenAlert {
+                    dataController.showingApiTokenAlert = true
+                    dataController.alertTitle = "API Token Expired"
+                    // swiftlint:disable:next line_length
+                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
+                }
+            case .missingToken:
+                print(error.localizedDescription)
+            case .none:
+                print(error.localizedDescription)
+            }
+            }
         }
     }
-}
 
 extension Array where Element: CachedHost {
     subscript(id: CachedHost.ID?) -> CachedHost? {

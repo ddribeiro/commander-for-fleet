@@ -61,7 +61,7 @@ struct HostsView: View {
             if let hostsLastUpdatedAt = dataController.hostsLastUpdatedAt {
                 guard hostsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
             }
-            await fetchTeams()
+            await CachedTeam.refresh(modelContext: modelContext)
             await CachedHost.refresh(modelContext: modelContext)
         }
         .overlay {
@@ -79,7 +79,7 @@ struct HostsView: View {
         }
         .refreshable {
             await CachedHost.refresh(modelContext: modelContext)
-            await fetchTeams()
+            await CachedTeam.refresh(modelContext: modelContext)
         }
         .sheet(isPresented: $dataController.showingApiTokenAlert) {
             APITokenRefreshView()
@@ -129,46 +129,6 @@ struct HostsView: View {
 //        }
 //        .disabled(selection.isEmpty)
 //    }
-
-    func fetchTeams() async {
-        guard dataController.activeEnvironment != nil else { return }
-
-        do {
-            let teams = try await networkManager.fetch(.teams, attempts: 5)
-
-            await MainActor.run {
-                updateCache(with: teams)
-                dataController.teamsLastUpdatedAt = .now
-            }
-        } catch {
-            switch error as? AuthManager.AuthError {
-            case .missingCredentials:
-                if !dataController.showingApiTokenAlert {
-                    dataController.showingApiTokenAlert = true
-                    dataController.alertTitle = "API Token Expired"
-                    // swiftlint:disable:next line_length
-                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
-                }
-            case .missingToken:
-                print(error.localizedDescription)
-            case .none:
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    func updateCache(with downloadedTeams: [Team]) {
-        for downloadedTeam in downloadedTeams {
-            let cachedTeam = CachedTeam(
-                hostCount: downloadedTeam.hostCount ?? 0,
-                id: downloadedTeam.id,
-                name: downloadedTeam.name,
-                role: downloadedTeam.role
-            )
-
-            modelContext.insert(cachedTeam)
-        }
-    }
 }
 
 #Preview {
