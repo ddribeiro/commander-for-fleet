@@ -28,11 +28,11 @@ struct SoftwareDetailView: View {
             }
 
             Section {
-                if software.hostCount != 0 {
+                if software.hostsCount != nil {
                     NavigationLink {
                         HostsForSoftwareList(software: software)
                     } label: {
-                        Text("^[View \(software.hostCount) host](inflect: true) with version \(software.version) of \(software.name)")
+                        Text("^[View \(software.hostsCount ?? 0) host](inflect: true) with version \(software.version) of \(software.name)")
                     }
                 } else {
                     ContentUnavailableView(
@@ -53,13 +53,13 @@ struct SoftwareDetailView: View {
                             VStack(alignment: .leading) {
                                 Text(vulnerability.cve)
                                 if vulnerability.cvssScore != 0 {
-                                    Text("CVSS Score: \(vulnerability.cvssScore)")
+                                    Text("CVSS Score: \(vulnerability.cvssScore ?? 0)")
                                         .foregroundStyle(.secondary)
                                         .font(.body.smallCaps())
                                 }
 
-                                if vulnerability.epssProbability != 0 {
-                                    Text("EPSS Probability: \(vulnerability.epssProbability.formatted(.percent))")
+                                if vulnerability.epssProbability != nil {
+                                    Text("EPSS Probability: \(vulnerability.epssProbability!.formatted(.percent))")
                                         .foregroundStyle(.secondary)
                                         .font(.body.smallCaps())
                                 }
@@ -73,7 +73,7 @@ struct SoftwareDetailView: View {
                                 Text("Known Exploit")
                                     .font(.body.smallCaps())
                             }
-                            .opacity(vulnerability.cisaKnownExploit ? 1 : 0)
+                            .opacity(vulnerability.cisaKnownExploit ?? false ? 1 : 0)
                         }
                     }
                 } else {

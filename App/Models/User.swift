@@ -33,6 +33,10 @@ struct User: Codable, Identifiable {
     )
 }
 
+enum Roles {
+    case observer, observerPlus, maintainer, admin, gitops
+}
+
 struct UserReponse: Codable {
     var user: User
     var availableTeams: [Team]

@@ -150,6 +150,8 @@ extension CachedHost {
     @MainActor
     static func refresh(modelContext: ModelContext) async {
         do {
+            print(modelContext.sqliteCommand)
+
             logger.debug("Refreshing the data store for hosts...")
             let downloadedHosts = try await fetchHosts()
             logger.debug("Loaded: \(downloadedHosts.count) hosts")
@@ -180,9 +182,3 @@ extension CachedHost {
             }
         }
     }
-
-extension Array where Element: CachedHost {
-    subscript(id: CachedHost.ID?) -> CachedHost? {
-        first { $0.id == id }
-    }
-}

@@ -15,6 +15,8 @@
 		5E3336EB2B0D1402009FFF97 /* ContentViewToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3336EA2B0D1402009FFF97 /* ContentViewToolbar.swift */; };
 		5E680A5D2B1657EA0024C757 /* APITokenRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E680A5C2B1657EA0024C757 /* APITokenRefreshView.swift */; };
 		5E680A5F2B168E520024C757 /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E680A5E2B168E520024C757 /* Sidebar.swift */; };
+		5E74A3BC2B61941900FAE447 /* SoftwareListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E74A3BB2B61941900FAE447 /* SoftwareListView.swift */; };
+		5E74A3BE2B640D6600FAE447 /* ModelContext-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E74A3BD2B640D6600FAE447 /* ModelContext-Extension.swift */; };
 		5E7DAB0D2A339C7F00DDFAFC /* NoHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */; };
 		5E815E562B1944CD00E0E44A /* UserDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E815E552B1944CD00E0E44A /* UserDetailView.swift */; };
 		5E815EA92B1A606300E0E44A /* AllSoftwareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E815EA82B1A606300E0E44A /* AllSoftwareView.swift */; };
@@ -82,6 +84,8 @@
 		5E3336EA2B0D1402009FFF97 /* ContentViewToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewToolbar.swift; sourceTree = "<group>"; };
 		5E680A5C2B1657EA0024C757 /* APITokenRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = APITokenRefreshView.swift; path = "/Users/daleribeiro/Developer/fleet-dm-viewer/App/FleetDMViewer/Views/APITokenRefreshView.swift"; sourceTree = "<absolute>"; };
 		5E680A5E2B168E520024C757 /* Sidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sidebar.swift; sourceTree = "<group>"; };
+		5E74A3BB2B61941900FAE447 /* SoftwareListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareListView.swift; sourceTree = "<group>"; };
+		5E74A3BD2B640D6600FAE447 /* ModelContext-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelContext-Extension.swift"; sourceTree = "<group>"; };
 		5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoHostView.swift; sourceTree = "<group>"; };
 		5E815E552B1944CD00E0E44A /* UserDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailView.swift; sourceTree = "<group>"; };
 		5E815EA82B1A606300E0E44A /* AllSoftwareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllSoftwareView.swift; sourceTree = "<group>"; };
@@ -217,6 +221,7 @@
 			isa = PBXGroup;
 			children = (
 				5E815EA82B1A606300E0E44A /* AllSoftwareView.swift */,
+				5E74A3BB2B61941900FAE447 /* SoftwareListView.swift */,
 				5ED5596A2B1A65F600AC581E /* AllSoftwareTableView.swift */,
 				5ED5596C2B1A668700AC581E /* AllSoftwareRow.swift */,
 				5EBAAD9B2B22310400EC54BA /* SoftwareDetailView.swift */,
@@ -341,6 +346,7 @@
 			isa = PBXGroup;
 			children = (
 				5E028F442A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift */,
+				5E74A3BD2B640D6600FAE447 /* ModelContext-Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -446,6 +452,7 @@
 				5E9B94E42A32320D00A7A0CE /* Host.swift in Sources */,
 				5EABE6632B4C88ED007A335C /* CachedPolicy.swift in Sources */,
 				5EDA66BD2A2A4955006706CD /* FleetDMViewerApp.swift in Sources */,
+				5E74A3BC2B61941900FAE447 /* SoftwareListView.swift in Sources */,
 				5EABE6612B4C88ED007A335C /* CachedUser.swift in Sources */,
 				5EEA90982A93E9D800FEA5E4 /* ServerSelectionView.swift in Sources */,
 				5E9038D92A43944B0077F3DC /* HostSoftwareDetailView.swift in Sources */,
@@ -489,6 +496,7 @@
 				5EEA90932A8EA24200FEA5E4 /* MDMCommandMenu.swift in Sources */,
 				5EDE46B72B17AC6800BA99A4 /* NewHostRow.swift in Sources */,
 				5E028F512A4DE24400D90456 /* HostCommandRow.swift in Sources */,
+				5E74A3BE2B640D6600FAE447 /* ModelContext-Extension.swift in Sources */,
 				5E8311382B1FD7800029480B /* AllPoliciesRow.swift in Sources */,
 				5E9038DB2A43A0F60077F3DC /* HostProfilesRow.swift in Sources */,
 				5E94DCC42B11358300C09185 /* AuthManager.swift in Sources */,

@@ -21,30 +21,6 @@ struct AllSoftwareTableView: View {
 
     @Query var software: [CachedSoftware]
 
-//    var searchResults: [CachedSoftware] {
-//        if searchText.isEmpty && !isShowingVulnerableSoftware {
-//            return dataController.softwareForSelectedFilter().sorted {
-//                $0.name < $1.name
-//            }
-//        } else if searchText.isEmpty && isShowingVulnerableSoftware {
-//            return vulnerableSoftware.sorted {
-//                $0.name < $1.name
-//            }
-//        } else if isShowingVulnerableSoftware {
-//                return vulnerableSoftware.filter({ $0.name.localizedCaseInsensitiveContains(searchText) })
-//            } else {
-//            return dataController.softwareForSelectedFilter().filter {
-//                $0.name.localizedCaseInsensitiveContains(searchText)
-//            }
-//        }
-//    }
-
-    var vulnerableSoftware: [CachedSoftware] {
-        software.filter {
-            !$0.vulnerabilities.isEmpty
-        }
-    }
-
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Name", value: \.id) { software in
@@ -68,18 +44,17 @@ struct AllSoftwareTableView: View {
                 Text(software.source)
             }
 
-            TableColumn("Hosts", value: \.hostCount) { software in
-                Text("\(software.hostCount)")
+            TableColumn("Hosts", value: \.hostsCount) { software in
+                Text("\(software.hostsCount)")
                     .monospacedDigit()
             }
 
-            TableColumn("Vulnerabilties", value: \.vulnerabilities.count) { software in
+            TableColumn("Vulnerabilities", value: \.vulnerabilities.count) { software in
                 HStack {
-
-                        Image(systemName: "exclamationmark.shield.fill")
-                            .opacity(software.vulnerabilities.count != 0 ? 1 : 0)
-                            .imageScale(.large)
-                            .foregroundStyle(.red)
+                    Image(systemName: "exclamationmark.shield.fill")
+                        .opacity(software.vulnerabilities.count != 0 ? 1 : 0)
+                        .imageScale(.large)
+                        .foregroundStyle(.red)
 
                     Text("\(software.vulnerabilities.count)")
                         .monospacedDigit()
@@ -112,17 +87,18 @@ struct AllSoftwareTableView: View {
         .id(UUID())
     }
 
-    init(sort: [SortDescriptor<CachedSoftware>], searchString: String, filter: Filter, isShowingVulnerableSoftware: Bool) {
-        _software = Query(filter: #Predicate {
-            if searchString.isEmpty {
-                return true
-            } else {
-                return $0.name.localizedStandardContains(searchString)
-            }
-        }, sort: sort)
-
-        _selection = .constant([])
-        _sortOrder = State(initialValue: [KeyPathComparator(\CachedSoftware.name)])
+    init(
+        sort: [SortDescriptor<CachedSoftware>],
+        searchString: String,
+        isShowingVulnerableSoftware: Bool,
+        selection: Binding<Set<CachedSoftware.ID>>
+    ) {
+        let predicate = CachedSoftware.predicate(
+            searchText: searchString,
+            isShowingVulnerableSoftware: isShowingVulnerableSoftware
+        )
+        _software = Query(filter: predicate, sort: sort)
         _isShowingVulnerableSoftware = State(initialValue: isShowingVulnerableSoftware)
+        _selection = selection
     }
 }

@@ -24,9 +24,6 @@ struct AllSoftwareView: View {
     @Query var users: [CachedUser]
     @Query var software: [CachedSoftware]
 
-    //    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
-    //    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
-
 //    var searchResults: [CachedSoftware] {
 //        if searchText.isEmpty && !isShowingVulnerableSoftware {
 //            return dataController.softwareForSelectedFilter().sorted {
@@ -62,9 +59,19 @@ struct AllSoftwareView: View {
     var body: some View {
         ZStack {
             if displayAsList {
-                list
+                SoftwareListView(
+                    sort: sortOrder,
+                    searchString: searchText,
+//                    filter: Filter.all,
+                    isShowingVulnerableSoftware: isShowingVulnerableSoftware
+                    )
             } else {
-                AllSoftwareTableView(sort: sortOrder, searchString: searchText, filter: Filter.all, isShowingVulnerableSoftware: false)
+                AllSoftwareTableView(
+                    sort: sortOrder,
+                    searchString: searchText,
+                    isShowingVulnerableSoftware: isShowingVulnerableSoftware,
+                    selection: $selection
+                )
             }
         }
         .navigationDestination(for: CachedSoftware.self) { software in
@@ -82,12 +89,19 @@ struct AllSoftwareView: View {
                     if loggedInUser.globalRole != "admin" {
                         for team in loggedInUser.teams {
                             Task {
-                                await fetchSoftwareForTeam(id: Int(team.id))
+                                await CachedSoftware.refresh(
+                                    forTeam: team.id,
+                                    modelContext: modelContext,
+                                    dataController: dataController
+                                )
                             }
                         }
                     } else {
                         Task {
-                            await fetchSoftware()
+                            await CachedSoftware.refresh(
+                                modelContext: modelContext,
+                                dataController: dataController
+                            )
                         }
                     }
                 }
@@ -99,19 +113,16 @@ struct AllSoftwareView: View {
                     if loggedInUser.globalRole != "admin" {
                         for team in loggedInUser.teams {
                             Task {
-                                await fetchSoftwareForTeam(id: Int(team.id))
+                                await CachedSoftware.refresh(forTeam: team.id, modelContext: modelContext, dataController: dataController)
                             }
                         }
                     } else {
                         Task {
-                            await fetchSoftware()
+                            await CachedSoftware.refresh(modelContext: modelContext, dataController: dataController)
                         }
                     }
                 }
             }
-        }
-        .onAppear {
-            dataController.filterText = ""
         }
         .overlay {
             if software.isEmpty {
@@ -119,16 +130,17 @@ struct AllSoftwareView: View {
             }
         }
         .searchable(text: $searchText)
-        //        .toolbar {
-        //            if !displayAsList {
-        //                toolbarButtons
-        //            }
-        //        }
+                .toolbar {
+                    if !displayAsList {
+                        toolbarButtons
+                    }
+                }
 #if os(iOS)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     isShowingVulnerableSoftware.toggle()
+                    print(isShowingVulnerableSoftware)
                 } label: {
                     Label("Show Vulnerable Software", systemImage: "exclamationmark.shield")
                         .symbolVariant(isShowingVulnerableSoftware ? .fill : .none)
@@ -171,115 +183,5 @@ struct AllSoftwareView: View {
             Label("View Details", systemImage: "list.bullet.below.rectangle")
         }
         .disabled(selection.isEmpty)
-    }
-
-    func fetchSoftwareForTeam(id: Int) async {
-        guard dataController.activeEnvironment != nil else { return }
-        let endpoint = Endpoint.getSoftwareForTeam(id: id)
-
-        do {
-            dataController.loadingState = .loading
-            let software = try await networkManager.fetch(endpoint, attempts: 5)
-
-            await MainActor.run {
-                updateCache(with: software)
-            }
-            dataController.softwareLastUpdatedAt = .now
-            dataController.loadingState = .loaded
-        } catch {
-            dataController.loadingState = .failed
-            switch error as? AuthManager.AuthError {
-            case .missingCredentials:
-                if !dataController.showingApiTokenAlert {
-                    dataController.showingApiTokenAlert = true
-                    dataController.alertTitle = "API Token Expired"
-                    // swiftlint:disable:next line_length
-                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
-                }
-            case .missingToken:
-                print(error.localizedDescription)
-            case .none:
-                print("Thise error")
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    func fetchSoftware() async {
-        guard dataController.activeEnvironment != nil else { return }
-
-        do {
-            dataController.loadingState = .loading
-            let software = try await networkManager.fetch(.software, attempts: 5)
-
-            await MainActor.run {
-                updateCache(with: software)
-            }
-
-            dataController.softwareLastUpdatedAt = .now
-            dataController.loadingState = .loaded
-        } catch {
-            dataController.loadingState = .failed
-            switch error as? AuthManager.AuthError {
-            case .missingCredentials:
-                if !dataController.showingApiTokenAlert {
-                    dataController.showingApiTokenAlert = true
-                    dataController.alertTitle = "API Token Expired"
-                    // swiftlint:disable:next line_length
-                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
-                }
-            case .missingToken:
-                print(error.localizedDescription)
-            case .none:
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    var list: some View {
-        List {
-            softwareRows(software)
-        }
-        .id(UUID())
-    }
-
-    func softwareRows(_ software: [CachedSoftware]) -> some View {
-        ForEach(software) { software in
-            NavigationLink(value: software) {
-                AllSoftwareRow(software: software)
-            }
-        }
-    }
-
-    func updateCache(with downloadedSoftware: [Software]) {
-        for downloadedSoftware in downloadedSoftware {
-            let cachedSoftware = CachedSoftware(
-                bundleIdentifier: downloadedSoftware.bundleIdentifier,
-                hostCount: downloadedSoftware.hostsCount ?? 0,
-                id: downloadedSoftware.id,
-                name: downloadedSoftware.name,
-                source: downloadedSoftware.source,
-                version: downloadedSoftware.version
-            )
-
-            if let vulnerabilities = downloadedSoftware.vulnerabilities {
-                for vulnerability in vulnerabilities {
-                    let cachedVulnerability = CachedVulnerability(
-                        cisaKnownExploit: vulnerability.cisaKnownExploit ?? false,
-                        cve: vulnerability.cve,
-                        cveDescription: vulnerability.cveDescription,
-                        cvePublished: vulnerability.cvePublished,
-                        cvssScore: vulnerability.cvssScore ?? 0,
-                        detailsLink: vulnerability.detailsLink,
-                        epssProbability: vulnerability.epssProbability ?? 0,
-                        resolvedInVersion: vulnerability.resolvedInVersion
-                    )
-
-                    cachedSoftware.vulnerabilities.append(cachedVulnerability)
-                }
-            }
-            modelContext.insert(cachedSoftware)
-        }
-
     }
 }

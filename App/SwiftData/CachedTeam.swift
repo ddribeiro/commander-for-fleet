@@ -31,6 +31,17 @@ import SwiftData
 }
 
 extension CachedTeam {
+    convenience init(from team: Team) {
+        self.init(
+            hostCount: team.hostCount,
+            id: team.id,
+            name: team.name,
+            role: team.role
+        )
+    }
+}
+
+extension CachedTeam {
     static func fetchTeams() async throws -> [Team] {
         guard await DataController().activeEnvironment != nil else { throw HTTPError.invalidURL }
 
@@ -39,17 +50,6 @@ extension CachedTeam {
         } catch {
             throw error
         }
-    }
-}
-
-extension CachedTeam {
-    convenience init(from team: Team) {
-        self.init(
-            hostCount: team.hostCount,
-            id: team.id,
-            name: team.name,
-            role: team.role
-        )
     }
 }
 

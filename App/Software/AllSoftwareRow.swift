@@ -31,23 +31,9 @@ struct AllSoftwareRow: View {
                         .foregroundStyle(.secondary)
                         .font(.body.smallCaps())
 
-                    Text("^[\(software.hostCount) host](inflect: true)")
+                    Text("^[\(software.hostsCount) host](inflect: true)")
                         .font(.smallCaps(.body)())
                         .foregroundStyle(.secondary)
-                }
-            }
-
-            Spacer()
-            if sizeClass == .compact {
-                if software.vulnerabilities.count != 0 {
-                    VStack(alignment: .trailing) {
-                        Image(systemName: "exclamationmark.shield.fill")
-                            .foregroundColor(.red)
-                        Text("^[\(software.vulnerabilities.count) Vulnerability](inflect: true)")
-                            .lineLimit(1)
-                            .foregroundStyle(.secondary)
-                            .font(.body.smallCaps())
-                    }
                 }
             }
         }
