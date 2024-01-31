@@ -11,7 +11,6 @@ import SwiftUI
 struct AllPoliciesTableView: View {
     @EnvironmentObject var dataController: DataController
 
-    @Environment(\.managedObjectContext) var moc
     @Environment(\.networkManager) var networkManager
 
     @Binding var selection: Set<CachedPolicy.ID>

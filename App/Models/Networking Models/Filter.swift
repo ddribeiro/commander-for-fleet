@@ -19,7 +19,13 @@ class Filter: Identifiable, Hashable {
         Int(team?.hostCount ?? 0)
     }
 
-    init(id: Int, name: String, icon: String, minEnrollmentDate: Foundation.Date = Date.distantPast, team: CachedTeam? = nil) {
+    init(
+        id: Int,
+        name: String,
+        icon: String,
+        minEnrollmentDate: Foundation.Date = Date.distantPast,
+        team: CachedTeam? = nil
+    ) {
         self.id = id
         self.name = name
         self.icon = icon

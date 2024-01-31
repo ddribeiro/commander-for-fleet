@@ -57,7 +57,7 @@ extension CachedTeam {
     fileprivate static let logger = Logger(subsystem: "com.daleribeiro.FleetDMViewer", category: "parsing")
 
     @MainActor
-    static func refresh(modelContext: ModelContext) async {
+    static func refresh(modelContext: ModelContext, dataController: DataController) async {
         do {
             logger.debug("Refreshing the data store for teams...")
             let downloadedTeams = try await fetchTeams()
@@ -73,7 +73,6 @@ extension CachedTeam {
         } catch {
             switch error as? AuthManager.AuthError {
             case .missingCredentials:
-                var dataController = DataController()
                 if !dataController.showingApiTokenAlert {
                     dataController.showingApiTokenAlert = true
                     dataController.alertTitle = "API Token Expired"

@@ -104,15 +104,15 @@
 		5E9B94E32A32320D00A7A0CE /* Host.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 		5E9B94E52A32321D00A7A0CE /* Team.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
 		5E9B94E72A32323300A7A0CE /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
-		5EABE6582B4C88ED007A335C /* CachedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedUser.swift; path = App/SwiftData/CachedUser.swift; sourceTree = "<group>"; };
-		5EABE6592B4C88ED007A335C /* CachedProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedProfile.swift; path = App/SwiftData/CachedProfile.swift; sourceTree = "<group>"; };
-		5EABE65A2B4C88ED007A335C /* CachedPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedPolicy.swift; path = App/SwiftData/CachedPolicy.swift; sourceTree = "<group>"; };
-		5EABE65B2B4C88ED007A335C /* CachedHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedHost.swift; path = App/SwiftData/CachedHost.swift; sourceTree = "<group>"; };
-		5EABE65C2B4C88ED007A335C /* CachedVulnerability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedVulnerability.swift; path = App/SwiftData/CachedVulnerability.swift; sourceTree = "<group>"; };
-		5EABE65D2B4C88ED007A335C /* CachedTeam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedTeam.swift; path = App/SwiftData/CachedTeam.swift; sourceTree = "<group>"; };
-		5EABE65E2B4C88ED007A335C /* CachedCommandResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedCommandResponse.swift; path = App/SwiftData/CachedCommandResponse.swift; sourceTree = "<group>"; };
-		5EABE65F2B4C88ED007A335C /* CachedSoftware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedSoftware.swift; path = App/SwiftData/CachedSoftware.swift; sourceTree = "<group>"; };
-		5EABE6602B4C88ED007A335C /* CachedBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CachedBattery.swift; path = App/SwiftData/CachedBattery.swift; sourceTree = "<group>"; };
+		5EABE6582B4C88ED007A335C /* CachedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedUser.swift; sourceTree = "<group>"; };
+		5EABE6592B4C88ED007A335C /* CachedProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedProfile.swift; sourceTree = "<group>"; };
+		5EABE65A2B4C88ED007A335C /* CachedPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedPolicy.swift; sourceTree = "<group>"; };
+		5EABE65B2B4C88ED007A335C /* CachedHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedHost.swift; sourceTree = "<group>"; };
+		5EABE65C2B4C88ED007A335C /* CachedVulnerability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedVulnerability.swift; sourceTree = "<group>"; };
+		5EABE65D2B4C88ED007A335C /* CachedTeam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedTeam.swift; sourceTree = "<group>"; };
+		5EABE65E2B4C88ED007A335C /* CachedCommandResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedCommandResponse.swift; sourceTree = "<group>"; };
+		5EABE65F2B4C88ED007A335C /* CachedSoftware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedSoftware.swift; sourceTree = "<group>"; };
+		5EABE6602B4C88ED007A335C /* CachedBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedBattery.swift; sourceTree = "<group>"; };
 		5EBAAD9B2B22310400EC54BA /* SoftwareDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareDetailView.swift; sourceTree = "<group>"; };
 		5ECF5D462AF405E200108411 /* SignedOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SignedOutView.swift; path = App/Authentication/SignedOutView.swift; sourceTree = SOURCE_ROOT; };
 		5ED2F5C92B224DA6005CDD23 /* HostsForSoftwareList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostsForSoftwareList.swift; sourceTree = "<group>"; };
@@ -244,19 +244,13 @@
 		5E9B94E02A3231E600A7A0CE /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				5E9B94E72A32323300A7A0CE /* Endpoint.swift */,
-				5E9B94E32A32320D00A7A0CE /* Host.swift */,
-				5E9B94E12A3231F900A7A0CE /* LoginRequestBody.swift */,
-				5E9038DE2A44AF6F0077F3DC /* MDMCommands.swift */,
-				5E9B94E52A32321D00A7A0CE /* Team.swift */,
-				5EDC18032A3A506200691C2E /* User.swift */,
-				5EFC7ADE2A9E8F9A00C2ED06 /* Filter.swift */,
-				5E0C87DE2B0C098800806EA8 /* Policy.swift */,
+				5EBEE5162B6AD4E500089C14 /* Networking Models */,
+				5EBEE5152B6AD4D800089C14 /* SwiftData */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-		5EDA66B02A2A4955006706CD = {
+		5EBEE5152B6AD4D800089C14 /* SwiftData */ = {
 			isa = PBXGroup;
 			children = (
 				5EABE6582B4C88ED007A335C /* CachedUser.swift */,
@@ -268,6 +262,28 @@
 				5EABE65E2B4C88ED007A335C /* CachedCommandResponse.swift */,
 				5EABE65F2B4C88ED007A335C /* CachedSoftware.swift */,
 				5EABE6602B4C88ED007A335C /* CachedBattery.swift */,
+			);
+			path = SwiftData;
+			sourceTree = "<group>";
+		};
+		5EBEE5162B6AD4E500089C14 /* Networking Models */ = {
+			isa = PBXGroup;
+			children = (
+				5E9B94E72A32323300A7A0CE /* Endpoint.swift */,
+				5E9B94E32A32320D00A7A0CE /* Host.swift */,
+				5E9B94E12A3231F900A7A0CE /* LoginRequestBody.swift */,
+				5E9038DE2A44AF6F0077F3DC /* MDMCommands.swift */,
+				5E9B94E52A32321D00A7A0CE /* Team.swift */,
+				5EDC18032A3A506200691C2E /* User.swift */,
+				5EFC7ADE2A9E8F9A00C2ED06 /* Filter.swift */,
+				5E0C87DE2B0C098800806EA8 /* Policy.swift */,
+			);
+			path = "Networking Models";
+			sourceTree = "<group>";
+		};
+		5EDA66B02A2A4955006706CD = {
+			isa = PBXGroup;
+			children = (
 				5E12A0052B278DC6003D2EDB /* App */,
 				5EDA66BA2A2A4955006706CD /* Products */,
 			);
@@ -345,8 +361,8 @@
 		5EFAECA42B27B7B00045FB13 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				5E028F442A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift */,
 				5E74A3BD2B640D6600FAE447 /* ModelContext-Extension.swift */,
+				5E028F442A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";

@@ -10,16 +10,18 @@ import SwiftUI
 
 struct AllSoftwareTableView: View {
     @EnvironmentObject var dataController: DataController
-
-    @Environment(\.managedObjectContext) var moc
     @Environment(\.networkManager) var networkManager
 
-    @State private var sortOrder = [KeyPathComparator(\CachedSoftware.id, order: .reverse)]
+    @State private var sortOrder = [KeyPathComparator(\CachedSoftware.name, order: .reverse)]
 
     @Binding var selection: Set<CachedSoftware.ID>
     @State private var isShowingVulnerableSoftware: Bool
 
     @Query var software: [CachedSoftware]
+
+    var sortedOrders: [CachedSoftware] {
+        software.sorted(using: sortOrder)
+    }
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
@@ -79,12 +81,11 @@ struct AllSoftwareTableView: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(software) { software in
+                ForEach(sortedOrders) { software in
                     TableRow(software)
                 }
             }
         }
-        .id(UUID())
     }
 
     init(

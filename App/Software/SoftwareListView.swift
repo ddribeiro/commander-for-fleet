@@ -21,14 +21,14 @@ struct SoftwareListView: View {
     init(
         searchString: String,
         isShowingVulnerableSoftware: Bool,
-        
+
         sortOrder: SortOrder = .reverse
     ) {
         let predicate = CachedSoftware.predicate(
             searchText: searchString,
             isShowingVulnerableSoftware: isShowingVulnerableSoftware
         )
-        
+
         _software = Query(filter: predicate, sort: \.name, order: sortOrder)
         _isShowingVulnerableSoftware = State(initialValue: isShowingVulnerableSoftware)
     }

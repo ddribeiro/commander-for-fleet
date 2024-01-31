@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct PolicyDetailView: View {
-    @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
     @Environment(\.networkManager) var networkManager
 

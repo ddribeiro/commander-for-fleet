@@ -61,7 +61,7 @@ struct HostsView: View {
             if let hostsLastUpdatedAt = dataController.hostsLastUpdatedAt {
                 guard hostsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
             }
-            await CachedTeam.refresh(modelContext: modelContext)
+            await CachedTeam.refresh(modelContext: modelContext, dataController: dataController)
             await CachedHost.refresh(modelContext: modelContext)
         }
         .overlay {
@@ -79,7 +79,7 @@ struct HostsView: View {
         }
         .refreshable {
             await CachedHost.refresh(modelContext: modelContext)
-            await CachedTeam.refresh(modelContext: modelContext)
+            await CachedTeam.refresh(modelContext: modelContext, dataController: dataController)
         }
         .sheet(isPresented: $dataController.showingApiTokenAlert) {
             APITokenRefreshView()

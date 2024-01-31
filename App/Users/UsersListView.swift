@@ -11,7 +11,6 @@ import SwiftUI
 struct UsersListView: View {
     @EnvironmentObject var dataController: DataController
 
-    @Environment(\.managedObjectContext) var moc
     @Environment(\.networkManager) var networkManager
 
     @State private var isShowingSignInSheet = false

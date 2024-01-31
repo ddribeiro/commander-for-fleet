@@ -10,8 +10,6 @@ import KeychainWrapper
 
 struct ContentView: View {
     @EnvironmentObject var dataController: DataController
-
-    @Environment(\.managedObjectContext) var moc
     @Environment(\.networkManager) var networkManager
 
     @State private var selection: Panel? = Panel.hosts

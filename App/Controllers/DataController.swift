@@ -245,7 +245,12 @@ class DataController: ObservableObject {
         }
     }
 
-    func loginWithApiKey(apiKey: String, serverURL: String, networkManager: NetworkManager, modelContext: ModelContext) async throws {
+    func loginWithApiKey(
+        apiKey: String,
+        serverURL: String,
+        networkManager: NetworkManager,
+        modelContext: ModelContext
+    ) async throws {
         KeychainWrapper.default.removeAllKeys()
 
         let environment = AppEnvironment(
@@ -367,5 +372,4 @@ class DataController: ObservableObject {
         }
         return urlString
     }
-    // swiftlint:disable:next file_length
 }

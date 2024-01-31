@@ -68,8 +68,13 @@ struct SettingsView: View {
                             LabeledContent("Global Role") {
                                 Text(user.globalRole.capitalized)
                             }
-                            // swiftlint:disable:next line_length
-                            LabeledContent("Created On", value: user.createdAt.formatted(date: .abbreviated, time: .omitted))
+
+                            LabeledContent(
+                                "Created On",
+                                value: user.createdAt.formatted(
+                                    date: .abbreviated, time: .omitted
+                                )
+                            )
                         }
 
                         Section {
@@ -128,34 +133,6 @@ struct SettingsView: View {
         }
 
     }
-
-//    func getMeInfo() async {
-//        guard dataController.activeEnvironment != nil else { return }
-//
-//        do {
-//            let response = try await networkManager.fetch(.meEndpoint)
-//            let user = response.user
-//            let teams = response.availableTeams
-//
-//            UserDefaults.standard.setValue(user.id, forKey: "loggedInUserID")
-//        } catch {
-//            switch error as? AuthManager.AuthError {
-//            case .missingCredentials:
-//                dataController.loadingState = .failed
-//                if !dataController.showingApiTokenAlert {
-//                    dataController.showingApiTokenAlert = true
-//                    dataController.alertTitle = "API Token Expired"
-//                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
-//                }
-//            case .missingToken:
-//                dataController.loadingState = .failed
-//                print(error.localizedDescription)
-//            case .none:
-//                dataController.loadingState = .failed
-//                print(error.localizedDescription)
-//            }
-//        }
-//    }
 
     private var signOutAlert: Alert {
         Alert(

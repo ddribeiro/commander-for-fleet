@@ -52,7 +52,11 @@ struct AllPoliciesView: View {
             if displayAsList {
                 list
             } else {
-                AllPoliciesTableView(sort: [SortDescriptor(\CachedPolicy.name)], searchString: searchText, filter: Filter.all)
+                AllPoliciesTableView(
+                    sort: [SortDescriptor(\CachedPolicy.name)],
+                    searchString: searchText,
+                    filter: Filter.all
+                )
             }
         }
         .navigationDestination(for: CachedPolicy.self) { policy in

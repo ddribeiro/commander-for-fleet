@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct SoftwareDetailView: View {
-    @Environment(\.managedObjectContext) var moc
-
     var software: CachedSoftware
 
     var body: some View {
@@ -28,19 +26,12 @@ struct SoftwareDetailView: View {
             }
 
             Section {
-                if software.hostsCount != nil {
-                    NavigationLink {
-                        HostsForSoftwareList(software: software)
-                    } label: {
-                        Text("^[View \(software.hostsCount ?? 0) host](inflect: true) with version \(software.version) of \(software.name)")
-                    }
-                } else {
-                    ContentUnavailableView(
-                        "No Hosts",
-                        systemImage: "laptopcomputer",
-                        description: Text("There are no hosts with this software installed."
-                                         )
-                    )
+
+                NavigationLink {
+                    HostsForSoftwareList(software: software)
+                } label: {
+                    // swiftlint:disable:next line_length
+                    Text("^[View \(software.hostsCount) host](inflect: true) with version \(software.version) of \(software.name)")
                 }
             } header: {
                 Label("Hosts", systemImage: "laptopcomputer")

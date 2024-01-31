@@ -10,8 +10,6 @@ import SwiftUI
 
 struct UsersTableView: View {
     @EnvironmentObject var dataController: DataController
-
-    @Environment(\.managedObjectContext) var moc
     @Environment(\.networkManager) var networkManager
 
     @State private var sortOrder = [KeyPathComparator(\CachedUser.name, order: .reverse)]

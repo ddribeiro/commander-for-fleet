@@ -24,30 +24,6 @@ struct AllSoftwareView: View {
     @Query var users: [CachedUser]
     @Query var software: [CachedSoftware]
 
-//    var searchResults: [CachedSoftware] {
-//        if searchText.isEmpty && !isShowingVulnerableSoftware {
-//            return dataController.softwareForSelectedFilter().sorted {
-//                $0.name < $1.name
-//            }
-//        } else if searchText.isEmpty && isShowingVulnerableSoftware {
-//            return vulnerableSoftware.sorted {
-//                $0.name < $1.name
-//            }
-//        } else if isShowingVulnerableSoftware {
-//            return vulnerableSoftware.filter({ $0.name.localizedCaseInsensitiveContains(searchText) })
-//        } else {
-//            return dataController.softwareForSelectedFilter().filter {
-//                $0.name.localizedCaseInsensitiveContains(searchText)
-//            }
-//        }
-//    }
-//    
-//    var vulnerableSoftware: [CachedSoftware] {
-//        dataController.softwareForSelectedFilter().filter {
-//            !$0.vulnerabilities.isEmpty
-//        }
-//    }
-
     var displayAsList: Bool {
 #if os(iOS)
         return sizeClass == .compact
@@ -60,7 +36,6 @@ struct AllSoftwareView: View {
         ZStack {
             if displayAsList {
                 SoftwareListView(
-                    sort: sortOrder,
                     searchString: searchText,
 //                    filter: Filter.all,
                     isShowingVulnerableSoftware: isShowingVulnerableSoftware
@@ -76,6 +51,9 @@ struct AllSoftwareView: View {
         }
         .navigationDestination(for: CachedSoftware.self) { software in
             SoftwareDetailView(software: software)
+        }
+        .navigationDestination(for: CachedSoftware.ID.self) { id in
+            SoftwareDetailView(software: software.first(where: { $0.id == id })!)
         }
 
         .navigationTitle("Software")
@@ -113,12 +91,19 @@ struct AllSoftwareView: View {
                     if loggedInUser.globalRole != "admin" {
                         for team in loggedInUser.teams {
                             Task {
-                                await CachedSoftware.refresh(forTeam: team.id, modelContext: modelContext, dataController: dataController)
+                                await CachedSoftware.refresh(
+                                    forTeam: team.id,
+                                    modelContext: modelContext,
+                                    dataController: dataController
+                                )
                             }
                         }
                     } else {
                         Task {
-                            await CachedSoftware.refresh(modelContext: modelContext, dataController: dataController)
+                            await CachedSoftware.refresh(
+                                modelContext: modelContext,
+                                dataController: dataController
+                            )
                         }
                     }
                 }
