@@ -150,8 +150,6 @@ extension CachedHost {
     @MainActor
     static func refresh(modelContext: ModelContext) async {
         do {
-            print(modelContext.sqliteCommand)
-
             logger.debug("Refreshing the data store for hosts...")
             let downloadedHosts = try await fetchHosts()
             logger.debug("Loaded: \(downloadedHosts.count) hosts")
@@ -162,8 +160,7 @@ extension CachedHost {
                 logger.debug("Inserting \(cachedHost.computerName)")
                 modelContext.insert(cachedHost)
             }
-            print("Inserted: \(modelContext.insertedModelsArray)")
-            print("Changed: \(modelContext.changedModelsArray)")
+            
             logger.debug("Refresh complete.")
         } catch {
             switch error as? AuthManager.AuthError {
