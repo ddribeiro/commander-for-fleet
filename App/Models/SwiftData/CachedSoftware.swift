@@ -20,6 +20,7 @@ class CachedSoftware {
     var source: String
     var version: String
     var hosts = [CachedHost]()
+    // swiftlint:disable:next line_length
     @Relationship(deleteRule: .cascade, inverse: \CachedVulnerability.software) var vulnerabilities = [CachedVulnerability]()
 
     init(
@@ -117,11 +118,9 @@ extension CachedSoftware {
             }
 
             try? modelContext.save()
+
             dataController.softwareLastUpdatedAt = .now
             dataController.loadingState = .loaded
-
-            print("Inserted: \(modelContext.insertedModelsArray)")
-            print("Changed: \(modelContext.changedModelsArray)")
 
             logger.debug("Refresh complete")
         } catch {

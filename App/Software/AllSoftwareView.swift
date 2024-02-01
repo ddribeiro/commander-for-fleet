@@ -22,7 +22,7 @@ struct AllSoftwareView: View {
 
     @Query var teams: [CachedTeam]
     @Query var users: [CachedUser]
-//    @Query var software: [CachedSoftware]
+    @Query var software: [CachedSoftware]
 
     var displayAsList: Bool {
 #if os(iOS)
@@ -52,9 +52,6 @@ struct AllSoftwareView: View {
         .navigationDestination(for: CachedSoftware.self) { software in
             SoftwareDetailView(software: software)
         }
-//        .navigationDestination(for: CachedSoftware.ID.self) { id in
-//            SoftwareDetailView(software: software.first(where: { $0.id == id })!)
-//        }
 
         .navigationTitle("Software")
         .task {
@@ -109,64 +106,18 @@ struct AllSoftwareView: View {
                 }
             }
         }
-//        .overlay {
-//            if software.isEmpty {
-//                ContentUnavailableView.search
-//            }
-//        }
         .searchable(text: $searchText)
-                .toolbar {
-                    if !displayAsList {
-                        toolbarButtons
-                    }
-                }
 #if os(iOS)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     isShowingVulnerableSoftware.toggle()
-                    print(isShowingVulnerableSoftware)
                 } label: {
                     Label("Show Vulnerable Software", systemImage: "exclamationmark.shield")
                         .symbolVariant(isShowingVulnerableSoftware ? .fill : .none)
                 }
             }
-
-            ToolbarItem(placement: .bottomBar) {
-                if dataController.loadingState == .loaded {
-                    VStack {
-                        if let updatedAt = dataController.softwareLastUpdatedAt {
-                            Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
-                                .font(.footnote)
-//                            Text("^[\(software.count) Software Titles](inflection: true)")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-
-                if dataController.loadingState == .loading {
-                    HStack {
-                        ProgressView()
-                            .padding(.horizontal, 1)
-                            .controlSize(.mini)
-
-                        Text("Loading Software")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-
-                }
-            }
         }
 #endif
-    }
-
-    @ViewBuilder
-    var toolbarButtons: some View {
-        NavigationLink(value: selection.first) {
-            Label("View Details", systemImage: "list.bullet.below.rectangle")
-        }
-        .disabled(selection.isEmpty)
     }
 }

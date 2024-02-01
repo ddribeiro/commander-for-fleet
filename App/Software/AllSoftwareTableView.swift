@@ -12,7 +12,7 @@ struct AllSoftwareTableView: View {
     @EnvironmentObject var dataController: DataController
     @Environment(\.networkManager) var networkManager
 
-    @State private var sortOrder = [KeyPathComparator(\CachedSoftware.name, order: .reverse)]
+    @State private var sortOrder = [KeyPathComparator(\CachedSoftware.name, order: .forward)]
 
     @Binding var selection: Set<CachedSoftware.ID>
     @State private var isShowingVulnerableSoftware: Bool
@@ -26,7 +26,7 @@ struct AllSoftwareTableView: View {
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Name", value: \.name) { software in
-//                _ = print("\(software.name): \(software.id)")
+                //                _ = print("\(software.name): \(software.id)")
                 AllSoftwareRow(software: software)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .layoutPriority(1)
@@ -85,6 +85,39 @@ struct AllSoftwareTableView: View {
                 ForEach(sortedOrders, id: \.id) { software in
                     TableRow(software)
                 }
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .bottomBar) {
+                if dataController.loadingState == .loaded {
+                    VStack {
+                        if let updatedAt = dataController.softwareLastUpdatedAt {
+                            Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                                .font(.footnote)
+                            Text("^[\(software.count) Software Titles](inflection: true)")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                if dataController.loadingState == .loading {
+                    HStack {
+                        ProgressView()
+                            .padding(.horizontal, 1)
+                            .controlSize(.mini)
+
+                        Text("Loading Software")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+
+                }
+            }
+        }
+        .overlay {
+            if software.isEmpty {
+                ContentUnavailableView.search
             }
         }
     }

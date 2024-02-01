@@ -40,9 +40,19 @@ struct SoftwareDetailView: View {
             Section {
                 if !software.vulnerabilities.isEmpty {
                     ForEach(software.vulnerabilities, id: \.cve) { vulnerability in
-                        HStack {
                             VStack(alignment: .leading) {
                                 Text(vulnerability.cve)
+                                    .font(.headline)
+
+                                if vulnerability.cisaKnownExploit == true {
+                                    HStack {
+                                        Image(systemName: "exclamationmark.shield.fill")
+                                            .foregroundStyle(.red)
+                                        Text("Known Exploit")
+                                            .font(.body.smallCaps())
+                                    }
+                                }
+
                                 if vulnerability.cvssScore != 0 {
                                     Text("CVSS Score: \(vulnerability.cvssScore ?? 0)")
                                         .foregroundStyle(.secondary)
@@ -54,18 +64,11 @@ struct SoftwareDetailView: View {
                                         .foregroundStyle(.secondary)
                                         .font(.body.smallCaps())
                                 }
-                            }
 
-                            Spacer()
-
-                            HStack {
-                                Image(systemName: "exclamationmark.shield.fill")
-                                    .foregroundStyle(.red)
-                                Text("Known Exploit")
-                                    .font(.body.smallCaps())
+                                if let description = vulnerability.cveDescription {
+                                    Text(description)
+                                }
                             }
-                            .opacity(vulnerability.cisaKnownExploit ?? false ? 1 : 0)
-                        }
                     }
                 } else {
                     ContentUnavailableView(

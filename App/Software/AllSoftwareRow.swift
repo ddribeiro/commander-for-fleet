@@ -25,7 +25,6 @@ struct AllSoftwareRow: View {
                 Text(software.name)
                     .font(.headline)
                     .lineLimit(1)
-                Text("\(software.id)")
 
                 if sizeClass == .compact {
                     Text("Version: \(software.version)")
