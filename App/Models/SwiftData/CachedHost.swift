@@ -162,6 +162,8 @@ extension CachedHost {
                 logger.debug("Inserting \(cachedHost.computerName)")
                 modelContext.insert(cachedHost)
             }
+            print("Inserted: \(modelContext.insertedModelsArray)")
+            print("Changed: \(modelContext.changedModelsArray)")
             logger.debug("Refresh complete.")
         } catch {
             switch error as? AuthManager.AuthError {

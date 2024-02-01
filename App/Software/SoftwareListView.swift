@@ -22,7 +22,7 @@ struct SoftwareListView: View {
         searchString: String,
         isShowingVulnerableSoftware: Bool,
 
-        sortOrder: SortOrder = .reverse
+        sortOrder: SortOrder = .forward
     ) {
         let predicate = CachedSoftware.predicate(
             searchText: searchString,
@@ -34,7 +34,9 @@ struct SoftwareListView: View {
     }
 
     func softwareRows(_ software: [CachedSoftware]) -> some View {
-        ForEach(software) { software in
+
+        ForEach(software, id: \.id) { software in
+//            _ = print("\(software.name) has an ID of: \(software.id)")
             NavigationLink(value: software) {
                 AllSoftwareRow(software: software)
             }

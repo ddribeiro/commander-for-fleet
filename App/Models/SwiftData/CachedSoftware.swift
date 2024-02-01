@@ -10,7 +10,7 @@ import OSLog
 import SwiftData
 
 @Model
-class CachedSoftware: Identifiable {
+class CachedSoftware {
     var bundleIdentifier: String?
     var hostsCount: Int
     @Attribute(.unique) var id: Int
@@ -20,7 +20,7 @@ class CachedSoftware: Identifiable {
     var source: String
     var version: String
     var hosts = [CachedHost]()
-    @Relationship(inverse: \CachedVulnerability.software) var vulnerabilities = [CachedVulnerability]()
+    @Relationship(deleteRule: .cascade, inverse: \CachedVulnerability.software) var vulnerabilities = [CachedVulnerability]()
 
     init(
         bundleIdentifier: String? = nil,
@@ -115,8 +115,13 @@ extension CachedSoftware {
                     }
                 }
             }
+
+            try? modelContext.save()
             dataController.softwareLastUpdatedAt = .now
             dataController.loadingState = .loaded
+
+            print("Inserted: \(modelContext.insertedModelsArray)")
+            print("Changed: \(modelContext.changedModelsArray)")
 
             logger.debug("Refresh complete")
         } catch {
@@ -154,3 +159,5 @@ extension CachedSoftware {
         }
     }
 }
+
+extension CachedSoftware: Identifiable {}

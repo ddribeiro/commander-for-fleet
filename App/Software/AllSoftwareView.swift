@@ -22,7 +22,7 @@ struct AllSoftwareView: View {
 
     @Query var teams: [CachedTeam]
     @Query var users: [CachedUser]
-    @Query var software: [CachedSoftware]
+//    @Query var software: [CachedSoftware]
 
     var displayAsList: Bool {
 #if os(iOS)
@@ -52,9 +52,9 @@ struct AllSoftwareView: View {
         .navigationDestination(for: CachedSoftware.self) { software in
             SoftwareDetailView(software: software)
         }
-        .navigationDestination(for: CachedSoftware.ID.self) { id in
-            SoftwareDetailView(software: software.first(where: { $0.id == id })!)
-        }
+//        .navigationDestination(for: CachedSoftware.ID.self) { id in
+//            SoftwareDetailView(software: software.first(where: { $0.id == id })!)
+//        }
 
         .navigationTitle("Software")
         .task {
@@ -109,11 +109,11 @@ struct AllSoftwareView: View {
                 }
             }
         }
-        .overlay {
-            if software.isEmpty {
-                ContentUnavailableView.search
-            }
-        }
+//        .overlay {
+//            if software.isEmpty {
+//                ContentUnavailableView.search
+//            }
+//        }
         .searchable(text: $searchText)
                 .toolbar {
                     if !displayAsList {
@@ -138,7 +138,7 @@ struct AllSoftwareView: View {
                         if let updatedAt = dataController.softwareLastUpdatedAt {
                             Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
                                 .font(.footnote)
-                            Text("^[\(software.count) Software Titles](inflection: true)")
+//                            Text("^[\(software.count) Software Titles](inflection: true)")
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
                         }

@@ -25,7 +25,8 @@ struct AllSoftwareTableView: View {
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
-            TableColumn("Name", value: \.id) { software in
+            TableColumn("Name", value: \.name) { software in
+//                _ = print("\(software.name): \(software.id)")
                 AllSoftwareRow(software: software)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .layoutPriority(1)
@@ -81,7 +82,7 @@ struct AllSoftwareTableView: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(sortedOrders) { software in
+                ForEach(sortedOrders, id: \.id) { software in
                     TableRow(software)
                 }
             }
