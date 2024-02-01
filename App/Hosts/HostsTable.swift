@@ -82,10 +82,21 @@ struct HostsTable: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(hosts, id: \.id) { host in
+                ForEach(hosts) { host in
                     TableRow(host)
                 }
             }
         }
+    }
+
+    init(
+        sortOrder: SortOrder = .forward,
+        searchText: String,
+        filter: Filter
+    ) {
+        let predicate = CachedHost.predicate(searchText: searchText, filter: filter)
+
+        _hosts = Query(filter: predicate, sort: \.computerName, order: sortOrder)
+
     }
 }

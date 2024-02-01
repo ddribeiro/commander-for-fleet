@@ -45,7 +45,7 @@ struct HostsView: View {
             if displayAsList {
                 HostsListView(searchString: searchText, sortOrder: sortOrder)
             } else {
-                HostsTable()
+                HostsTable(searchText: searchText, filter: selectedFilter)
             }
         }
         .navigationTitle(selectedFilter == .all ? "All Hosts" : selectedFilter.name)
@@ -71,7 +71,7 @@ struct HostsView: View {
         }
 
         .searchable(
-            text: $dataController.filterText,
+            text: $searchText,
             tokens: $dataController.filterTokens,
             suggestedTokens: $dataController.allTokens
         ) { token in

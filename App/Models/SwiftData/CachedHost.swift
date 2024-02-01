@@ -160,7 +160,7 @@ extension CachedHost {
                 logger.debug("Inserting \(cachedHost.computerName)")
                 modelContext.insert(cachedHost)
             }
-            
+
             logger.debug("Refresh complete.")
         } catch {
             switch error as? AuthManager.AuthError {
@@ -178,6 +178,33 @@ extension CachedHost {
             case .none:
                 print(error.localizedDescription)
             }
+        }
+    }
+}
+extension CachedHost {
+    static func predicate(
+        searchText: String,
+        filter: Filter
+    ) -> Predicate<CachedHost> {
+        if let team = filter.team {
+            let teamID = team.id
+            return #Predicate<CachedHost> { host in
+                (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
+                &&
+                host.teamId == teamID
+            }
+        } else {
+            switch filter {
+            case .all:
+                return #Predicate<CachedHost> { host in
+                    (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
+                }
+            default:
+                return #Predicate<CachedHost> { host in
+                    (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
+                }
+
             }
         }
     }
+}
