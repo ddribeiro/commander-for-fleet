@@ -15,7 +15,7 @@ struct HostsView: View {
     @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
 
-//    @State private var selection: Set<CachedHost.ID> = []
+    @State private var selection: Set<CachedHost.ID> = []
 
     @State private var searchText = ""
     @State private var sortOrder = [SortDescriptor(\CachedHost.computerName)]
@@ -47,18 +47,23 @@ struct HostsView: View {
             if displayAsList {
                 HostsListView(searchString: searchText, sortOrder: sortOrder)
             } else {
-                HostsTable(searchText: searchText, filter: selectedFilter, sortOptions: sortOptions)
+                HostsTable(
+                    searchText: searchText,
+                    filter: selectedFilter,
+                    sortOptions: sortOptions,
+                    selection: $selection
+                )
             }
         }
         .navigationTitle(selectedFilter == .all ? "All Hosts" : selectedFilter.name)
         .navigationDestination(for: CachedHost.ID.self) { id in
             HostView(id: id)
         }
-//        .toolbar {
-//            if !displayAsList {
-//                toolbarButtons
-//            }
-//        }
+        .toolbar {
+            if !displayAsList {
+                toolbarButtons
+            }
+        }
         .task {
             if let hostsLastUpdatedAt = dataController.hostsLastUpdatedAt {
                 guard hostsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
@@ -124,11 +129,11 @@ struct HostsView: View {
 
     }
 
-//    @ViewBuilder
-//    var toolbarButtons: some View {
-//        NavigationLink(value: selection.first) {
-//            Label("View Details", systemImage: "list.bullet.below.rectangle")
-//        }
-//        .disabled(selection.isEmpty)
-//    }
+    @ViewBuilder
+    var toolbarButtons: some View {
+        NavigationLink(value: selection.first) {
+            Label("View Details", systemImage: "list.bullet.below.rectangle")
+        }
+        .disabled(selection.isEmpty)
+    }
 }

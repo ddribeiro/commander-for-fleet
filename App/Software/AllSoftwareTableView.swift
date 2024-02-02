@@ -26,7 +26,6 @@ struct AllSoftwareTableView: View {
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Name", value: \.name) { software in
-                //                _ = print("\(software.name): \(software.id)")
                 AllSoftwareRow(software: software)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .layoutPriority(1)

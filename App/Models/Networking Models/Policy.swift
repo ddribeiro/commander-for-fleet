@@ -28,7 +28,6 @@ struct Policy: Codable, Identifiable, Hashable {
     let passingHostCount: Int?
     let failingHostCount: Int?
     let response: String?
-    let policyDescription: String
 
     static let example = Policy(
         id: 29,
@@ -47,7 +46,6 @@ struct Policy: Codable, Identifiable, Hashable {
         updatedAt: .now,
         passingHostCount: 1,
         failingHostCount: 0,
-        response: "fail",
-        policyDescription: "Example description."
+        response: "fail"
     )
 }

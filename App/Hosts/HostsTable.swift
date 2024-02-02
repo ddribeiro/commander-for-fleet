@@ -13,15 +13,19 @@ struct HostsTable: View {
     @Environment(\.networkManager) var networkManager
 
     @State private var isShowingSignInSheet = false
-    @State private var sortOrder = [KeyPathComparator(\CachedHost.computerName, order: .reverse)]
+    @State private var sortOrder = [KeyPathComparator(\CachedHost.computerName, order: .forward)]
 
-//    @Binding var selection: Set<CachedHost.ID>
+    @Binding var selection: Set<CachedHost.ID>
 
     @Query var hosts: [CachedHost]
 
+    var sortedHosts: [CachedHost] {
+        hosts.sorted(using: sortOrder)
+    }
+
     var body: some View {
-        Table(sortOrder: $sortOrder) {
-            TableColumn("Name", value: \.id) { host in
+        Table(selection: $selection, sortOrder: $sortOrder) {
+            TableColumn("Name", value: \.computerName) { host in
                 NewHostRow(host: host)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .layoutPriority(1)
@@ -82,7 +86,7 @@ struct HostsTable: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(hosts) { host in
+                ForEach(sortedHosts) { host in
                     TableRow(host)
                 }
             }
@@ -90,17 +94,15 @@ struct HostsTable: View {
     }
 
     init(
-        sortOrder: SortOrder = .forward,
         searchText: String,
         filter: Filter,
-        sortOptions: SortOptions
+        sortOptions: SortOptions,
+        selection: Binding<Set<CachedHost.ID>>
     ) {
         let predicate = CachedHost.predicate(searchText: searchText, filter: filter, sortOptions: sortOptions)
-        switch sortOptions.selectedSortOrder {
-        case .forward:
-            _hosts = Query(filter: predicate, sort: \.computerName, order: .forward)
-        case .reverse:
-            _hosts = Query(filter: predicate, sort: \.computerName, order: .reverse)
-        }
+
+        _hosts = Query(filter: predicate)
+
+        _selection = selection
     }
 }

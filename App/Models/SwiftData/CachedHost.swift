@@ -181,6 +181,7 @@ extension CachedHost {
         }
     }
 }
+
 extension CachedHost {
     static func predicate(
         searchText: String,
@@ -189,11 +190,49 @@ extension CachedHost {
     ) -> Predicate<CachedHost> {
         if let team = filter.team {
             let teamID = team.id
-            return #Predicate<CachedHost> { host in
-                (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
-                &&
-                host.teamId == teamID
+            switch sortOptions.selectedSortStatus {
+            case .all:
+                return #Predicate<CachedHost> { host in
+                    (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
+                    &&
+                    host.teamId == teamID
+                }
+            case .missing:
+                let lastThirtyDays = Date.now.addingTimeInterval(86400 * -30)
+                return #Predicate<CachedHost> { host in
+                    (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
+                    &&
+                    host.seenTime < lastThirtyDays
+                    &&
+                    host.teamId == teamID
+                }
+            case .offline:
+                return #Predicate<CachedHost> { host in
+                    (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
+                    &&
+                    host.status == "offline"
+                    &&
+                    host.teamId == teamID
+                }
+            case .online:
+                return #Predicate<CachedHost> { host in
+                    (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
+                    &&
+                    host.status == "online"
+                    &&
+                    host.teamId == teamID
+                }
+            case .recentlyEnrolled:
+                let lastSevenDays = Date.now.addingTimeInterval(86400 * -7)
+                return #Predicate<CachedHost> { host in
+                    (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
+                    &&
+                    host.lastEnrolledAt > lastSevenDays
+                    &&
+                    host.teamId == teamID
+                }
             }
+
         } else {
             switch sortOptions.selectedSortStatus {
             case .all:
@@ -228,3 +267,5 @@ extension CachedHost {
         }
     }
 }
+
+extension CachedHost: Identifiable {}
