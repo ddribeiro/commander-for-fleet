@@ -92,11 +92,15 @@ struct HostsTable: View {
     init(
         sortOrder: SortOrder = .forward,
         searchText: String,
-        filter: Filter
+        filter: Filter,
+        sortOptions: SortOptions
     ) {
-        let predicate = CachedHost.predicate(searchText: searchText, filter: filter)
-
-        _hosts = Query(filter: predicate, sort: \.computerName, order: sortOrder)
-
+        let predicate = CachedHost.predicate(searchText: searchText, filter: filter, sortOptions: sortOptions)
+        switch sortOptions.selectedSortOrder {
+        case .forward:
+            _hosts = Query(filter: predicate, sort: \.computerName, order: .forward)
+        case .reverse:
+            _hosts = Query(filter: predicate, sort: \.computerName, order: .reverse)
+        }
     }
 }

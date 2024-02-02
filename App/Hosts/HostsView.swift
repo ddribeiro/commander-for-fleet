@@ -21,6 +21,8 @@ struct HostsView: View {
     @State private var sortOrder = [SortDescriptor(\CachedHost.computerName)]
     @State private var selectedFilter = Filter.all
 
+    @State private var sortOptions = SortOptions()
+
     let smartFilters: [Filter] = [.all, .recentlyEnrolled]
 
     @Query(sort: \CachedTeam.name, order: .reverse) var teams: [CachedTeam]
@@ -45,7 +47,7 @@ struct HostsView: View {
             if displayAsList {
                 HostsListView(searchString: searchText, sortOrder: sortOrder)
             } else {
-                HostsTable(searchText: searchText, filter: selectedFilter)
+                HostsTable(searchText: searchText, filter: selectedFilter, sortOptions: sortOptions)
             }
         }
         .navigationTitle(selectedFilter == .all ? "All Hosts" : selectedFilter.name)
@@ -103,7 +105,7 @@ struct HostsView: View {
             }
 
             ToolbarItem(placement: .topBarTrailing) {
-                ContentViewToolbar()
+                ContentViewToolbar(sortOptions: sortOptions)
             }
 
             ToolbarItem(placement: .bottomBar) {
@@ -129,8 +131,4 @@ struct HostsView: View {
 //        }
 //        .disabled(selection.isEmpty)
 //    }
-}
-
-#Preview {
-    HostsView()
 }

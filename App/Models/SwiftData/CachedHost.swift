@@ -184,7 +184,8 @@ extension CachedHost {
 extension CachedHost {
     static func predicate(
         searchText: String,
-        filter: Filter
+        filter: Filter,
+        sortOptions: SortOptions
     ) -> Predicate<CachedHost> {
         if let team = filter.team {
             let teamID = team.id
@@ -194,16 +195,35 @@ extension CachedHost {
                 host.teamId == teamID
             }
         } else {
-            switch filter {
+            switch sortOptions.selectedSortStatus {
             case .all:
                 return #Predicate<CachedHost> { host in
                     (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
                 }
-            default:
+            case .missing:
+                let lastThirtyDays = Date.now.addingTimeInterval(86400 * -30)
                 return #Predicate<CachedHost> { host in
                     (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
+                    &&
+                    host.seenTime < lastThirtyDays
                 }
-
+            case .offline:
+                return #Predicate<CachedHost> { host in
+                    (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
+                    && host.status == "offline"
+                }
+            case .online:
+                return #Predicate<CachedHost> { host in
+                    (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
+                    && host.status == "online"
+                }
+            case .recentlyEnrolled:
+                let lastSevenDays = Date.now.addingTimeInterval(86400 * -7)
+                return #Predicate<CachedHost> { host in
+                    (searchText.isEmpty || host.computerName.localizedStandardContains(searchText))
+                    &&
+                    host.lastEnrolledAt > lastSevenDays
+                }
             }
         }
     }

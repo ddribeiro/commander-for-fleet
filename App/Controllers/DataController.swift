@@ -10,18 +10,6 @@ import KeychainWrapper
 import SwiftData
 import SwiftUI
 
-// Enum to define the types that hosts can be sorted by.
-enum SortType: String {
-    case name = "computerName"
-    case enolledDate = "lastEnrolledAt"
-    case updatedDate = "seenTime"
-}
-
-// Enum to define states that hosts can be filtered by.
-enum Status {
-    case all, online, offline, missing, recentlyEnrolled
-}
-
 // Enum to define loading state when network calls are made across the app.
 enum LoadingState {
     case loading, loaded, failed
@@ -40,9 +28,7 @@ class DataController: ObservableObject {
     @Published var filterText = ""
     @Published var filterTokens = [SearchToken]()
 
-    @Published var filterStatus = Status.all
     @Published var sortOldestFirst = true
-    @Published var sortType = SortType.name
 
     @Published var selectedTeam: CachedTeam?
     @Published var selectedHost: CachedHost?
