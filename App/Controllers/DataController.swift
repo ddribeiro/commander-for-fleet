@@ -142,33 +142,6 @@ class DataController: ObservableObject {
         }
     }
 
-//    func usersForSelectedFilter() -> [CachedUser] {
-//        let filter = selectedFilter
-//        var predicates = [NSPredicate]()
-//
-//        if let team = filter.team {
-//            let teamPredicate = NSPredicate(format: "ANY teams.id = %@ OR teams.@count == 0", "\(team.id)")
-//            predicates.append(teamPredicate)
-//        }
-//
-//        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
-//
-//        if trimmedFilterText.isEmpty == false {
-//            let userNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
-//            let emailPredicate = NSPredicate(format: "email CONTAINS[c] %@", trimmedFilterText)
-//            let combinedPredicate = NSCompoundPredicate(
-//                orPredicateWithSubpredicates: [userNamePredicate, emailPredicate]
-//            )
-//
-//            predicates.append(combinedPredicate)
-//        }
-//
-//        let request = CachedUser.fetchRequest()
-//        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-//        let allUsers = (try? container.viewContext.fetch(request)) ?? []
-//        return allUsers
-//    }
-
     func loginWithEmail(
         email: String,
         password: String,
@@ -216,6 +189,7 @@ class DataController: ObservableObject {
                 updateCache(with: user, downloadedTeams: teams, modelContext: modelContext)
                 activeEnvironment = environment
             }
+
             loadingState = .loaded
             AppEnvironments().addEnvironment(environment)
             isAuthenticated = true
