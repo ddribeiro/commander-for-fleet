@@ -91,6 +91,24 @@ struct HostsTable: View {
                 }
             }
         }
+        .overlay {
+            if hosts.isEmpty {
+                ContentUnavailableView.search
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .bottomBar) {
+                if let updatedAt = dataController.hostsLastUpdatedAt {
+                    VStack {
+                        Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                            .font(.footnote)
+                        Text("^[\(hosts.count) Computers](inflection: true)")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+        }
     }
 
     init(

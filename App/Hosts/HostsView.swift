@@ -45,7 +45,7 @@ struct HostsView: View {
     var body: some View {
         ZStack {
             if displayAsList {
-                HostsListView(searchString: searchText, sortOrder: sortOrder)
+                HostsListView(searchText: searchText, filter: selectedFilter, sortOptions: sortOptions)
             } else {
                 HostsTable(
                     searchText: searchText,
@@ -71,12 +71,6 @@ struct HostsView: View {
             await CachedTeam.refresh(modelContext: modelContext, dataController: dataController)
             await CachedHost.refresh(modelContext: modelContext)
         }
-        .overlay {
-            if hosts.isEmpty {
-                ContentUnavailableView.search
-            }
-        }
-
         .searchable(
             text: $searchText,
             tokens: $dataController.filterTokens,
@@ -111,18 +105,6 @@ struct HostsView: View {
 
             ToolbarItem(placement: .topBarTrailing) {
                 ContentViewToolbar(sortOptions: sortOptions)
-            }
-
-            ToolbarItem(placement: .bottomBar) {
-                if let updatedAt = dataController.hostsLastUpdatedAt {
-                    VStack {
-                        Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
-                            .font(.footnote)
-                        Text("^[\(hosts.count) Computers](inflection: true)")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                }
             }
         }
 #endif

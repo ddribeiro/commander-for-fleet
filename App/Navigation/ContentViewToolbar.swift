@@ -8,18 +8,29 @@
 import SwiftUI
 
 struct ContentViewToolbar: View {
+    @Environment(\.horizontalSizeClass) var sizeClass
     @State var sortOptions: SortOptions
+
+    var displayAsList: Bool {
+#if os(iOS)
+        return sizeClass == .compact
+#else
+        return false
+#endif
+    }
 
     var body: some View {
         Menu {
-            Menu("Sort By") {
-                Picker("Sort By", selection: $sortOptions.selectedSortType) {
-                    Text("Name").tag(SortOptions.SortType.name)
-                    Text("Enrollment Date").tag(SortOptions.SortType.enolledDate)
-                    Text("Last Seen").tag(SortOptions.SortType.updatedDate)
-                }
+            if displayAsList {
+                Menu("Sort By") {
+                    Picker("Sort By", selection: $sortOptions.selectedSortType) {
+                        Text("Name").tag(SortOptions.SortType.name)
+                        Text("Enrollment Date").tag(SortOptions.SortType.enolledDate)
+                        Text("Last Seen").tag(SortOptions.SortType.updatedDate)
+                    }
 
-                Divider()
+                    Divider()
+                }
 
                 Picker("Sort Order", selection: $sortOptions.selectedSortOrder) {
                     Text(

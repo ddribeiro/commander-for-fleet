@@ -28,9 +28,27 @@ struct HostsListView: View {
 
     var body: some View {
         if dataController.isAuthenticated {
-            List(selection: $dataController.selectedHost) {
+            List {
                 ForEach(hosts) { host in
                     HostRow(host: host)
+                }
+            }
+            .overlay {
+                if hosts.isEmpty {
+                    ContentUnavailableView.search
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .bottomBar) {
+                    if let updatedAt = dataController.hostsLastUpdatedAt {
+                        VStack {
+                            Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                                .font(.footnote)
+                            Text("^[\(hosts.count) Computers](inflection: true)")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 }
             }
         } else {
@@ -44,72 +62,34 @@ struct HostsListView: View {
         }
     }
 
-    init(searchString: String = "", sortOrder: [SortDescriptor<CachedHost>] = [], filter: Filter = .all) {
-            _hosts = Query(filter: #Predicate { host in
-                if searchString.isEmpty {
-                   return true
-                } else {
-                    return host.computerName.localizedStandardContains(searchString)
-                    || host.hardwareSerial.localizedStandardContains(searchString)
-                }
-            }, sort: sortOrder)
-    }
+    init(
+        searchText: String,
+        filter: Filter,
+        sortOptions: SortOptions
+    ) {
+        let predicate = CachedHost.predicate(searchText: searchText, filter: filter, sortOptions: sortOptions)
 
-    func fetchHosts() async {
-        guard dataController.activeEnvironment != nil else { return }
-
-        do {
-            let hosts = try await networkManager.fetch(.hosts, attempts: 5)
-
-            await MainActor.run {
-                updateCache(with: hosts)
-                dataController.hostsLastUpdatedAt = .now
+        switch sortOptions.selectedSortType {
+        case .name:
+            if sortOptions.selectedSortOrder == .forward {
+                _hosts = Query(filter: predicate, sort: \.computerName, order: .forward)
+            } else {
+                _hosts = Query(filter: predicate, sort: \.computerName, order: .reverse)
             }
-        } catch {
-            switch error as? AuthManager.AuthError {
-            case .missingCredentials:
-                if !dataController.showingApiTokenAlert {
-                    dataController.showingApiTokenAlert = true
-                    dataController.alertTitle = "API Token Expired"
-                    // swiftlint:disable:next line_length
-                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
-                }
-            case .missingToken:
-                print(error.localizedDescription)
-            case .none:
-                print(error.localizedDescription)
+        case .enolledDate:
+            if sortOptions.selectedSortOrder == .forward {
+                _hosts = Query(filter: predicate, sort: \.lastEnrolledAt, order: .forward)
+            } else {
+                _hosts = Query(filter: predicate, sort: \.lastEnrolledAt, order: .reverse)
+            }
+        case .updatedDate:
+            if sortOptions.selectedSortOrder == .forward {
+                _hosts = Query(filter: predicate, sort: \.seenTime, order: .forward)
+            } else {
+                _hosts = Query(filter: predicate, sort: \.seenTime, order: .reverse)
             }
         }
-    }
 
-    func updateCache(with downloadedHosts: [Host]) {
-        for downloadedHost in downloadedHosts {
-            let cachedHost = CachedHost(
-                computerName: downloadedHost.computerName,
-                cpuBrand: downloadedHost.cpuBrand,
-                diskEncryptionEnabled: downloadedHost.diskEncryptionEnabled ?? false,
-                gigsDiskSpaceAvailable: downloadedHost.gigsDiskSpaceAvailable,
-                hardwareModel: downloadedHost.hardwareModel,
-                hardwareSerial: downloadedHost.hardwareSerial,
-                id: downloadedHost.id,
-                lastEnrolledAt: downloadedHost.lastEnrolledAt,
-                memory: downloadedHost.memory,
-                osVersion: downloadedHost.osVersion,
-                percentDiskSpaceAvailable: downloadedHost.percentDiskSpaceAvailable,
-                platform: downloadedHost.platform,
-                primaryIp: downloadedHost.primaryIp,
-                primaryMac: downloadedHost.primaryMac,
-                publicIp: downloadedHost.publicIp,
-                seenTime: downloadedHost.seenTime,
-                status: downloadedHost.status,
-                teamId: downloadedHost.teamId ?? 0,
-                teamName: downloadedHost.teamName ?? "",
-                uptime: downloadedHost.uptime,
-                uuid: downloadedHost.uuid
-            )
-
-            modelContext.insert(cachedHost)
-        }
     }
 }
 

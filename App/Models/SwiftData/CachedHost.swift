@@ -161,6 +161,8 @@ extension CachedHost {
                 modelContext.insert(cachedHost)
             }
 
+//            dataController.hostsLastUpdatedAt = .now
+
             logger.debug("Refresh complete.")
         } catch {
             switch error as? AuthManager.AuthError {
