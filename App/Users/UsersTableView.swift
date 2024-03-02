@@ -27,8 +27,10 @@ struct UsersTableView: View {
                     .layoutPriority(1)
             }
 
-            TableColumn("Global Role", value: \.globalRole) { user in
-                Text(user.globalRole.capitalized)
+            TableColumn("Global Role") { user in
+                if let globalRole = user.globalRole {
+                    Text(globalRole.capitalized)
+                }
 #if os(macOS)
                     .frame(maxWidth: .infinity, alignment: . trailing)
                     .foregroundStyle(.secondary)

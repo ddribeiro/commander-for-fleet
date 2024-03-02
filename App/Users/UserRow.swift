@@ -59,13 +59,12 @@ struct UserRow: View {
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
 
-                    if user.globalRole.isEmpty == false {
-                        Text(user.globalRole.capitalized)
+                    if let globalRole = user.globalRole {
+                        Text(globalRole.capitalized)
                             .font(.smallCaps(.body)())
                             .foregroundStyle(.white)
                             .padding(.horizontal, 8)
-                            .background(.tertiary)
-                            .clipShape(.capsule)
+                            .background(.tertiary, in: .capsule)
                     }
                 }
             }

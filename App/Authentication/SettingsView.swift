@@ -65,8 +65,10 @@ struct SettingsView: View {
                         }
 
                         Section {
-                            LabeledContent("Global Role") {
-                                Text(user.globalRole.capitalized)
+                            if let globalRole = user.globalRole {
+                                LabeledContent("Global Role") {
+                                    Text(globalRole.capitalized)
+                                }
                             }
 
                             LabeledContent(
@@ -97,12 +99,6 @@ struct SettingsView: View {
                     }
                     .formStyle(.grouped)
                     .navigationTitle("Account")
-//                    .task {
-//                        if UserDefaults.standard.value(forKey: "loggedInUserID") as? Int16 == nil {
-//                            let response = try await networkManager.fetch(.meEndpoint)
-//                            
-//                        }
-//                    }
                     .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
                             Button("Done") {
@@ -129,9 +125,7 @@ struct SettingsView: View {
                     }
                 }
             }
-
         }
-
     }
 
     private var signOutAlert: Alert {

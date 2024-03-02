@@ -21,8 +21,6 @@ struct UsersView: View {
 
     @Query var users: [CachedUser]
     @Query var teams: [CachedTeam]
-//    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
-//    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
     var displayAsList: Bool {
 #if os(iOS)
@@ -54,10 +52,10 @@ struct UsersView: View {
             if let usersLastUpdatedAt = dataController.usersLastUpdatedAt {
                 guard usersLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
             }
-            await fetchUsers()
+            await CachedUser.refresh(modelContext: modelContext)
         }
         .refreshable {
-            await fetchUsers()
+            await CachedUser.refresh(modelContext: modelContext)
         }
 //        .overlay {
 //            if users.isEmpty {
