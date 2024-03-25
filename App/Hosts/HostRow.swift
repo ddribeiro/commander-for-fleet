@@ -21,7 +21,11 @@ struct HostRow: View {
                         .font(.headline)
                         .lineLimit(1)
 
-                    if dataController.selectedFilter == .all || dataController.selectedFilter == .recentlyEnrolled {
+                    if !host.teamName.isEmpty
+                        && (
+                            dataController.selectedFilter == .all
+                            || dataController.selectedFilter == .recentlyEnrolled
+                        ) {
                         Text(host.teamName)
                             .font(.headline)
                             .foregroundStyle(.secondary)

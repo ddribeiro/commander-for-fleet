@@ -43,10 +43,12 @@ struct PolicyDetailView: View {
                                     .font(.headline)
                                     .lineLimit(1)
 
-                                Text(host.teamName ?? "")
-                                    .font(.headline)
-                                    .foregroundStyle(.secondary)
-                                    .lineLimit(1)
+                                if let teamName = host.teamName {
+                                    Text(teamName)
+                                        .font(.headline)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(1)
+                                }
 
                                 Text(host.hardwareSerial)
                                     .foregroundStyle(.secondary)

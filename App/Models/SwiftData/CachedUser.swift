@@ -113,3 +113,28 @@ extension CachedUser {
         }
     }
 }
+
+extension CachedUser {
+    static func predicate(
+        searchText: String,
+        filter: Filter,
+        sortOptions: SortOptions
+    ) -> Predicate<CachedUser> {
+        if let team = filter.team {
+            let teamID = team.id
+            return #Predicate<CachedUser> { user in
+                (searchText.isEmpty ||
+                 user.name.localizedStandardContains(searchText))
+                &&
+                user.teams.contains { $0.id == teamID }
+            }
+        }
+        return #Predicate<CachedUser> {
+            if searchText.isEmpty {
+                return true
+            } else {
+                return $0.name.localizedStandardContains(searchText)
+            }
+        }
+    }
+}

@@ -22,7 +22,6 @@ enum LoadingState {
  and that can probably stay. */
 @MainActor
 class DataController: ObservableObject {
-
     @Published var selectedFilter = Filter.all
 
     @Published var filterText = ""

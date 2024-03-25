@@ -15,7 +15,6 @@ struct UsersTableView: View {
     @State private var sortOrder = [KeyPathComparator(\CachedUser.name, order: .reverse)]
 
     @Binding var selection: Set<CachedUser.ID>
-    @Binding var searchText: String
 
     @Query var users: [CachedUser]
 
@@ -68,5 +67,17 @@ struct UsersTableView: View {
                 }
             }
         }
+    }
+
+    init(
+        searchText: String,
+        filter: Filter,
+        sortOptions: SortOptions,
+        selection: Binding<Set<CachedUser.ID>>
+    ) {
+        let predicate = CachedUser.predicate(searchText: searchText, filter: filter, sortOptions: sortOptions)
+
+        _users = Query(filter: predicate)
+        _selection = selection
     }
 }

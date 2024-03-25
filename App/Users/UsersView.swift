@@ -18,6 +18,8 @@ struct UsersView: View {
 
     @State private var selection: Set<CachedUser.ID> = []
     @State private var searchText = ""
+    @State private var selectedFilter = Filter.all
+    @State private var sortOptions = SortOptions()
 
     @Query var users: [CachedUser]
     @Query var teams: [CachedTeam]
@@ -41,7 +43,12 @@ struct UsersView: View {
             if displayAsList {
                 list
             } else {
-                UsersTableView(selection: $selection, searchText: $searchText)
+                UsersTableView(
+                    searchText: searchText,
+                    filter: selectedFilter,
+                    sortOptions: sortOptions,
+                    selection: $selection
+                )
             }
         }
         .navigationTitle(dataController.selectedFilter == .all ? "All Users" : dataController.selectedFilter.name)

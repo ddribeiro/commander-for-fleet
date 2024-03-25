@@ -40,18 +40,20 @@ struct UserDetailView: View {
                     }
                 }
 
-                Section("Teams") {
-                    ForEach(user.teams) { team in
-                        HStack {
-                            Text(team.name)
-                            Spacer()
-                            if team.role != "" && team.role != nil {
-                                Text(team.role?.capitalized ?? "")
-                                    .font(.smallCaps(.body)())
-                                    .foregroundStyle(.white)
-                                    .padding(.horizontal, 8)
-                                    .background(.tertiary)
-                                    .clipShape(.capsule)
+                if !user.teams.isEmpty {
+                    Section("Teams") {
+                        ForEach(user.teams) { team in
+                            HStack {
+                                Text(team.name)
+                                Spacer()
+                                if team.role != "" && team.role != nil {
+                                    Text(team.role?.capitalized ?? "")
+                                        .font(.smallCaps(.body)())
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 8)
+                                        .background(.tertiary)
+                                        .clipShape(.capsule)
+                                }
                             }
                         }
                     }

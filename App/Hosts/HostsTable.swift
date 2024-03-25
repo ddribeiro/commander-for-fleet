@@ -13,6 +13,7 @@ struct HostsTable: View {
     @Environment(\.networkManager) var networkManager
 
     @State private var isShowingSignInSheet = false
+
     @State private var sortOrder = [KeyPathComparator(\CachedHost.computerName, order: .forward)]
 
     @Binding var selection: Set<CachedHost.ID>
@@ -120,7 +121,6 @@ struct HostsTable: View {
         let predicate = CachedHost.predicate(searchText: searchText, filter: filter, sortOptions: sortOptions)
 
         _hosts = Query(filter: predicate)
-
         _selection = selection
     }
 }

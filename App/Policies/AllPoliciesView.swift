@@ -21,7 +21,6 @@ struct AllPoliciesView: View {
 
     @Query var policies: [CachedPolicy]
     @Query var teams: [CachedTeam]
-//    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
     var teamFilters: [Filter] {
         teams.map { team in
