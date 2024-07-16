@@ -1,5 +1,5 @@
 //
-//  HostView.swift
+//  HostDetailsView.swift
 //  FleetSample
 //
 //  Created by Dale Ribeiro on 6/1/23.
@@ -8,7 +8,7 @@
 import SwiftUI
 import KeychainWrapper
 
-struct HostView: View {
+struct HostDetailsView: View {
     @EnvironmentObject var dataController: DataController
     @Environment(\.networkManager) var networkManager
 
@@ -23,10 +23,6 @@ struct HostView: View {
         if let host = updatedHost {
             Form {
                 Section {
-                    // swiftlint:disable:next line_length
-                    let driveCapacity = ((host.gigsDiskSpaceAvailable) / Double((host.percentDiskSpaceAvailable)) * 100.0)
-                    let gigsSpaceConsumed = (driveCapacity - host.gigsDiskSpaceAvailable)
-
                     LabeledContent("Device Name", value: host.computerName)
 
                     LabeledContent {
@@ -45,20 +41,25 @@ struct HostView: View {
 
                     LabeledContent("Memory", value: "\(host.memory / 1073741824) GB")
 
-                    if host.percentDiskSpaceAvailable != 0 {
-                        Gauge(value: Double(gigsSpaceConsumed), in: 0...Double(driveCapacity)) {
-                            Text("Storage")
-                        } currentValueLabel: {
-                            Text("\(Int(gigsSpaceConsumed)) GB of \(Int(driveCapacity)) GB used")
-                                .foregroundStyle(.secondary)
-                        } minimumValueLabel: {
-                            Text("0 GB")
-                                .foregroundStyle(.secondary)
-                        } maximumValueLabel: {
-                            Text("\(Int(driveCapacity)) GB")
-                                .foregroundStyle(.secondary)
-                        }
+                    // Storage Gauge View
+
+                    // Use gigsTotalDiskSpace and gigsDiskSpaceAvailable
+                    // to calculate how much storage is being used
+                    let gigsSpaceConsumed = (host.gigsTotalDiskSpace - host.gigsDiskSpaceAvailable)
+
+                    Gauge(value: gigsSpaceConsumed, in: 0...host.gigsTotalDiskSpace) {
+                        Text("Storage")
+                    } currentValueLabel: {
+                        Text("\(Int(gigsSpaceConsumed)) GB of \(Int(host.gigsTotalDiskSpace)) GB used")
+                            .foregroundStyle(.secondary)
+                    } minimumValueLabel: {
+                        Text("0 GB")
+                            .foregroundStyle(.secondary)
+                    } maximumValueLabel: {
+                        Text("\(Int(host.gigsTotalDiskSpace)) GB")
+                            .foregroundStyle(.secondary)
                     }
+
                 } header: {
                     Label("Device Information", systemImage: "laptopcomputer")
                 }
@@ -166,7 +167,7 @@ struct HostView: View {
                                 "No Software",
                                 systemImage: "exclamationmark.triangle",
                                 description: Text("This host has no software.")
-                                )
+                            )
                         }
                     case "Profiles":
                         if let profiles = host.mdm?.profiles {

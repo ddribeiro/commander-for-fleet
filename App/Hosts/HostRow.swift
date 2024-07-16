@@ -13,8 +13,14 @@ struct HostRow: View {
     var body: some View {
         NavigationLink(value: host.id) {
             HStack {
-                Image(systemName: "laptopcomputer")
-                    .imageScale(.large)
+                switch host.platform {
+                case "ios":
+                    Image(systemName: "iphone")
+                        .imageScale(.large)
+                default:
+                    Image(systemName: "laptopcomputer")
+                        .imageScale(.large)
+                }
 
                 VStack(alignment: .leading) {
                     Text(host.wrappedComputerName)

@@ -44,7 +44,7 @@ struct HostsView: View {
         }
         .navigationTitle(dataController.selectedFilter == .all ? "All Hosts" : dataController.selectedFilter.name)
         .navigationDestination(for: CachedHost.ID.self) { id in
-            HostView(id: id)
+            HostDetailsView(id: id)
         }
         .toolbar {
             if !displayAsList {
@@ -147,9 +147,9 @@ struct HostsView: View {
                     dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
                 }
             case .missingToken:
-                print(error.localizedDescription)
+                print(error)
             case .none:
-                print(error.localizedDescription)
+                print(error)
             }
         }
     }
