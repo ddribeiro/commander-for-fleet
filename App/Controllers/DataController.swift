@@ -553,4 +553,12 @@ class DataController: ObservableObject {
         return urlString
     }
     // swiftlint:disable:next file_length
+    
+    private func newTaskContext() -> NSManagedObjectContext {
+        let taskContext = container.newBackgroundContext()
+        taskContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
+        taskContext.undoManager = nil
+        return taskContext
+    }
 }

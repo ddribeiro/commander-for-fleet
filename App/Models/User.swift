@@ -37,3 +37,8 @@ struct UserReponse: Codable {
     var user: User
     var availableTeams: [Team]
 }
+
+enum UserRoles {
+    case admin, maintainer, observer, observerPlus, gitOps
+    
+}
