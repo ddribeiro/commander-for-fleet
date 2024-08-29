@@ -48,3 +48,13 @@ import SwiftData
         self.updatedAt = updatedAt
     }
 }
+
+//extension CachedPolicy {
+//    static func fetchPolicies() async throws -> [Policy] {
+//        guard await DataController().activeEnvironment != nil else { throw HTTPError.invalidURL }
+//        
+//        do {
+//            return try await NetworkManager(authManager: AuthManager()).fetch(.po, attempts: 5)
+//        }
+//    }
+//}

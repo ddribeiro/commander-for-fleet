@@ -133,9 +133,9 @@ extension CachedSoftware {
                     dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
                 }
             case .missingToken:
-                print(error.localizedDescription)
+                print(error)
             case .none:
-                print(error.localizedDescription)
+                print(error)
             }
         }
     }

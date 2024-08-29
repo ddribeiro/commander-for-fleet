@@ -27,7 +27,8 @@ struct Host: Codable, Identifiable, Hashable {
     var primaryMac: String
     var teamId: Int?
     var gigsDiskSpaceAvailable: Double
-    var percentDiskSpaceAvailable: Int
+    var gigsTotalDiskSpace: Double
+    var percentDiskSpaceAvailable: Double
     var diskEncryptionEnabled: Bool?
     var status: String
     var policies: [Policy]?
@@ -53,6 +54,7 @@ struct Host: Codable, Identifiable, Hashable {
         primaryMac: "54:26:96:ce:ec:c5",
         teamId: 9,
         gigsDiskSpaceAvailable: 202.66,
+        gigsTotalDiskSpace: 511.12,
         percentDiskSpaceAvailable: 40,
         diskEncryptionEnabled: true,
         status: "Online",
@@ -119,8 +121,7 @@ struct Software: Codable, Identifiable, Hashable {
     )
 }
 
-struct Vulnerability: Identifiable, Codable, Hashable {
-    var id: String { cve }
+struct Vulnerability: Codable, Hashable {
     var cveDescription: String?
     var detailsLink: String
     var cvssScore: Double?

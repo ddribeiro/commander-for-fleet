@@ -18,6 +18,7 @@ struct SoftwareListView: View {
             softwareRows(software)
         }
         .toolbar {
+            #if os(iOS)
             ToolbarItem(placement: .bottomBar) {
                 if dataController.loadingState == .loaded {
                     VStack {
@@ -44,6 +45,7 @@ struct SoftwareListView: View {
 
                 }
             }
+            #endif
         }
         .overlay {
             if software.isEmpty {

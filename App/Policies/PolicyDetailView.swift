@@ -27,6 +27,7 @@ struct PolicyDetailView: View {
             Section("Query") {
                 Text(policy.query)
                     .monospaced()
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .headerProminence(.increased)

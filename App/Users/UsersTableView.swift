@@ -31,8 +31,8 @@ struct UsersTableView: View {
                     Text(globalRole.capitalized)
                 }
 #if os(macOS)
-                    .frame(maxWidth: .infinity, alignment: . trailing)
-                    .foregroundStyle(.secondary)
+//                    .frame(maxWidth: .infinity, alignment: . trailing)
+//                    .foregroundStyle(.secondary)
 #endif
             }
 

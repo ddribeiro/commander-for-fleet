@@ -20,7 +20,7 @@ import SwiftData
     var lastEnrolledAt: Date
     var memory: Int
     var osVersion: String
-    var percentDiskSpaceAvailable: Int
+    var percentDiskSpaceAvailable: Double
     var platform: String
     var primaryIp: String
     var primaryMac: String
@@ -63,7 +63,7 @@ import SwiftData
         lastEnrolledAt: Date,
         memory: Int,
         osVersion: String,
-        percentDiskSpaceAvailable: Int,
+        percentDiskSpaceAvailable: Double,
         platform: String,
         primaryIp: String,
         primaryMac: String,

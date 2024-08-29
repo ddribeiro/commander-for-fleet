@@ -14,7 +14,10 @@ struct HostRow: View {
         NavigationLink(value: host.id) {
             HStack {
                 Image(systemName: "laptopcomputer")
-                    .imageScale(.large)
+                    .font(.system(.title2, design: .rounded))
+                    .fontWeight(.semibold)
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(.secondary)
 
                 VStack(alignment: .leading) {
                     Text(host.computerName)
@@ -27,21 +30,24 @@ struct HostRow: View {
                             || dataController.selectedFilter == .recentlyEnrolled
                         ) {
                         Text(host.teamName)
-                            .font(.headline)
+                            .font(.subheadline.bold())
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
 
                     Text(host.hardwareSerial)
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
 
                     if dataController.selectedFilter != .recentlyEnrolled {
                         Text(host.hardwareModel)
+                            .font(.body)
                             .foregroundColor(.secondary)
                             .lineLimit(1)
                     } else {
                         Text("Enrolled on \(host.lastEnrolledAt.formatted(date: .abbreviated, time: .omitted))")
+                            .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -54,7 +60,7 @@ struct HostRow: View {
                         .foregroundStyle(host.status == "online" ? .green : .red)
 
                     Text(host.status)
-                        .font(.body.smallCaps())
+                        .font(.subheadline.smallCaps())
                         .foregroundStyle(.secondary)
                 }
             }

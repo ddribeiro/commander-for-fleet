@@ -24,18 +24,19 @@ struct AllPoliciesRow: View {
 #else
                 .frame(width: 20, height: 20)
 #endif
-            Text(policy.name)
-                .font(.headline)
-            if sizeClass == .compact {
-                Spacer()
-
-                VStack {
-                    Text("\(policy.passingHostCount) Passing")
-                        .foregroundStyle(.green)
-                    Text("\(policy.failingHostCount) Failing")
-                        .foregroundStyle(.red)
+            VStack(alignment: .leading) {
+                Text(policy.name)
+                    .font(.headline)
+                
+                if sizeClass == .compact {
+                    VStack(alignment: .leading) {
+                        Text("\(policy.passingHostCount) Passing")
+                            .foregroundStyle(.green)
+                        Text("\(policy.failingHostCount) Failing")
+                            .foregroundStyle(.red)
+                    }
+                    .font(.subheadline)
                 }
-                .font(.smallCaps(.body)())
             }
         }
 

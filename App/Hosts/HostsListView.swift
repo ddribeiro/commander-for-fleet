@@ -39,6 +39,7 @@ struct HostsListView: View {
                 }
             }
             .toolbar {
+                #if os(iOS)
                 ToolbarItem(placement: .bottomBar) {
                     if let updatedAt = dataController.hostsLastUpdatedAt {
                         VStack {
@@ -50,6 +51,7 @@ struct HostsListView: View {
                         }
                     }
                 }
+                #endif
             }
         } else {
             NoHostView()

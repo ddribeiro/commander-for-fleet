@@ -87,6 +87,7 @@ struct AllSoftwareTableView: View {
             }
         }
         .toolbar {
+            #if os(iOS)
             ToolbarItem(placement: .bottomBar) {
                 if dataController.loadingState == .loaded {
                     VStack {
@@ -113,6 +114,7 @@ struct AllSoftwareTableView: View {
 
                 }
             }
+            #endif
         }
         .overlay {
             if software.isEmpty {
