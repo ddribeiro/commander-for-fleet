@@ -8,20 +8,20 @@
 import Foundation
 
 struct CommandResponse: Codable {
-    var deviceId: String
+    var status: String
     var commandUuid: String
     var updatedAt: Date
     var requestType: String
-    var status: String
     var hostname: String
+    var hostUuid: String
 
     static let example = CommandResponse(
-        deviceId: "A04F07D9-0AB0-5682-B99E-996F178A707E",
-        commandUuid: "17269A1C-20F9-407F-9AD0-396B9DFA6596",
-        updatedAt: .now,
-        requestType: "DeviceLock",
         status: "Acknowledged",
-        hostname: "Dalers-Super-Awesome-Vitual-Machine.local"
+        commandUuid: "fea081dd-b8e4-4d92-a295-d5c129a0a09f",
+        updatedAt: .now,
+        requestType: "InstallProfile",
+        hostname: "dales-macbook-pro-2.local",
+        hostUuid: "A83D5B77-6C69-5D77-83D6-09A1389B8309"
     )
 }
 

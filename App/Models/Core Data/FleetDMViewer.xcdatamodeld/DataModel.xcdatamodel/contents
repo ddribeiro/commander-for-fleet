@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23B92" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="24A335" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CachedBattery" representedClassName="CachedBattery" syncable="YES">
         <attribute name="cycleCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="health" optional="YES" attributeType="String"/>
@@ -7,8 +7,8 @@
     </entity>
     <entity name="CachedCommandResponse" representedClassName="CachedCommandResponse" syncable="YES">
         <attribute name="commandUUID" optional="YES" attributeType="String"/>
-        <attribute name="deviceID" optional="YES" attributeType="String"/>
         <attribute name="hostname" optional="YES" attributeType="String"/>
+        <attribute name="hostUUID" optional="YES" attributeType="String"/>
         <attribute name="requestType" optional="YES" attributeType="String"/>
         <attribute name="status" optional="YES" attributeType="String"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>

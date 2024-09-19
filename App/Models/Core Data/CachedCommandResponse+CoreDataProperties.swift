@@ -16,15 +16,15 @@ extension CachedCommandResponse {
     }
 
     @NSManaged public var commandUUID: String?
-    @NSManaged public var deviceID: String?
+    @NSManaged public var hostUUID: String?
     @NSManaged public var hostname: String?
     @NSManaged public var requestType: String?
     @NSManaged public var status: String?
     @NSManaged public var updatedAt: Date?
     @NSManaged public var hosts: NSSet?
 
-    var wrappedDeviceID: String {
-        deviceID ?? ""
+    var wrappedHostUUID: String {
+        hostUUID ?? ""
     }
 
     var wrappedCommandUUID: String {

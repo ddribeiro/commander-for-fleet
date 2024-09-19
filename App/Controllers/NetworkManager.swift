@@ -68,7 +68,7 @@ struct NetworkManager {
             throw URLError(.unsupportedURL)
         }
 
-//        print(url.absoluteString)
+        print(url.absoluteString)
 
         var request = URLRequest(url: url)
         request.httpMethod = resource.method.rawValue

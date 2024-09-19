@@ -16,10 +16,10 @@ struct HostRow: View {
                 switch host.platform {
                 case "ios":
                     Image(systemName: "iphone")
-                        .imageScale(.large)
+                        .font(.title)
                 default:
                     Image(systemName: "laptopcomputer")
-                        .imageScale(.large)
+                        .font(.title)
                 }
 
                 VStack(alignment: .leading) {

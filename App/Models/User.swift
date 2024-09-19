@@ -40,5 +40,5 @@ struct UserReponse: Codable {
 
 enum UserRoles {
     case admin, maintainer, observer, observerPlus, gitOps
-    
+
 }

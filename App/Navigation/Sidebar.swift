@@ -62,7 +62,7 @@ struct Sidebar: View {
                 }
 
                 NavigationLink(value: Panel.software) {
-                    Label("Software", systemImage: "app.badge")
+                    Label("Software", systemImage: "square.stack.3d.up")
                 }
 
                 NavigationLink(value: Panel.queries) {

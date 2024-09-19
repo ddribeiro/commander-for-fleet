@@ -159,8 +159,15 @@ extension Endpoint where T == PolicyResponse {
         }
 
         extension Endpoint where T == [CommandResponse] {
+            static func getCommands(for host: Host) -> Endpoint {
+                return Endpoint(
+                    path: "/api/v1/fleet/commands?host_identifier=\(host.hardwareSerial)",
+                    type: [CommandResponse].self,
+                    keyPath: "results"
+                )
+            }
             static let commands = Endpoint(
-                path: "/api/v1/fleet/mdm/apple/commands",
+                path: "/api/v1/fleet/commands",
                 type: [CommandResponse].self,
                 keyPath: "results"
             )

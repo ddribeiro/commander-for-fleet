@@ -15,7 +15,9 @@ struct HostCommandsView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
 
-    @FetchRequest var commands: FetchedResults<CachedCommandResponse>
+    let host: Host
+
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.updatedAt, order: .reverse)]) var commands: FetchedResults<CachedCommandResponse>
 
     var body: some View {
         NavigationStack {
@@ -24,7 +26,7 @@ struct HostCommandsView: View {
                     HostCommandRow(command: command)
                 }
             }
-            .navigationTitle("Command History for \(dataController.selectedHost?.computerName ?? "N/A")")
+            .navigationTitle("Command History for \(host.computerName)")
 #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
 #endif
@@ -59,7 +61,8 @@ struct HostCommandsView: View {
         guard dataController.activeEnvironment != nil else { return }
 
         do {
-            let commands = try await networkManager.fetch(.commands, attempts: 5)
+            let commandsForHostEndpoint = Endpoint.getCommands(for: host)
+            let commands = try await networkManager.fetch(commandsForHostEndpoint)
 
             await MainActor.run {
                 updateCache(with: commands)
@@ -80,19 +83,6 @@ struct HostCommandsView: View {
             }
         }
     }
-    init(host: Host) {
-        _commands = FetchRequest<CachedCommandResponse>(
-            sortDescriptors: [
-                SortDescriptor(
-                    \.updatedAt,
-                     order: .reverse
-                )
-            ],
-            predicate: NSPredicate(
-                format: "deviceID CONTAINS %@", host.uuid
-            )
-        )
-    }
 
     func updateCache(with downloadedCommands: [CommandResponse]) {
         for downloadedCommand in downloadedCommands {
@@ -100,7 +90,7 @@ struct HostCommandsView: View {
 
             cachedCommand.status = downloadedCommand.status
             cachedCommand.commandUUID = downloadedCommand.commandUuid
-            cachedCommand.deviceID = downloadedCommand.deviceId
+            cachedCommand.hostUUID = downloadedCommand.hostUuid
             cachedCommand.updatedAt = downloadedCommand.updatedAt
             cachedCommand.requestType = downloadedCommand.requestType
             cachedCommand.hostname = downloadedCommand.hostname
