@@ -47,7 +47,7 @@ class DataController: ObservableObject {
     @Published var sortType = SortType.name
 
     @Published var selectedTeam: CachedTeam?
-    @Published var selectedHost: CachedHost?
+//    @Published var selectedHost: CachedHost?
     @Published var selectedUser: CachedUser?
     @Published var activeEnvironment: AppEnvironment?
 
@@ -349,23 +349,6 @@ class DataController: ObservableObject {
         return allHosts
     }
 
-    func commandsForSelectedHost() -> [CachedCommandResponse] {
-        guard let host = selectedHost else { return [] }
-
-        var predicates = [NSPredicate]()
-
-        if let hostID = host.uuid {
-            let hostPredicate = NSPredicate(format: "deviceID CONTAINS %@", "\(hostID)")
-            predicates.append(hostPredicate)
-        }
-
-        let request = CachedCommandResponse.fetchRequest()
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        request.sortDescriptors = [NSSortDescriptor(key: "updatedAt", ascending: false)]
-        let commandsForHost = (try? container.viewContext.fetch(request)) ?? []
-        return commandsForHost
-    }
-
     func loginWithEmail(
         email: String,
         password: String,
@@ -501,7 +484,6 @@ class DataController: ObservableObject {
         activeEnvironment = nil
         isAuthenticated = false
         teamsLastUpdatedAt = nil
-        selectedHost = nil
         selectedTeam = nil
 
         do {

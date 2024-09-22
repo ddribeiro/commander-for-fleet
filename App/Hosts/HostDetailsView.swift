@@ -184,11 +184,8 @@ struct HostDetailsView: View {
                     }
                 }
             }
-            .onChange(of: dataController.selectedHost) {
+            .onDisappear {
                 updatedHost = nil
-                Task {
-                    await updateHost()
-                }
             }
 
             .refreshable {

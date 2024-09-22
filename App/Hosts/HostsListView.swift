@@ -15,6 +15,7 @@ struct HostsListView: View {
     @Environment(\.networkManager) var networkManager
 
     @State private var isShowingSignInSheet = false
+    @State private var selection: Set<CachedHost.ID> = []
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
@@ -26,7 +27,7 @@ struct HostsListView: View {
 
     var body: some View {
         if dataController.isAuthenticated {
-            List(selection: $dataController.selectedHost) {
+            List(selection: $selection) {
                 ForEach(dataController.hostsForSelectedFilter()) { host in
                     HostRow(host: host)
                 }
