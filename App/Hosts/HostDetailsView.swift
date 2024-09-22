@@ -22,71 +22,12 @@ struct HostDetailsView: View {
     var body: some View {
         if let host = updatedHost {
             Form {
-                Section {
-                    LabeledContent("Device Name", value: host.computerName)
-
-                    LabeledContent {
-                        Text(host.hardwareSerial)
-                            .monospaced()
-                    } label: {
-                        Text("Serial Number")
-                    }
-
-                    LabeledContent("Model", value: host.hardwareModel)
-
-                    LabeledContent("OS Version", value: host.osVersion)
-
-                    LabeledContent("Processor", value: host.cpuBrand)
-                        .multilineTextAlignment(.trailing)
-
-                    LabeledContent("Memory", value: "\(host.memory / 1073741824) GB")
-
-                    // Storage Gauge View
-
-                    // Use gigsTotalDiskSpace and gigsDiskSpaceAvailable
-                    // to calculate how much storage is being used
-                    let gigsSpaceConsumed = (host.gigsTotalDiskSpace - host.gigsDiskSpaceAvailable)
-
-                    Gauge(value: gigsSpaceConsumed, in: 0...host.gigsTotalDiskSpace) {
-                        Text("Storage")
-                    } currentValueLabel: {
-                        Text("\(Int(gigsSpaceConsumed)) GB of \(Int(host.gigsTotalDiskSpace)) GB used")
-                            .foregroundStyle(.secondary)
-                    } minimumValueLabel: {
-                        Text("0 GB")
-                            .foregroundStyle(.secondary)
-                    } maximumValueLabel: {
-                        Text("\(Int(host.gigsTotalDiskSpace)) GB")
-                            .foregroundStyle(.secondary)
-                    }
-
-                } header: {
-                    Label("Device Information", systemImage: "laptopcomputer")
-                }
+                HostHardwareDetailsView(host: host)
+                HostStorageDetailsView(host: host)
 
                 if let mdm = host.mdm {
                     if mdm.enrollmentStatus != nil {
-                        Section {
-                            LabeledContent("Enrollment Status", value: mdm.enrollmentStatus ?? "N/A")
-
-                            LabeledContent("MDM Server URL", value: mdm.serverUrl ?? "N/A")
-                                .multilineTextAlignment(.trailing)
-
-                            LabeledContent("MDM Name", value: mdm.name)
-                                .multilineTextAlignment(.trailing)
-
-                            LabeledContent("Encryption Key Escrowed") {
-                                Text(mdm.encryptionKeyAvailable ? "Yes" : "No")
-                                    .foregroundColor(mdm.encryptionKeyAvailable ? .secondary : .red)
-
-                                // swiftlint:disable:next line_length
-                                Image(systemName: mdm.encryptionKeyAvailable ? "checkmark.shield.fill": "exclamationmark.shield.fill")
-                                    .imageScale(.large)
-                                    .foregroundColor(mdm.encryptionKeyAvailable ? .green : .red)
-                            }
-                        } header: {
-                            Label("MDM Information", systemImage: "lock.laptopcomputer")
-                        }
+                        HostMDMDetailsView(mdm: mdm)
                     }
                 }
 

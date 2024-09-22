@@ -27,7 +27,7 @@ struct HostsListView: View {
 
     var body: some View {
         if dataController.isAuthenticated {
-            List(selection: $selection) {
+            List {
                 ForEach(dataController.hostsForSelectedFilter()) { host in
                     HostRow(host: host)
                 }
