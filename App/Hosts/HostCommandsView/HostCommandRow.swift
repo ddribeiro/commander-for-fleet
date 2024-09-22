@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct HostCommandRow: View {
-    var command: CachedCommandResponse
+    var command: CommandResponse
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(command.wrappedRequestType)
+                Text(command.requestType)
                     .font(.headline)
-                Text("\(command.wrappedUpdatedAt.formatted(date: .numeric, time: .shortened))")
+
+                Text("\(command.updatedAt.formatted(date: .numeric, time: .shortened))")
                     .foregroundStyle(.secondary)
 
             }
@@ -26,7 +27,7 @@ struct HostCommandRow: View {
                 case "Acknowledged":
                     Image(systemName: "checkmark.icloud.fill")
                         .foregroundColor(.green)
-                    Text(command.wrappedStatus)
+                    Text(command.status)
                         .foregroundStyle(.secondary)
                         .font(.body.smallCaps())
 
@@ -34,14 +35,14 @@ struct HostCommandRow: View {
                     Image(systemName: "clock.badge.questionmark.fill")
                         .foregroundColor(.secondary)
 
-                    Text(command.wrappedStatus)
+                    Text(command.status)
                         .foregroundStyle(.secondary)
                         .font(.body.smallCaps())
 
                 default:
                     Image(systemName: "xmark.icloud.fill")
                         .foregroundColor(.red)
-                    Text(command.wrappedStatus)
+                    Text(command.status)
                         .foregroundColor(.secondary)
                         .font(.body.smallCaps())
                 }

@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct CommandResponse: Codable {
+struct CommandResponse: Codable, Identifiable {
+    var id: String { commandUuid }
     var status: String
     var commandUuid: String
     var updatedAt: Date
@@ -15,14 +16,19 @@ struct CommandResponse: Codable {
     var hostname: String
     var hostUuid: String
 
-    static let example = CommandResponse(
-        status: "Acknowledged",
-        commandUuid: "fea081dd-b8e4-4d92-a295-d5c129a0a09f",
-        updatedAt: .now,
-        requestType: "InstallProfile",
-        hostname: "dales-macbook-pro-2.local",
-        hostUuid: "A83D5B77-6C69-5D77-83D6-09A1389B8309"
-    )
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        commandUuid = try container.decode(String.self, forKey: .commandUuid)
+        status = try container.decode(String.self, forKey: .status)
+        updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+        requestType = try container.decode(String.self, forKey: .requestType)
+        hostname = try container.decode(String.self, forKey: .hostname)
+        hostUuid = try container.decode(String.self, forKey: .hostUuid)
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case status, commandUuid, updatedAt, requestType, hostname, hostUuid
+    }
 }
 
 struct MdmCommand: Codable {

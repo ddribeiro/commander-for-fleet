@@ -23,7 +23,7 @@ struct HostRow: View {
                 }
 
                 VStack(alignment: .leading) {
-                    Text(host.wrappedComputerName)
+                    Text(host.wrappedComputerName != "" ? host.wrappedComputerName : host.wrappedHardwareSerial)
                         .font(.headline)
                         .lineLimit(1)
 

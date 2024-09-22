@@ -17,57 +17,73 @@ struct HostCommandsView: View {
 
     let host: Host
 
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.updatedAt, order: .reverse)]) var commands: FetchedResults<CachedCommandResponse>
+    @State private var commands = [CommandResponse]()
+    @State private var loadingState: LoadingState = .loaded
+
+    var sortedCommands: [CommandResponse] {
+        commands.sorted { $0.updatedAt > $1.updatedAt }
+    }
 
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(commands) { command in
-                    HostCommandRow(command: command)
+            if loadingState == .loading {
+                VStack {
+                    ProgressView()
+                    Text("Loading Command History...")
+                        .foregroundStyle(.secondary)
                 }
-            }
-            .navigationTitle("Command History for \(host.computerName)")
+                .navigationTitle("Command History for \(host.computerName)")
 #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
+                .navigationBarTitleDisplayMode(.inline)
 #endif
-            .overlay {
-                if commands.isEmpty {
-
+            } else {
+                List {
+                    ForEach(commands) { command in
+                        HostCommandRow(command: command)
+                    }
                 }
-            }
-            .task {
-                await fetchCommands()
-            }
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done", role: .cancel) {
-                        dismiss()
+                .navigationTitle("Command History for \(host.computerName)")
+#if os(iOS)
+                .navigationBarTitleDisplayMode(.inline)
+#endif
+                .overlay {
+                    if commands.isEmpty {
+                        ContentUnavailableView("No Commands Found", systemImage: "xmark.icloud")
 
                     }
                 }
+
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done", role: .cancel) {
+                            dismiss()
+
+                        }
+                    }
+                }
+
+                .sheet(isPresented: $dataController.showingApiTokenAlert) {
+                    APITokenRefreshView()
+                        .presentationDetents([.medium])
+                }
             }
-        }
-        .sheet(isPresented: $dataController.showingApiTokenAlert) {
-            APITokenRefreshView()
-                .presentationDetents([.medium])
         }
         .task {
             await fetchCommands()
         }
-
     }
 
     func fetchCommands() async {
         guard dataController.activeEnvironment != nil else { return }
 
         do {
-            let commandsForHostEndpoint = Endpoint.getCommands(for: host)
-            let commands = try await networkManager.fetch(commandsForHostEndpoint)
+            loadingState = .loading
 
-            await MainActor.run {
-                updateCache(with: commands)
-            }
+            let commandsForHostEndpoint = Endpoint.getCommands(for: host)
+            commands = try await networkManager.fetch(commandsForHostEndpoint)
+            loadingState = .loaded
         } catch {
+            loadingState = .failed
             switch error as? AuthManager.AuthError {
             case .missingCredentials:
                 if !dataController.showingApiTokenAlert {
@@ -77,24 +93,22 @@ struct HostCommandsView: View {
                     dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
                 }
             case .missingToken:
-                print(error.localizedDescription)
+                print(error)
             case .none:
-                print(error.localizedDescription)
+                if let commandData = try? JSONEncoder().encode(commands) {
+                    if let jsonString = String(data: commandData, encoding: .utf8) {
+                        print("JSON string: \(jsonString)")
+
+                        // Optionally, you can print the specific value at index 8595
+                        if let jsonData = try? JSONSerialization.jsonObject(with: commandData, options: []),
+                           let jsonArray = jsonData as? [[String: Any]],
+                           jsonArray.indices.contains(8595) {
+                            print("Problematic entry: \(jsonArray[8595])")
+                        }
+                    }
+                }
+                print(String(describing: error))
             }
         }
-    }
-
-    func updateCache(with downloadedCommands: [CommandResponse]) {
-        for downloadedCommand in downloadedCommands {
-            let cachedCommand = CachedCommandResponse(context: moc)
-
-            cachedCommand.status = downloadedCommand.status
-            cachedCommand.commandUUID = downloadedCommand.commandUuid
-            cachedCommand.hostUUID = downloadedCommand.hostUuid
-            cachedCommand.updatedAt = downloadedCommand.updatedAt
-            cachedCommand.requestType = downloadedCommand.requestType
-            cachedCommand.hostname = downloadedCommand.hostname
-        }
-        try? moc.save()
     }
 }

@@ -51,6 +51,8 @@
 		5E9B94E42A32320D00A7A0CE /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E32A32320D00A7A0CE /* Host.swift */; };
 		5E9B94E62A32321D00A7A0CE /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E52A32321D00A7A0CE /* Team.swift */; };
 		5E9B94E82A32323300A7A0CE /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B94E72A32323300A7A0CE /* Endpoint.swift */; };
+		5EAD61032C9FA93B007BFEBF /* Extension-ParseStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAD61022C9FA93B007BFEBF /* Extension-ParseStrategy.swift */; };
+		5EAD61052C9FA9A2007BFEBF /* Extension-JSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAD61042C9FA9A2007BFEBF /* Extension-JSONDecoder.swift */; };
 		5EB42FBF2C3D880000C7EEB8 /* KeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 5EB42FBE2C3D880000C7EEB8 /* KeychainWrapper */; };
 		5EBAAD9C2B22310400EC54BA /* SoftwareDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBAAD9B2B22310400EC54BA /* SoftwareDetailView.swift */; };
 		5ECF5D472AF405E200108411 /* SignedOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECF5D462AF405E200108411 /* SignedOutView.swift */; };
@@ -128,6 +130,8 @@
 		5E9B94E32A32320D00A7A0CE /* Host.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 		5E9B94E52A32321D00A7A0CE /* Team.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
 		5E9B94E72A32323300A7A0CE /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		5EAD61022C9FA93B007BFEBF /* Extension-ParseStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension-ParseStrategy.swift"; sourceTree = "<group>"; };
+		5EAD61042C9FA9A2007BFEBF /* Extension-JSONDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension-JSONDecoder.swift"; sourceTree = "<group>"; };
 		5EBAAD9B2B22310400EC54BA /* SoftwareDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareDetailView.swift; sourceTree = "<group>"; };
 		5ECF5D462AF405E200108411 /* SignedOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SignedOutView.swift; path = App/Authentication/SignedOutView.swift; sourceTree = SOURCE_ROOT; };
 		5ED2F5C92B224DA6005CDD23 /* HostsForSoftwareList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostsForSoftwareList.swift; sourceTree = "<group>"; };
@@ -379,6 +383,8 @@
 			isa = PBXGroup;
 			children = (
 				5E028F442A4C9AC500D90456 /* FileManager-DocumentsDirectory.swift */,
+				5EAD61022C9FA93B007BFEBF /* Extension-ParseStrategy.swift */,
+				5EAD61042C9FA9A2007BFEBF /* Extension-JSONDecoder.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -484,6 +490,7 @@
 				5E9B94E42A32320D00A7A0CE /* Host.swift in Sources */,
 				5EDA66BD2A2A4955006706CD /* FleetDMViewerApp.swift in Sources */,
 				5EEA90982A93E9D800FEA5E4 /* ServerSelectionView.swift in Sources */,
+				5EAD61052C9FA9A2007BFEBF /* Extension-JSONDecoder.swift in Sources */,
 				5E9038D92A43944B0077F3DC /* HostSoftwareDetailView.swift in Sources */,
 				5E9038DF2A44AF6F0077F3DC /* MDMCommands.swift in Sources */,
 				5E680A5F2B168E520024C757 /* Sidebar.swift in Sources */,
@@ -537,6 +544,7 @@
 				5E028F512A4DE24400D90456 /* HostCommandRow.swift in Sources */,
 				5EEA909F2A96701500FEA5E4 /* FleetDMViewer.xcdatamodeld in Sources */,
 				5E8311382B1FD7800029480B /* AllPoliciesRow.swift in Sources */,
+				5EAD61032C9FA93B007BFEBF /* Extension-ParseStrategy.swift in Sources */,
 				5E815E962B1A2DF300E0E44A /* CachedVulnerability+CoreDataProperties.swift in Sources */,
 				5E9038DB2A43A0F60077F3DC /* HostProfilesRow.swift in Sources */,
 				5E94DCC42B11358300C09185 /* AuthManager.swift in Sources */,

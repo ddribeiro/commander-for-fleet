@@ -19,7 +19,7 @@ struct NewHostRow: View {
 #else
                 .frame(width: 20, height: 20)
 #endif
-            Text(host.wrappedComputerName)
+            Text(host.wrappedComputerName != "" ? host.wrappedComputerName : host.wrappedHardwareSerial)
                 .font(.headline)
                 .layoutPriority(1)
         }
