@@ -144,8 +144,7 @@ struct HostDetailsView: View {
         } else {
             ProgressView()
             Text("Loading")
-                .font(.body.smallCaps())
-                .foregroundColor(.secondary)
+                
 
                 .task {
                     await updateHost()

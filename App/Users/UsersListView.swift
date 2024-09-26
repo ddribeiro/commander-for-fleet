@@ -25,7 +25,7 @@ struct UsersListView: View {
 
     var body: some View {
         if dataController.isAuthenticated {
-            List(selection: $dataController.selectedUser) {
+            List {
                 ForEach(dataController.usersForSelectedFilter()) { user in
                     UserRow(user: user)
                 }

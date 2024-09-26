@@ -15,6 +15,7 @@ struct User: Codable, Identifiable {
     var email: String
     var globalRole: String?
     var gravatarUrl: String
+    var position: String?
     var ssoEnabled: Bool
     var apiOnly: Bool
     var teams: [Team]

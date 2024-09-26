@@ -54,7 +54,7 @@ struct UsersView: View {
         }
         .navigationTitle(dataController.selectedFilter == .all ? "All Users" : dataController.selectedFilter.name)
         .navigationDestination(for: CachedUser.self) { user in
-            UserDetailView(user: user)
+            UserDetailView(id: Int(user.id))
         }
         .task {
             if let usersLastUpdatedAt = dataController.usersLastUpdatedAt {

@@ -10,22 +10,7 @@ import Foundation
 import KeychainWrapper
 import SwiftUI
 
-// Enum to define the types that hosts can be sorted by.
-enum SortType: String {
-    case name = "computerName"
-    case enolledDate = "lastEnrolledAt"
-    case updatedDate = "seenTime"
-}
 
-// Enum to define states that hosts can be filtered by.
-enum Status {
-    case all, online, offline, missing, recentlyEnrolled
-}
-
-// Enum to define loading state when network calls are made across the app.
-enum LoadingState {
-    case loading, loaded, failed
-}
 
 /* There's a lot in here and it should be cleaned up a bit.
  Everything that is shared across the app is here and much
@@ -36,7 +21,6 @@ enum LoadingState {
 // swiftlint:disable:next type_body_length
 class DataController: ObservableObject {
     let container = NSPersistentContainer(name: "FleetDMViewer")
-
     @Published var selectedFilter = Filter.all
 
     @Published var filterText = ""
@@ -47,7 +31,6 @@ class DataController: ObservableObject {
     @Published var sortType = SortType.name
 
     @Published var selectedTeam: CachedTeam?
-//    @Published var selectedHost: CachedHost?
     @Published var selectedUser: CachedUser?
     @Published var activeEnvironment: AppEnvironment?
 

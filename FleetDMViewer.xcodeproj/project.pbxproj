@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -171,6 +171,10 @@
 		5EFC7ADE2A9E8F9A00C2ED06 /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		2DB967FD2CA5C88300AFCD62 /* Enums */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Enums; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		5EDA66B62A2A4955006706CD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -269,6 +273,7 @@
 		5E9B94E02A3231E600A7A0CE /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				2DB967FD2CA5C88300AFCD62 /* Enums */,
 				5EEA90F22A97DA3500FEA5E4 /* Core Data */,
 				5E9B94E72A32323300A7A0CE /* Endpoint.swift */,
 				5E9B94E32A32320D00A7A0CE /* Host.swift */,
@@ -413,6 +418,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				2DB967FD2CA5C88300AFCD62 /* Enums */,
 			);
 			name = FleetDMViewer;
 			packageProductDependencies = (
