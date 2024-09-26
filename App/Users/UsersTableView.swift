@@ -36,7 +36,7 @@ struct UsersTableView: View {
                     .layoutPriority(1)
             }
 
-            TableColumn("Global Role", value: \.wrappedGlobalRole) { user in
+            TableColumn("Role", value: \.wrappedGlobalRole) { user in
                 Text(user.wrappedGlobalRole.capitalized)
 #if os(macOS)
                     .frame(maxWidth: .infinity, alignment: . trailing)

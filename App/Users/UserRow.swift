@@ -48,24 +48,27 @@ struct UserRow: View {
 #endif
 
             }
-
-            VStack(alignment: .leading) {
-                Text(user.wrappedName)
-                    .font(.headline)
-                    .layoutPriority(1)
-
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(user.wrappedName)
+                        .font(.headline)
+                        .layoutPriority(1)
+                    
+                    if sizeClass == .compact {
+                        Text(user.wrappedEmail)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                }
                 if sizeClass == .compact {
-                    Text(user.wrappedEmail)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-
-                    if user.wrappedGlobalRole != "N/A" {
-                        Text(user.wrappedGlobalRole.capitalized)
-                            .font(.smallCaps(.body)())
+                    Spacer()
+                    if user.apiOnly == true {
+                        Text("API")
+                            .font(.headline)
                             .foregroundStyle(.white)
-                            .padding(.horizontal, 8)
-                            .background(.tertiary)
-                            .clipShape(.capsule)
+                            .padding(.horizontal)
+                            .padding(.vertical, 2)
+                            .background(.tertiary, in: RoundedRectangle(cornerRadius: 8))
                     }
                 }
             }

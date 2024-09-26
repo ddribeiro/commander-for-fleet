@@ -52,7 +52,7 @@ struct UsersView: View {
                 UsersTableView(selection: $selection, searchText: $searchText)
             }
         }
-        .navigationTitle(dataController.selectedFilter == .all ? "All Users" : dataController.selectedFilter.name)
+        .navigationTitle("Users")
         .navigationDestination(for: CachedUser.self) { user in
             UserDetailView(id: Int(user.id))
         }
@@ -75,21 +75,6 @@ struct UsersView: View {
         )
 #if os(iOS)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Picker("Team", selection: $dataController.selectedFilter) {
-                        Text("All Users").tag(Filter.all)
-                        Divider()
-                        ForEach(teamFilters) { filter in
-                            Text(filter.name).tag(filter).badge(filter.hostCount)
-                        }
-                    }
-                } label: {
-                    Label("Teams", systemImage: "person.3")
-                        .symbolVariant(dataController.selectedFilter != .all ? .fill : .none)
-                }
-            }
-
             ToolbarItem(placement: .bottomBar) {
                 if dataController.loadingState == .loaded {
 

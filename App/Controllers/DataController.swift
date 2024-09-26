@@ -240,7 +240,7 @@ class DataController: ObservableObject {
         let request = CachedUser.fetchRequest()
         request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         let allUsers = (try? container.viewContext.fetch(request)) ?? []
-        return allUsers
+        return allUsers.sorted(by: { $0.wrappedName < $1.wrappedName })
     }
 
     func softwareForSelectedFilter() -> [CachedSoftware] {
