@@ -76,7 +76,6 @@
 		5EDE46B12B179CC100BA99A4 /* DetailColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDE46B02B179CC100BA99A4 /* DetailColumn.swift */; };
 		5EDE46B32B17A62500BA99A4 /* HostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDE46B22B17A62500BA99A4 /* HostsView.swift */; };
 		5EDE46B52B17A80E00BA99A4 /* HostsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDE46B42B17A80E00BA99A4 /* HostsTable.swift */; };
-		5EDE46B72B17AC6800BA99A4 /* NewHostRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDE46B62B17AC6800BA99A4 /* NewHostRow.swift */; };
 		5EDE46BA2B17E44C00BA99A4 /* UsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDE46B92B17E44C00BA99A4 /* UsersView.swift */; };
 		5EDE46BC2B17E70700BA99A4 /* UsersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDE46BB2B17E70700BA99A4 /* UsersListView.swift */; };
 		5EDE46C22B1915A900BA99A4 /* UsersTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDE46C12B1915A900BA99A4 /* UsersTableView.swift */; };
@@ -159,7 +158,6 @@
 		5EDE46B02B179CC100BA99A4 /* DetailColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailColumn.swift; sourceTree = "<group>"; };
 		5EDE46B22B17A62500BA99A4 /* HostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostsView.swift; sourceTree = "<group>"; };
 		5EDE46B42B17A80E00BA99A4 /* HostsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostsTable.swift; sourceTree = "<group>"; };
-		5EDE46B62B17AC6800BA99A4 /* NewHostRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHostRow.swift; sourceTree = "<group>"; };
 		5EDE46B92B17E44C00BA99A4 /* UsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersView.swift; sourceTree = "<group>"; };
 		5EDE46BB2B17E70700BA99A4 /* UsersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListView.swift; sourceTree = "<group>"; };
 		5EDE46C12B1915A900BA99A4 /* UsersTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableView.swift; sourceTree = "<group>"; };
@@ -370,7 +368,6 @@
 				5EEA90922A8EA24200FEA5E4 /* MDMCommandMenu.swift */,
 				5E7DAB0C2A339C7F00DDFAFC /* NoHostView.swift */,
 				5EDC18072A3B8FDF00691C2E /* HostRow.swift */,
-				5EDE46B62B17AC6800BA99A4 /* NewHostRow.swift */,
 				5EDE46AE2B179B2400BA99A4 /* HostsListView.swift */,
 				5E9039312A45FC250077F3DC /* HostDetailsView.swift */,
 				5EC273A62CA07A200074249C /* HostMDMDetailsView.swift */,
@@ -556,7 +553,6 @@
 				5EC273A92CA07EFF0074249C /* HostHardwareDetailsView.swift in Sources */,
 				5E3336EB2B0D1402009FFF97 /* ContentViewToolbar.swift in Sources */,
 				5EEA90932A8EA24200FEA5E4 /* MDMCommandMenu.swift in Sources */,
-				5EDE46B72B17AC6800BA99A4 /* NewHostRow.swift in Sources */,
 				5E815EA52B1A2DF300E0E44A /* CachedProfile+CoreDataClass.swift in Sources */,
 				5E815EA02B1A2DF300E0E44A /* CachedBattery+CoreDataProperties.swift in Sources */,
 				5E815EA12B1A2DF300E0E44A /* CachedCommandResponse+CoreDataClass.swift in Sources */,

@@ -21,7 +21,7 @@ struct HostsTable: View {
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Name", value: \.id) { host in
-                NewHostRow(host: host)
+                HostRow(host: host)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .layoutPriority(1)
             }

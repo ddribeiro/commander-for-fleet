@@ -37,7 +37,7 @@ struct HostsView: View {
     var body: some View {
         ZStack {
             if displayAsList {
-                HostsListView()
+                list
             } else {
                 HostsTable(selection: $selection)
             }
@@ -58,9 +58,6 @@ struct HostsView: View {
             await fetchTeams()
             await fetchHosts()
         }
-//        .onAppear {
-//            dataController.filterText = ""
-//        }
         .overlay {
             if dataController.hostsForSelectedFilter().isEmpty {
                 ContentUnavailableView.search
@@ -117,6 +114,20 @@ struct HostsView: View {
         }
 #endif
 
+    }
+    
+    var list: some View {
+        List {
+            hostRows(dataController.hostsForSelectedFilter())
+        }
+    }
+    
+    func hostRows(_ hosts: [CachedHost]) -> some View {
+        ForEach(hosts) { host in
+            NavigationLink(value: host.id) {
+                HostRow(host: host)
+            }
+        }
     }
 
     @ViewBuilder

@@ -26,7 +26,7 @@ struct HostsListView: View {
     }
 
     var body: some View {
-        if dataController.isAuthenticated {
+        if dataController.hostsForSelectedFilter().isEmpty == false {
             List {
                 ForEach(dataController.hostsForSelectedFilter()) { host in
                     HostRow(host: host)
@@ -34,12 +34,6 @@ struct HostsListView: View {
             }
         } else {
             NoHostView()
-                .sheet(isPresented: $isShowingSignInSheet) {
-                    LoginView()
-                }
-                .onAppear {
-                    isShowingSignInSheet = true
-                }
         }
     }
 
