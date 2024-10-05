@@ -11,11 +11,11 @@ struct UserDetailView: View {
     @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
     @Environment(\.networkManager) var networkManager
-    
+
     @State private var currentUser: User?
-    
+
     var id: Int
-    
+
     var body: some View {
         if let user = currentUser {
             Form {
@@ -28,16 +28,16 @@ struct UserDetailView: View {
                             time: .shortened
                         )
                     )
-                    
+
                     if let position = user.position {
                         LabeledContent("Position", value: position)
                     }
-                    
+
                     if let globalRole = user.globalRole {
                         LabeledContent("Global Role", value: globalRole.capitalized)
                     }
                 }
-                
+
                 Section("Teams") {
                     ForEach(user.teams) { team in
                         LabeledContent(team.name, value: team.role?.capitalized ?? "")
@@ -57,23 +57,23 @@ struct UserDetailView: View {
                     await updateUser()
                 }
         }
-            
+
     }
-    
+
     private func updateUser() async {
         guard dataController.activeEnvironment != nil else { return }
-        
+
         do {
-            
+
             let userReponse = try await getUser(userID: id)
             currentUser = userReponse.user
-            
+
             if userReponse.user.teams.isEmpty {
                 currentUser?.teams = userReponse.availableTeams
             } else {
                 currentUser?.teams = userReponse.user.teams
             }
-            
+
         } catch {
             switch error as? AuthManager.AuthError {
             case .missingCredentials:
@@ -90,10 +90,10 @@ struct UserDetailView: View {
             }
         }
     }
-    
+
     func getUser(userID: Int) async throws -> UserReponse {
         let endpoint = Endpoint.getUser(id: userID)
-        
+
         do {
             let user = try await networkManager.fetch(endpoint, attempts: 5)
             return user

@@ -144,7 +144,6 @@ struct HostDetailsView: View {
         } else {
             ProgressView()
             Text("Loading")
-                
 
                 .task {
                     await updateHost()

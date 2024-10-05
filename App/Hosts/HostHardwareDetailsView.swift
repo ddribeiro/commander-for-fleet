@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HostHardwareDetailsView: View {
     let host: Host
-    
+
     var body: some View {
         Section {
             LabeledContent("Device Name", value: host.computerName)

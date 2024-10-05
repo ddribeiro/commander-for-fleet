@@ -10,9 +10,9 @@ import SwiftUI
 struct HostRow: View {
     @EnvironmentObject var dataController: DataController
     @Environment(\.horizontalSizeClass) var sizeClass
-    
+
     var host: CachedHost
-    
+
     var body: some View {
         HStack {
             switch host.platform {
@@ -49,18 +49,18 @@ struct HostRow: View {
                     Text(host.wrappedComputerName != "" ? host.wrappedComputerName : host.wrappedHardwareSerial)
                         .font(.headline)
                         .lineLimit(1)
-                    
+
                     if dataController.selectedFilter == .all || dataController.selectedFilter == .recentlyEnrolled {
                         Text(host.wrappedTeamName)
                             .font(.headline)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
-                    
+
                     Text(host.wrappedHardwareSerial)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
-                    
+
                     if dataController.selectedFilter != .recentlyEnrolled {
                         Text(host.wrappedHardwareModel)
                             .foregroundColor(.secondary)
@@ -70,14 +70,14 @@ struct HostRow: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                
+
                 Spacer()
-                
+
                 VStack(alignment: .trailing) {
                     Image(systemName: "circle.fill")
                         .imageScale(.small)
                         .foregroundStyle(host.status == "online" ? .green : .red)
-                    
+
                     Text(host.wrappedStatus)
                         .font(.body.smallCaps())
                         .foregroundStyle(.secondary)

@@ -68,8 +68,6 @@ struct NetworkManager {
             throw URLError(.unsupportedURL)
         }
 
-        print(url.absoluteString)
-
         var request = URLRequest(url: url)
         request.httpMethod = resource.method.rawValue
         request.httpBody = data
@@ -82,44 +80,44 @@ struct NetworkManager {
             ]
         }
 
-        var (responseData, response) = try await URLSession(configuration: configuration).data(for: request)
+        do {
+            var (responseData, response) = try await URLSession(configuration: configuration).data(for: request)
 
-        if let httpResponse = response as? HTTPURLResponse {
-            if !(200...299).contains(httpResponse.statusCode) {
-                print(httpResponse.statusCode)
-                switch httpResponse.statusCode {
-                case 401:
-                    if allowRetry {
-                        let newToken = try await authManager.refreshToken()
-                        KeychainWrapper.default.set(newToken, forKey: "apiToken")
-                        return try await fetch(resource, with: data, allowRetry: false)
-                    } else {
+            if let httpResponse = response as? HTTPURLResponse {
+                if !(200...299).contains(httpResponse.statusCode) {
+                    print(httpResponse.statusCode)
+                    switch httpResponse.statusCode {
+                    case 401:
+                        if allowRetry {
+                            let newToken = try await authManager.refreshToken()
+                            KeychainWrapper.default.set(newToken, forKey: "apiToken")
+                            return try await fetch(resource, with: data, allowRetry: false)
+                        } else {
+                            throw HTTPError.statusCode(httpResponse.statusCode)
+                        }
+                    default:
                         throw HTTPError.statusCode(httpResponse.statusCode)
                     }
-                default:
-                    throw HTTPError.statusCode(httpResponse.statusCode)
                 }
             }
-        }
 
-        if let keyPath = resource.keyPath {
-            if let rootObject = try JSONSerialization.jsonObject(with: responseData) as? NSDictionary {
-                if let nestedObject = rootObject.value(forKeyPath: keyPath) {
+            if let keyPath = resource.keyPath {
+                if let rootObject = try JSONSerialization.jsonObject(with: responseData) as? NSDictionary {
+                    if let nestedObject = rootObject.value(forKeyPath: keyPath) {
 
-                    // swiftlint:disable:next line_length
-                    responseData = try JSONSerialization.data(withJSONObject: nestedObject, options: [.fragmentsAllowed, .prettyPrinted])
+                        // swiftlint:disable:next line_length
+                        responseData = try JSONSerialization.data(withJSONObject: nestedObject, options: [.fragmentsAllowed, .prettyPrinted])
+                    }
                 }
             }
-        }
 
-        if let responseString = String(data: responseData, encoding: .utf8) {
-            print(responseString)
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            decoder.dateDecodingStrategy = .iso8601withOptionalFractionalSeconds
+            return try decoder.decode(T.self, from: responseData)
+        } catch {
+            throw error
         }
-
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        decoder.dateDecodingStrategy = .iso8601withOptionalFractionalSeconds
-        return try decoder.decode(T.self, from: responseData)
     }
 
     // swiftlint:disable:next line_length

@@ -10,8 +10,6 @@ import Foundation
 import KeychainWrapper
 import SwiftUI
 
-
-
 /* There's a lot in here and it should be cleaned up a bit.
  Everything that is shared across the app is here and much
  of it should proably be moved into a view model. There is

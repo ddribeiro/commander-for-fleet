@@ -53,7 +53,7 @@ struct UserRow: View {
                     Text(user.wrappedName)
                         .font(.headline)
                         .layoutPriority(1)
-                    
+
                     if sizeClass == .compact {
                         Text(user.wrappedEmail)
                             .foregroundStyle(.secondary)

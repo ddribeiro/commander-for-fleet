@@ -6,19 +6,23 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct HostsView: View {
-    @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
+    
+    @Environment(\.managedObjectContext) var moc
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
+    
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
     @State private var selection: Set<CachedHost.ID> = []
 
     let smartFilters: [Filter] = [.all, .recentlyEnrolled]
-
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
+    
+    var hosts: [Host]
 
     var teamFilters: [Filter] {
         teams.map { team in
@@ -115,13 +119,13 @@ struct HostsView: View {
 #endif
 
     }
-    
+
     var list: some View {
         List {
             hostRows(dataController.hostsForSelectedFilter())
         }
     }
-    
+
     func hostRows(_ hosts: [CachedHost]) -> some View {
         ForEach(hosts) { host in
             NavigationLink(value: host.id) {
@@ -237,5 +241,5 @@ struct HostsView: View {
 }
 
 #Preview {
-    HostsView()
+    HostsView(hosts: [.example])
 }
