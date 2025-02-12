@@ -22,7 +22,7 @@ struct HostsView: View {
 
     let smartFilters: [Filter] = [.all, .recentlyEnrolled]
     
-    var hosts: [Host]
+    var hosts = [Host]()
 
     var teamFilters: [Filter] {
         teams.map { team in
