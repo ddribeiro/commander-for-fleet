@@ -11,49 +11,49 @@ import KeychainWrapper
 struct HostDetailsView: View {
     @EnvironmentObject var dataController: DataController
     @Environment(\.networkManager) var networkManager
-
+    
     @State private var updatedHost: Host?
     @State private var selectedView = "Policies"
     @State private var lockCode: String = ""
-
-    var id: Int16?
+    
+    var id: Int
     var views = ["Policies", "Software", "Profiles"]
-
+    
     var body: some View {
         if let host = updatedHost {
             Form {
                 HostHardwareDetailsView(host: host)
                 HostStorageDetailsView(host: host)
-
+                
                 if let mdm = host.mdm {
                     if mdm.enrollmentStatus != nil {
                         HostMDMDetailsView(mdm: mdm)
                     }
                 }
-
+                
                 Section {
-
+                    
                     // swiftlint:disable:next line_length
                     LabeledContent("Enrolled", value: "\(host.lastEnrolledAt.formatted(date: .abbreviated, time: .shortened))")
                         .multilineTextAlignment(.trailing)
-
+                    
                     // swiftlint:disable:next line_length
                     LabeledContent("Last Seen", value: "\(host.seenTime.formatted(date: .abbreviated, time: .shortened))")
                         .multilineTextAlignment(.trailing)
-
+                    
                     LabeledContent("Uptime", value: "\(host.uptime / 86491509803921) days")
                 }
-
+                
                 Section {
                     LabeledContent("IP Address", value: host.publicIp)
-
+                    
                     LabeledContent("Private IP Address", value: host.primaryIp)
-
+                    
                     LabeledContent("MAC Address", value: host.primaryMac)
                 } header: {
                     Label("Network Information", systemImage: "network")
                 }
-
+                
                 if let batteries = host.batteries {
                     Section {
                         ForEach(batteries, id: \.self) { battery in
@@ -70,7 +70,7 @@ struct HostDetailsView: View {
                                     .foregroundStyle(.secondary)
                             }
                             .tint(.green)
-
+                            
                             LabeledContent("Battery Health") {
                                 Text(battery.health)
                                     .foregroundColor(battery.health == "Normal" ? .secondary : .red)
@@ -84,7 +84,7 @@ struct HostDetailsView: View {
                         Label("Battery Health", systemImage: "battery.100")
                     }
                 }
-
+                
                 Section {
                     Picker("Select a view", selection: $selectedView) {
                         ForEach(views, id: \.self) {
@@ -92,7 +92,7 @@ struct HostDetailsView: View {
                         }
                     }
                     .pickerStyle(.segmented)
-
+                    
                     switch selectedView {
                     case "Policies":
                         if let policies = host.policies {
@@ -128,7 +128,7 @@ struct HostDetailsView: View {
             .onDisappear {
                 updatedHost = nil
             }
-
+            
             .refreshable {
                 await updateHost()
             }
@@ -144,21 +144,19 @@ struct HostDetailsView: View {
         } else {
             ProgressView()
             Text("Loading")
-
+            
                 .task {
                     await updateHost()
                 }
         }
-
+        
     }
-
+    
     private func updateHost() async {
         guard dataController.activeEnvironment != nil else { return }
-
+        
         do {
-            if let id = id {
-                updatedHost = try await getHost(hostID: Int(id))
-            }
+            updatedHost = try await getHost(hostID: Int(id))
         } catch {
             switch error as? AuthManager.AuthError {
             case .missingCredentials:
@@ -175,10 +173,10 @@ struct HostDetailsView: View {
             }
         }
     }
-
+    
     func getHost(hostID: Int) async throws -> Host {
         let endpoint = Endpoint.gethost(id: hostID)
-
+        
         do {
             let host = try await networkManager.fetch(endpoint, attempts: 5)
             return host

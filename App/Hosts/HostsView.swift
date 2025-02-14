@@ -18,11 +18,11 @@ struct HostsView: View {
     
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
-    @State private var selection: Set<CachedHost.ID> = []
+    @State private var selection: Set<Host.ID> = []
 
     let smartFilters: [Filter] = [.all, .recentlyEnrolled]
     
-    var hosts = [Host]()
+    @State private var hosts = [Host]()
 
     var teamFilters: [Filter] {
         teams.map { team in
@@ -43,11 +43,11 @@ struct HostsView: View {
             if displayAsList {
                 list
             } else {
-                HostsTable(selection: $selection)
+                HostsTable(selection: $selection, hosts: hosts)
             }
         }
         .navigationTitle(dataController.selectedFilter == .all ? "All Hosts" : dataController.selectedFilter.name)
-        .navigationDestination(for: CachedHost.ID.self) { id in
+        .navigationDestination(for: Host.ID.self) { id in
             HostDetailsView(id: id)
         }
         .toolbar {
@@ -56,14 +56,11 @@ struct HostsView: View {
             }
         }
         .task {
-            if let hostsLastUpdatedAt = dataController.hostsLastUpdatedAt {
-                guard hostsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
-            }
             await fetchTeams()
             await fetchHosts()
         }
         .overlay {
-            if dataController.hostsForSelectedFilter().isEmpty {
+            if hosts.isEmpty {
                 ContentUnavailableView.search
             }
         }
@@ -109,7 +106,7 @@ struct HostsView: View {
                     VStack {
                         Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
                             .font(.footnote)
-                        Text("^[\(dataController.hostsForSelectedFilter().count) Computers](inflection: true)")
+                        Text("^[\(hosts.count) Computers](inflection: true)")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
@@ -122,11 +119,11 @@ struct HostsView: View {
 
     var list: some View {
         List {
-            hostRows(dataController.hostsForSelectedFilter())
+            hostRows(hosts)
         }
     }
 
-    func hostRows(_ hosts: [CachedHost]) -> some View {
+    func hostRows(_ hosts: [Host]) -> some View {
         ForEach(hosts) { host in
             NavigationLink(value: host.id) {
                 HostRow(host: host)
@@ -146,10 +143,9 @@ struct HostsView: View {
         guard dataController.activeEnvironment != nil else { return }
 
         do {
-            let hosts = try await networkManager.fetch(.hosts, attempts: 5)
+            hosts = try await networkManager.fetch(.hosts)
 
             await MainActor.run {
-                updateCache(with: hosts)
                 dataController.hostsLastUpdatedAt = .now
             }
         } catch {
@@ -167,36 +163,6 @@ struct HostsView: View {
                 print(error)
             }
         }
-    }
-
-    func updateCache(with downloadedHosts: [Host]) {
-        for downloadedHost in downloadedHosts {
-            let cachedHost = CachedHost(context: moc)
-
-            cachedHost.id = Int16(downloadedHost.id)
-            cachedHost.platform = downloadedHost.platform
-            cachedHost.lastEnrolledAt = downloadedHost.lastEnrolledAt
-            cachedHost.seenTime = downloadedHost.seenTime
-            cachedHost.uuid = downloadedHost.uuid
-            cachedHost.osVersion = downloadedHost.osVersion
-            cachedHost.uptime = Int64(downloadedHost.uptime)
-            cachedHost.memory = Int64(downloadedHost.memory)
-            cachedHost.cpuBrand = downloadedHost.cpuBrand
-            cachedHost.hardwareModel = downloadedHost.hardwareModel
-            cachedHost.hardwareSerial = downloadedHost.hardwareSerial
-            cachedHost.computerName = downloadedHost.computerName
-            cachedHost.publicIp = downloadedHost.publicIp
-            cachedHost.primaryIp = downloadedHost.primaryIp
-            cachedHost.primaryMac = downloadedHost.primaryMac
-            cachedHost.teamId = Int16(downloadedHost.teamId ?? 0)
-            cachedHost.gigsDiskSpaceAvailable = downloadedHost.gigsDiskSpaceAvailable
-            cachedHost.percentDiskSpaceAvailable = Double(downloadedHost.percentDiskSpaceAvailable)
-            cachedHost.diskEncryptionEnabled = downloadedHost.diskEncryptionEnabled ?? false
-            cachedHost.status = downloadedHost.status
-            cachedHost.teamName = downloadedHost.teamName
-        }
-
-        try? moc.save()
     }
 
     func fetchTeams() async {
@@ -241,5 +207,5 @@ struct HostsView: View {
 }
 
 #Preview {
-    HostsView(hosts: [.example])
+    HostsView()
 }

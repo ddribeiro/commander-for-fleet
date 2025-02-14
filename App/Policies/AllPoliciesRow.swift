@@ -10,11 +10,11 @@ import SwiftUI
 struct AllPoliciesRow: View {
     @Environment(\.horizontalSizeClass) var sizeClass
     
-    var policy: CachedPolicy
+    var policy: Policy
     
     var body: some View {
         VStack(alignment: .center) {
-            Text(policy.wrappedName)
+            Text(policy.name)
                 .font(.headline)
                 .multilineTextAlignment(.center)
             if sizeClass == .compact {

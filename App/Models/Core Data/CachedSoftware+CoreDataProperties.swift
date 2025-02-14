@@ -58,30 +58,13 @@ extension CachedSoftware {
         }
     }
 
-    var hostsArray: [CachedHost] {
-        let set = hosts as? Set<CachedHost> ?? []
+    var hostsArray: [Host] {
+        let set = hosts as? Set<Host> ?? []
 
         return set.sorted {
-            $0.wrappedComputerName < $1.wrappedComputerName
+            $0.computerName < $1.computerName
         }
     }
-
-}
-
-// MARK: Generated accessors for hosts
-extension CachedSoftware {
-
-    @objc(addHostsObject:)
-    @NSManaged public func addToHosts(_ value: CachedHost)
-
-    @objc(removeHostsObject:)
-    @NSManaged public func removeFromHosts(_ value: CachedHost)
-
-    @objc(addHosts:)
-    @NSManaged public func addToHosts(_ values: NSSet)
-
-    @objc(removeHosts:)
-    @NSManaged public func removeFromHosts(_ values: NSSet)
 
 }
 

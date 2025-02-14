@@ -13,17 +13,19 @@ struct AllPoliciesTableView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.networkManager) var networkManager
 
-    @Binding var selection: Set<CachedPolicy.ID>
+    @Binding var selection: Set<Policy.ID>
     @Binding var searchText: String
 
-    @State private var sortOrder = [KeyPathComparator(\CachedPolicy.id, order: .reverse)]
+    @State private var sortOrder = [KeyPathComparator(\Policy.id, order: .reverse)]
+    
+    var polices: [Policy]
 
-    var searchResults: [CachedPolicy] {
+    var searchResults: [Policy] {
         if searchText.isEmpty {
-            return dataController.policiesforSelectedFilter()
+            return polices
         } else {
-            return dataController.policiesforSelectedFilter().filter {
-                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
+            return polices.filter {
+                $0.name.localizedCaseInsensitiveContains(searchText)
             }
         }
     }
@@ -36,8 +38,8 @@ struct AllPoliciesTableView: View {
                     .layoutPriority(1)
             }
 
-            TableColumn("Passing", value: \.passingHostCount) { policy in
-                Text("^[\(policy.passingHostCount) host](inflect: true)")
+            TableColumn("Passing", value: \.wrappedPassingHostCount) { policy in
+                Text("^[\(policy.wrappedPassingHostCount) host](inflect: true)")
                     .frame(alignment: .trailing)
 #if os(macOS)
                     .foregroundStyle(.secondary)
@@ -45,8 +47,8 @@ struct AllPoliciesTableView: View {
             }
             .width(100)
 
-            TableColumn("Failing", value: \.failingHostCount) { policy in
-                Text("^[\(policy.failingHostCount) host](inflect: true)")
+            TableColumn("Failing", value: \.wrappedFailingHostCount) { policy in
+                Text("^[\(policy.wrappedFailingHostCount) host](inflect: true)")
                     .frame(alignment: .trailing)
 #if os(macOS)
                     .foregroundStyle(.secondary)

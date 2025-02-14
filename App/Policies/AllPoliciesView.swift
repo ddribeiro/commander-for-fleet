@@ -13,8 +13,9 @@ struct AllPoliciesView: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
-
-    @State private var selection: Set<CachedPolicy.ID> = []
+    
+    @State private var policies : [Policy] = []
+    @State private var selection: Set<Policy.ID> = []
     @State private var searchText = ""
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
@@ -25,12 +26,12 @@ struct AllPoliciesView: View {
         }
     }
 
-    var searchResults: [CachedPolicy] {
+    var searchResults: [Policy] {
         if searchText.isEmpty {
-            return dataController.policiesforSelectedFilter()
+            return policies
         } else {
-            return dataController.policiesforSelectedFilter().filter {
-                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
+            return policies.filter {
+                $0.name.localizedCaseInsensitiveContains(searchText)
             }
         }
     }
@@ -48,10 +49,10 @@ struct AllPoliciesView: View {
             if displayAsList {
                 list
             } else {
-                AllPoliciesTableView(selection: $selection, searchText: $searchText)
+                AllPoliciesTableView(selection: $selection, searchText: $searchText, polices: policies)
             }
         }
-        .navigationDestination(for: CachedPolicy.self) { policy in
+        .navigationDestination(for: Policy.self) { policy in
             PolicyDetailView(policy: policy)
         }
         .navigationTitle(dataController.selectedFilter == .all ? "All Policies" : dataController.selectedFilter.name)
@@ -82,7 +83,7 @@ struct AllPoliciesView: View {
             }
         }
         .overlay {
-            if dataController.policiesforSelectedFilter().isEmpty {
+            if policies.isEmpty {
                 ContentUnavailableView.search
             }
         }
@@ -141,7 +142,7 @@ struct AllPoliciesView: View {
         }
     }
 
-    func policyRows(_ policies: [CachedPolicy]) -> some View {
+    func policyRows(_ policies: [Policy]) -> some View {
         ForEach(policies) { policy in
             NavigationLink(value: policy) {
                 AllPoliciesRow(policy: policy)
@@ -162,14 +163,8 @@ struct AllPoliciesView: View {
 
         do {
             dataController.loadingState = .loading
-            let policies = try await networkManager.fetch(.getTeamPolicies(id: id)).policies
+            policies = try await networkManager.fetch(.getTeamPolicies(id: id)).policies
 
-            if let policies = policies {
-                await MainActor.run {
-                    updateCache(with: policies)
-                    dataController.policiesLastUpdatedAt = .now
-                }
-            }
 
             dataController.loadingState = .loaded
         } catch {
@@ -194,14 +189,7 @@ struct AllPoliciesView: View {
         guard dataController.activeEnvironment != nil else { return }
 
         do {
-            let policies = try await networkManager.fetch(.globalPolicies, attempts: 5).policies
-
-            if let policies = policies {
-                await MainActor.run {
-                    updateCache(with: policies)
-                    dataController.policiesLastUpdatedAt = .now
-                }
-            }
+            policies = try await networkManager.fetch(.globalPolicies, attempts: 5).policies
         } catch {
             switch error as? AuthManager.AuthError {
             case .missingCredentials:
@@ -217,29 +205,5 @@ struct AllPoliciesView: View {
                 print(error.localizedDescription)
             }
         }
-    }
-
-    func updateCache(with downloadedPolicies: [Policy]) {
-        for downloadedPolicy in downloadedPolicies {
-            let cachedPolicy = CachedPolicy(context: moc)
-
-            cachedPolicy.id = Int16(downloadedPolicy.id)
-            cachedPolicy.name = downloadedPolicy.name
-            cachedPolicy.query = downloadedPolicy.query
-            cachedPolicy.critical = downloadedPolicy.critical
-            cachedPolicy.policyDescription = downloadedPolicy.description
-            cachedPolicy.authorId = Int16(downloadedPolicy.authorId)
-            cachedPolicy.authorName = downloadedPolicy.authorName
-            cachedPolicy.authorEmail = downloadedPolicy.authorEmail
-            cachedPolicy.teamId = Int16(downloadedPolicy.teamId ?? 0)
-            cachedPolicy.resolution = downloadedPolicy.resolution
-            cachedPolicy.platform = downloadedPolicy.platform
-            cachedPolicy.createdAt = downloadedPolicy.createdAt
-            cachedPolicy.updatedAt = downloadedPolicy.updatedAt
-            cachedPolicy.passingHostCount = Int16(downloadedPolicy.passingHostCount ?? 0)
-            cachedPolicy.failingHostCount = Int16(downloadedPolicy.failingHostCount ?? 0)
-
-        }
-        try? moc.save()
     }
 }

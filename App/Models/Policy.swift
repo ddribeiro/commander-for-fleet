@@ -8,7 +8,7 @@
 import Foundation
 
 struct PolicyResponse: Codable {
-    var policies: [Policy]?
+    var policies: [Policy]
 }
 
 struct Policy: Codable, Identifiable, Hashable {
@@ -28,6 +28,14 @@ struct Policy: Codable, Identifiable, Hashable {
     let passingHostCount: Int?
     let failingHostCount: Int?
     let response: String?
+    
+    var wrappedPassingHostCount: Int {
+        passingHostCount ?? 0
+    }
+    
+    var wrappedFailingHostCount: Int {
+        failingHostCount ?? 0
+    }
 
     static let example = Policy(
         id: 29,

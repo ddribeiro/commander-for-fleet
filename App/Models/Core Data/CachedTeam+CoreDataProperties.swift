@@ -30,14 +30,6 @@ extension CachedTeam {
         role ?? ""
     }
 
-    var hostsArray: [CachedHost] {
-        let set = hosts as? Set<CachedHost> ?? []
-
-        return set.sorted {
-            $0.wrappedComputerName < $1.wrappedComputerName
-        }
-    }
-
     var usersArray: [CachedUser] {
         let set = users as? Set<CachedUser> ?? []
 
@@ -45,23 +37,6 @@ extension CachedTeam {
             $0.wrappedName < $1.wrappedName
         }
     }
-
-}
-
-// MARK: Generated accessors for hosts
-extension CachedTeam {
-
-    @objc(addHostsObject:)
-    @NSManaged public func addToHosts(_ value: CachedHost)
-
-    @objc(removeHostsObject:)
-    @NSManaged public func removeFromHosts(_ value: CachedHost)
-
-    @objc(addHosts:)
-    @NSManaged public func addToHosts(_ values: NSSet)
-
-    @objc(removeHosts:)
-    @NSManaged public func removeFromHosts(_ values: NSSet)
 
 }
 

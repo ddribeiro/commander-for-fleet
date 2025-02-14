@@ -176,43 +176,34 @@ class DataController: ObservableObject {
 
         let request3: NSFetchRequest<NSFetchRequestResult> = CachedSoftware.fetchRequest()
         delete(request3)
-
-        let request4: NSFetchRequest<NSFetchRequestResult> = CachedHost.fetchRequest()
-        delete(request4)
-
-        let request5: NSFetchRequest<NSFetchRequestResult> = CachedCommandResponse.fetchRequest()
-        delete(request5)
-
-        let request6: NSFetchRequest<NSFetchRequestResult> = CachedPolicy.fetchRequest()
-        delete(request6)
     }
 
-    func policiesforSelectedFilter() -> [CachedPolicy] {
-        let filter = selectedFilter
-        var predicates = [NSPredicate]()
-
-        if let team = filter.team {
-            let teamPredicate = NSPredicate(format: "teamId == %@", "\(team.id)")
-            predicates.append(teamPredicate)
-        }
-
-        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
-
-        if trimmedFilterText.isEmpty == false {
-            let userNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
-            let emailPredicate = NSPredicate(format: "authorName CONTAINS[c] %@", trimmedFilterText)
-            let combinedPredicate = NSCompoundPredicate(
-                orPredicateWithSubpredicates: [userNamePredicate, emailPredicate]
-            )
-
-            predicates.append(combinedPredicate)
-        }
-
-        let request = CachedPolicy.fetchRequest()
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        let allPolicies = (try? container.viewContext.fetch(request)) ?? []
-        return allPolicies
-    }
+//    func policiesforSelectedFilter() -> [Policy] {
+//        let filter = selectedFilter
+//        var predicates = [NSPredicate]()
+//
+//        if let team = filter.team {
+//            let teamPredicate = NSPredicate(format: "teamId == %@", "\(team.id)")
+//            predicates.append(teamPredicate)
+//        }
+//
+//        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
+//
+//        if trimmedFilterText.isEmpty == false {
+//            let userNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
+//            let emailPredicate = NSPredicate(format: "authorName CONTAINS[c] %@", trimmedFilterText)
+//            let combinedPredicate = NSCompoundPredicate(
+//                orPredicateWithSubpredicates: [userNamePredicate, emailPredicate]
+//            )
+//
+//            predicates.append(combinedPredicate)
+//        }
+//
+//        let request = CachedPolicy.fetchRequest()
+//        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+//        let allPolicies = (try? container.viewContext.fetch(request)) ?? []
+//        return allPolicies
+//    }
 
     func usersForSelectedFilter() -> [CachedUser] {
         let filter = selectedFilter
@@ -261,74 +252,74 @@ class DataController: ObservableObject {
     }
 
     // swiftlint:disable:next function_body_length
-    func hostsForSelectedFilter() -> [CachedHost] {
-        let filter = selectedFilter
-        var predicates = [NSPredicate]()
-        var sortDescriptors = [NSSortDescriptor]()
-
-        if let team = filter.team {
-            let teamPredicate = NSPredicate(format: "teamId CONTAINS %@", "\(team.id)")
-            predicates.append(teamPredicate)
-        } else {
-            let datePredicate = NSPredicate(format: "lastEnrolledAt > %@", filter.minEnrollmentDate as NSDate)
-            predicates.append(datePredicate)
-
-            let sortDescriptor = NSSortDescriptor(key: "lastEnrolledAt", ascending: true)
-            sortDescriptors.append(sortDescriptor)
-
-        }
-
-        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
-
-        if trimmedFilterText.isEmpty == false {
-            let hostNamePredicate = NSPredicate(format: "computerName CONTAINS[c] %@", trimmedFilterText)
-            let serialNumberPredicate = NSPredicate(format: "hardwareSerial CONTAINS[c] %@", trimmedFilterText)
-            let combinedPredicate = NSCompoundPredicate(
-                orPredicateWithSubpredicates: [hostNamePredicate, serialNumberPredicate]
-            )
-
-            predicates.append(combinedPredicate)
-        }
-
-        if filterTokens.isEmpty == false {
-            var platformPredicates = [NSPredicate]()
-            for filterToken in filterTokens {
-                for platform in filterToken.platform {
-                    let tokenPredicate = NSPredicate(format: "platform CONTAINS[c] %@", platform)
-                    platformPredicates.append(tokenPredicate)
-                }
-            }
-            let combinedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: platformPredicates)
-            predicates.append(combinedPredicate)
-        }
-
-        if filterStatus != .all {
-            if filterStatus == .online {
-                let statusFilter = NSPredicate(format: "status CONTAINS[c] %@", "online")
-                predicates.append(statusFilter)
-            }
-            if filterStatus == .offline {
-                let statusFilter = NSPredicate(format: "status CONTAINS[c] %@", "offline")
-                predicates.append(statusFilter)
-            }
-            if filterStatus == .missing {
-                // swiftlint:disable:next line_length
-                let statusFilter = NSPredicate(format: "seenTime < %@", Date.now.addingTimeInterval(86400 * -30) as NSDate)
-                predicates.append(statusFilter)
-            }
-            if filterStatus == .recentlyEnrolled {
-                // swiftlint:disable:next line_length
-                let statusFilter = NSPredicate(format: "lastEnrolledAt > %@", Date.now.addingTimeInterval(86400 * -7) as NSDate)
-                predicates.append(statusFilter)
-            }
-        }
-
-        let request = CachedHost.fetchRequest()
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        request.sortDescriptors = [NSSortDescriptor(key: sortType.rawValue, ascending: sortOldestFirst)]
-        let allHosts = (try? container.viewContext.fetch(request)) ?? []
-        return allHosts
-    }
+//    func hostsForSelectedFilter() -> [Host] {
+//        let filter = selectedFilter
+//        var predicates = [NSPredicate]()
+//        var sortDescriptors = [NSSortDescriptor]()
+//
+//        if let team = filter.team {
+//            let teamPredicate = NSPredicate(format: "teamId CONTAINS %@", "\(team.id)")
+//            predicates.append(teamPredicate)
+//        } else {
+//            let datePredicate = NSPredicate(format: "lastEnrolledAt > %@", filter.minEnrollmentDate as NSDate)
+//            predicates.append(datePredicate)
+//
+//            let sortDescriptor = NSSortDescriptor(key: "lastEnrolledAt", ascending: true)
+//            sortDescriptors.append(sortDescriptor)
+//
+//        }
+//
+//        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
+//
+//        if trimmedFilterText.isEmpty == false {
+//            let hostNamePredicate = NSPredicate(format: "computerName CONTAINS[c] %@", trimmedFilterText)
+//            let serialNumberPredicate = NSPredicate(format: "hardwareSerial CONTAINS[c] %@", trimmedFilterText)
+//            let combinedPredicate = NSCompoundPredicate(
+//                orPredicateWithSubpredicates: [hostNamePredicate, serialNumberPredicate]
+//            )
+//
+//            predicates.append(combinedPredicate)
+//        }
+//
+//        if filterTokens.isEmpty == false {
+//            var platformPredicates = [NSPredicate]()
+//            for filterToken in filterTokens {
+//                for platform in filterToken.platform {
+//                    let tokenPredicate = NSPredicate(format: "platform CONTAINS[c] %@", platform)
+//                    platformPredicates.append(tokenPredicate)
+//                }
+//            }
+//            let combinedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: platformPredicates)
+//            predicates.append(combinedPredicate)
+//        }
+//
+//        if filterStatus != .all {
+//            if filterStatus == .online {
+//                let statusFilter = NSPredicate(format: "status CONTAINS[c] %@", "online")
+//                predicates.append(statusFilter)
+//            }
+//            if filterStatus == .offline {
+//                let statusFilter = NSPredicate(format: "status CONTAINS[c] %@", "offline")
+//                predicates.append(statusFilter)
+//            }
+//            if filterStatus == .missing {
+//                // swiftlint:disable:next line_length
+//                let statusFilter = NSPredicate(format: "seenTime < %@", Date.now.addingTimeInterval(86400 * -30) as NSDate)
+//                predicates.append(statusFilter)
+//            }
+//            if filterStatus == .recentlyEnrolled {
+//                // swiftlint:disable:next line_length
+//                let statusFilter = NSPredicate(format: "lastEnrolledAt > %@", Date.now.addingTimeInterval(86400 * -7) as NSDate)
+//                predicates.append(statusFilter)
+//            }
+//        }
+//
+//        let request = Host.fetchRequest()
+//        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+//        request.sortDescriptors = [NSSortDescriptor(key: sortType.rawValue, ascending: sortOldestFirst)]
+//        let allHosts = (try? container.viewContext.fetch(request)) ?? []
+//        return allHosts
+//    }
 
     func loginWithEmail(
         email: String,

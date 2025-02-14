@@ -35,6 +35,10 @@ struct Host: Codable, Identifiable, Hashable {
     var mdm: Mdm?
     var batteries: [Battery]?
     var teamName: String?
+    
+    var wrappedTeamName: String {
+        teamName ?? "No team"
+    }
 
     static let example = Host(
         platform: "darwin",

@@ -14,9 +14,10 @@ struct HostsTable: View {
     @Environment(\.networkManager) var networkManager
 
     @State private var isShowingSignInSheet = false
-    @State private var sortOrder = [KeyPathComparator(\CachedHost.wrappedComputerName, order: .reverse)]
-
-    @Binding var selection: Set<CachedHost.ID>
+    @State private var sortOrder = [KeyPathComparator(\Host.computerName, order: .reverse)]
+    @Binding var selection: Set<Host.ID>
+    
+    var hosts: [Host]
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
@@ -27,13 +28,13 @@ struct HostsTable: View {
             }
             .width(200)
 
-            TableColumn("Serial Number", value: \.wrappedHardwareSerial) { host in
-                Text(host.wrappedHardwareSerial)
+            TableColumn("Serial Number", value: \.hardwareSerial) { host in
+                Text(host.hardwareSerial)
                     .monospaced()
             }
 
-            TableColumn("Model", value: \.wrappedHardwareModel) { host in
-                Text(host.wrappedHardwareModel)
+            TableColumn("Model", value: \.hardwareModel) { host in
+                Text(host.hardwareModel)
 #if os(macOS)
                     .foregroundStyle(.secondary)
 #endif
@@ -46,20 +47,20 @@ struct HostsTable: View {
 #endif
             }
 
-            TableColumn("Last Seen", value: \.wrappedSeenTime) { host in
-                Text(host.formattedDate)
+            TableColumn("Last Seen", value: \.seenTime) { host in
+                Text(host.seenTime.formatted())
 #if os(macOS)
                     .foregroundStyle(.secondary)
 #endif
             }
 
-            TableColumn("Status", value: \.wrappedStatus) { host in
+            TableColumn("Status", value: \.status) { host in
                 HStack {
                     Image(systemName: "circle.fill")
                         .imageScale(.small)
-                        .foregroundColor(host.wrappedStatus == "online" ? .green : .red)
+                        .foregroundColor(host.status == "online" ? .green : .red)
 
-                    Text(host.wrappedStatus.capitalized)
+                    Text(host.status.capitalized)
                 }
             }
 
@@ -81,7 +82,7 @@ struct HostsTable: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(dataController.hostsForSelectedFilter(), id: \.id) { host in
+                ForEach(hosts, id: \.id) { host in
                     TableRow(host)
                 }
             }

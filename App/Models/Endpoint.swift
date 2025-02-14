@@ -45,6 +45,14 @@ extension Endpoint where T == [Host] {
         type: [Host].self,
         keyPath: "hosts"
     )
+    
+    static func getHostsforTeam(teamID: Int) -> Endpoint {
+        return Endpoint(
+            path: "/api/v1/fleet/hosts?team_id=\(teamID)",
+            type: [Host].self,
+            keyPath: "hosts"
+        )
+    }
 
     static func getPassingHostsForPolicy(policyID: Int) -> Endpoint {
         return Endpoint(
