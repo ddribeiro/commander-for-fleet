@@ -10,18 +10,18 @@ import CoreData
 
 struct HostsView: View {
     @EnvironmentObject var dataController: DataController
-    
+
     @Environment(\.managedObjectContext) var moc
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
-    
+
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
     @State private var selection: Set<CachedHost.ID> = []
 
     let smartFilters: [Filter] = [.all, .recentlyEnrolled]
-    
+
     var hosts = [Host]()
 
     var teamFilters: [Filter] {

@@ -20,7 +20,6 @@ struct MDMCommandMenu: View {
         Menu {
             Menu {
 
-
                 Button(role: .destructive) {
                     showingLockAlert.toggle()
                 } label: {

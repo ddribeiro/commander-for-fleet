@@ -9,9 +9,9 @@ import SwiftUI
 
 struct AllPoliciesRow: View {
     @Environment(\.horizontalSizeClass) var sizeClass
-    
+
     var policy: CachedPolicy
-    
+
     var body: some View {
         VStack(alignment: .center) {
             Text(policy.wrappedName)
@@ -29,24 +29,23 @@ struct AllPoliciesRow: View {
                         .foregroundStyle(.white)
                         .frame(width: 120, height: 70)
                         .background(.green, in: RoundedRectangle(cornerRadius: 8))
-                        
-                        
+
                         Spacer()
                         VStack {
                             Image(systemName: "xmark.seal.fill")
                                 .font(.headline)
                             Text("\(policy.failingHostCount) Failing")
-                                
+
                         }
                         .foregroundStyle(.white)
                         .padding(8)
                         .frame(width: 120, height: 70)
                         .background(.red, in: RoundedRectangle(cornerRadius: 8))
-                        
+
                     }
-                    
+
                 }
-                
+
                 .padding()
                 .font(.subheadline)
             }
