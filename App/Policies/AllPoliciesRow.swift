@@ -13,42 +13,29 @@ struct AllPoliciesRow: View {
     var policy: CachedPolicy
 
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .leading) {
             Text(policy.wrappedName)
                 .font(.headline)
-                .multilineTextAlignment(.center)
+
             if sizeClass == .compact {
-                HStack {
-                    Group {
-                        VStack {
-                            Image(systemName: "checkmark.seal.fill")
-                                .font(.headline)
-                            Text("\(policy.passingHostCount) Passing")
-                        }
-                        .padding(8)
-                        .foregroundStyle(.white)
-                        .frame(width: 120, height: 70)
-                        .background(.green, in: RoundedRectangle(cornerRadius: 8))
-
-                        Spacer()
-                        VStack {
-                            Image(systemName: "xmark.seal.fill")
-                                .font(.headline)
-                            Text("\(policy.failingHostCount) Failing")
-
-                        }
-                        .foregroundStyle(.white)
-                        .padding(8)
-                        .frame(width: 120, height: 70)
-                        .background(.red, in: RoundedRectangle(cornerRadius: 8))
-
+                VStack(alignment: .leading) {
+                    HStack {
+                        Image(systemName: "checkmark.seal.fill")
+                            .foregroundStyle(.green)
+                        Text("\(policy.passingHostCount) Passing")
                     }
 
+                    HStack {
+                        Image(systemName: "xmark.seal.fill")
+                            .foregroundStyle(.red)
+                        Text("\(policy.failingHostCount) Failing")
+                    }
                 }
-
-                .padding()
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(.secondary)
                 .font(.subheadline)
             }
+
         }
     }
 }

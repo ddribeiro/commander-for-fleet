@@ -43,6 +43,17 @@ extension CachedHost {
     @NSManaged public var commands: CachedCommandResponse?
     @NSManaged public var profiles: NSSet?
 
+    var iconName: String {
+        switch platform {
+        case "ios":
+            return "iphone"
+        case "ipados":
+            return "ipad"
+        default:
+            return "laptopcomputer"
+        }
+    }
+
     var wrappedLastEnrolledAt: Date {
         lastEnrolledAt ?? Date.now
     }

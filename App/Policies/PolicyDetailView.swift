@@ -19,18 +19,21 @@ struct PolicyDetailView: View {
 
     var body: some View {
         Form {
-            Section("Description") {
+            Section {
                 Text(policy.wrappedPolicyDescription)
                     .foregroundStyle(.secondary)
+            } header: {
+                Label("Description", systemImage: "info.circle")
             }
-            .headerProminence(.increased)
 
-            Section("Query") {
+            Section {
                 Text(policy.wrappedQuery)
                     .monospaced()
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
+            } header: {
+                Label("Query", systemImage: "rectangle.and.text.magnifyingglass")
             }
-            .headerProminence(.increased)
 
             Section {
                 if !passingHosts.isEmpty {
@@ -79,7 +82,6 @@ struct PolicyDetailView: View {
             } header: {
                 Label("Passing Hosts", systemImage: "checkmark.seal.fill")
             }
-            .headerProminence(.increased)
 
             Section {
                 if !failingHosts.isEmpty {
@@ -130,13 +132,11 @@ struct PolicyDetailView: View {
             } header: {
                 Label("Failing Hosts", systemImage: "laptopcomputer.trianglebadge.exclamationmark")
             }
-            .headerProminence(.increased)
 
             Section("Resolution") {
                 Text(policy.wrappedResolution)
                     .foregroundStyle(.secondary)
             }
-            .headerProminence(.increased)
 
             Section {
                 LabeledContent(
