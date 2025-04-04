@@ -14,6 +14,7 @@ struct HostSoftwareRow: View {
             HStack {
                 Image(systemName: "app.badge")
                     .imageScale(.large)
+                    .symbolRenderingMode(.hierarchical)
 
                 VStack(alignment: .leading) {
                     Text(software.name)

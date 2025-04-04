@@ -25,6 +25,7 @@ struct HostPoliciesView: View {
                         Image(systemName: policy.response == "" ? "questionmark.circle.fill" : policy.response == "pass" ? "checkmark.seal.fill" : "xmark.seal.fill")
                         // swiftlint:disable:next line_length
                             .foregroundStyle(policy.response == "" ? .yellow : policy.response == "pass" ? .green : .red)
+                            .symbolRenderingMode(.hierarchical)
                             .imageScale(.large)
 
                         VStack(alignment: .leading) {
