@@ -1,5 +1,5 @@
-# Commander for FleetDM
-Commander is a native iOS app that uses the FleetDM REST API to display information about your hosts. A native experience combined with the speed of the Fleet API means you can get to the information you’re looking for fast.
+# Commander for Fleet
+Commander is a native iOS app that uses the Fleet REST API to display information about your hosts. A native experience combined with the speed of the Fleet API means you can get to the information you’re looking for fast.
 
 I’ve created Commander as a project to help me continue learning Swift and SwiftUI. As such, I welcome contributors to offer improvements to help me with my learning.
 
@@ -8,7 +8,7 @@ Crashes and bugs are expected. If you encounter any while using the app, please 
 ## Availability
 Commander is currently available on [TestFlight](https://testflight.apple.com). You can download TestFlight on your device from the App Store.
 
-Once you have TestFlight installed, you can join the Commander for FleetDM public beta by clicking [here](https://testflight.apple.com/join/VH22aGlx).
+Once you have TestFlight installed, you can join the Commander for Fleet public beta by clicking [here](https://testflight.apple.com/join/VH22aGlx).
 
 ## Authentication
 
