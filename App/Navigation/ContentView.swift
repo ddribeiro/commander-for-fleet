@@ -14,8 +14,9 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.networkManager) var networkManager
 
-    @State private var selection: Panel? = Panel.hosts
+    @State private var selection: Panel?
     @State private var path = NavigationPath()
+    @State private var showingLogin = false
 
     var body: some View {
         NavigationSplitView {
@@ -24,6 +25,11 @@ struct ContentView: View {
             NavigationStack(path: $path) {
                 DetailColumn(selection: $selection)
             }
+        }
+        .sheet(isPresented: $showingLogin, content: LoginView.init)
+        .sheet(isPresented: $dataController.showingApiTokenAlert) {
+            APITokenRefreshView()
+                .presentationDetents([.medium])
         }
     }
 }

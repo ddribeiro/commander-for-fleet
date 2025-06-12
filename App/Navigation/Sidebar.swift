@@ -26,62 +26,29 @@ struct Sidebar: View {
     @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
 
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
-
-    let smartFilters: [Filter] = [.all, .recentlyEnrolled]
-
     @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
     @State private var showingSettings = false
-    @State private var showingLogin = false
-
-    @State private var smartFiltersExpanded = true
-    @State private var teamsFilterExpanded = true
-
-    var teamFilters: [Filter] {
-        teams.map { team in
-            Filter(id: Int(team.id), name: team.wrappedName, icon: "person.3", team: team)
-        }
-    }
 
     var body: some View {
         List(selection: $selection) {
-
-            Section {
-                NavigationLink(value: Panel.hosts) {
-                    Label("Hosts", systemImage: "laptopcomputer")
-                }
-                if let savedUserID = UserDefaults.standard.value(forKey: "loggedInUserID") as? Int16 {
-                if let loggedInUser = users.first(where: { $0.id == savedUserID}) {
-                    if loggedInUser.globalRole == "admin" {
-                        NavigationLink(value: Panel.users) {
-                            Label("Users", systemImage: "person.3")
-                        }
-                    }
-                    }
-                }
-
-                NavigationLink(value: Panel.software) {
-                    Label("Software", systemImage: "square.stack.3d.up")
-                }
-
-                NavigationLink(value: Panel.queries) {
-                    Label("Queries", systemImage: "rectangle.and.text.magnifyingglass")
-                }
-
-                NavigationLink(value: Panel.policies) {
-                    Label("Policies", systemImage: "checkmark.seal")
-                }
+            Section(header: Text("All Teams")) {
+                TopLevelNavigationView()
             }
+            .headerProminence(.increased)
+
+//            Section(header: Text("Teams")) {
+//                Text("No Team")
+//                ForEach(teams) { team in
+//                    NavigationLink(team.wrappedName) {
+//                        TeamView(team: team)
+//                    }
+//                }
+//            }
         }
         .sheet(isPresented: $showingSettings) {
             SettingsView()
         }
-        .sheet(isPresented: $dataController.showingApiTokenAlert) {
-            APITokenRefreshView()
-                .presentationDetents([.medium])
-        }
-        .sheet(isPresented: $showingLogin, content: LoginView.init)
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Button {
@@ -91,7 +58,7 @@ struct Sidebar: View {
                 }
             }
         }
-        .navigationTitle("Commander")
+        .navigationTitle("Home")
     }
 }
 
@@ -107,7 +74,7 @@ struct Sidebar_Previews: PreviewProvider {
         NavigationSplitView {
             Preview()
         } detail: {
-           Text("Detail!")
+            Text("Detail!")
         }
     }
 }

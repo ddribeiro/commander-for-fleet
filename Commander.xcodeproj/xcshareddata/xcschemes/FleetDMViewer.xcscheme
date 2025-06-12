@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1540"
+   LastUpgradeVersion = "1630"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "5EDA66B82A2A4955006706CD"
-               BuildableName = "FleetDMViewer.app"
-               BlueprintName = "FleetDMViewer"
-               ReferencedContainer = "container:FleetDMViewer.xcodeproj">
+               BuildableName = "Commander.app"
+               BlueprintName = "Commander"
+               ReferencedContainer = "container:Commander.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -44,9 +44,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "5EDA66B82A2A4955006706CD"
-            BuildableName = "FleetDMViewer.app"
-            BlueprintName = "FleetDMViewer"
-            ReferencedContainer = "container:FleetDMViewer.xcodeproj">
+            BuildableName = "Commander.app"
+            BlueprintName = "Commander"
+            ReferencedContainer = "container:Commander.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -67,9 +67,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "5EDA66B82A2A4955006706CD"
-            BuildableName = "FleetDMViewer.app"
-            BlueprintName = "FleetDMViewer"
-            ReferencedContainer = "container:FleetDMViewer.xcodeproj">
+            BuildableName = "Commander.app"
+            BlueprintName = "Commander"
+            ReferencedContainer = "container:Commander.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

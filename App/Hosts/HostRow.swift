@@ -15,9 +15,15 @@ struct HostRow: View {
     var body: some View {
         HStack {
             Image(systemName: host.iconName)
+
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 44, height: 44)
+#if os(iOS)
+                .frame(width: 40, height: 40)
+#else
+                .frame(width: 20, height: 20)
+#endif
+                .padding(2)
                 .accessibility(hidden: true)
 
             if sizeClass == .compact {

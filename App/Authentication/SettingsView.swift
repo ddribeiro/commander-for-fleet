@@ -87,7 +87,7 @@ struct SettingsView: View {
                         }
                     }
                     .formStyle(.grouped)
-                    .navigationTitle("Account")
+                    .navigationTitle("My Account")
 //                    .task {
 //                        if UserDefaults.standard.value(forKey: "loggedInUserID") as? Int16 == nil {
 //                            let response = try await networkManager.fetch(.meEndpoint)
