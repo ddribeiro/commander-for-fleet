@@ -1,6 +1,6 @@
 //
 //  ContentViewToolbar.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 11/21/23.
 //
@@ -14,7 +14,7 @@ struct ContentViewToolbar: View {
             Menu("Sort By") {
                 Picker("Sort By", selection: $dataController.sortType) {
                     Text("Name").tag(SortType.name)
-                    Text("Enrollment Date").tag(SortType.enolledDate)
+                    Text("Enrollment Date").tag(SortType.enrolledDate)
                     Text("Last Seen").tag(SortType.updatedDate)
                 }
 
@@ -27,11 +27,11 @@ struct ContentViewToolbar: View {
             }
 
                 Picker("Status", selection: $dataController.filterStatus) {
-                    Text("All").tag(Status.all)
-                    Text("Online").tag(Status.online)
-                    Text("Offline").tag(Status.offline)
-                    Text("Recently Enrolled").tag(Status.recentlyEnrolled)
-                    Text("Missing").tag(Status.missing)
+                    Text("All").tag(HostStatus.all)
+                    Text("Online").tag(HostStatus.online)
+                    Text("Offline").tag(HostStatus.offline)
+                    Text("Recently Enrolled").tag(HostStatus.recentlyEnrolled)
+                    Text("Missing").tag(HostStatus.missing)
                 }
         } label: {
             Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
@@ -42,4 +42,5 @@ struct ContentViewToolbar: View {
 
 #Preview {
     ContentViewToolbar()
+        .environmentObject(DataController(networkManager: NetworkManager(authManager: AuthManager())))
 }

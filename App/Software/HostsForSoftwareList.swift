@@ -1,6 +1,6 @@
 //
 //  HostsForSoftwareList.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 12/7/23.
 //
@@ -14,7 +14,7 @@ struct HostsForSoftwareList: View {
 
     @State private var searchText = ""
 
-    var software: CachedSoftware
+    var software: Software
     @State private var hosts = [Host]()
 
     var body: some View {
@@ -57,7 +57,7 @@ struct HostsForSoftwareList: View {
             try? await fetchHostsForSoftware()
         }
         .searchable(text: $searchText)
-        .navigationTitle("Hosts for \(software.wrappedName)")
+        .navigationTitle("Hosts for \(software.name)")
     }
 
 var searchResults: [Host] {
@@ -71,7 +71,7 @@ var searchResults: [Host] {
 func fetchHostsForSoftware() async throws {
     guard dataController.activeEnvironment != nil else { return }
 
-    let endpoint = Endpoint.getHostsForSoftware(softwareID: Int(software.id))
+    let endpoint = Endpoint.getHostsForSoftware(softwareID: software.id)
 
     do {
         dataController.loadingState = .loading

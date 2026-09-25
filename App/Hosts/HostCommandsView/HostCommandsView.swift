@@ -1,28 +1,22 @@
 //
 //  CommandsView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 6/29/23.
 //
 
 import SwiftUI
-import KeychainWrapper
 
 struct HostCommandsView: View {
     @EnvironmentObject var dataController: DataController
 
     @Environment(\.networkManager) var networkManager
-    @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
 
     let host: Host
 
     @State private var commands = [CommandResponse]()
     @State private var loadingState: LoadingState = .loaded
-
-    var sortedCommands: [CommandResponse] {
-        commands.sorted { $0.updatedAt > $1.updatedAt }
-    }
 
     var body: some View {
         NavigationStack {
@@ -35,6 +29,12 @@ struct HostCommandsView: View {
                 .navigationTitle("Command History for \(host.computerName)")
 #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
+#endif
+            } else if loadingState == .failed {
+                ContentUnavailableView("Failed to Load History", systemImage: "exclamationmark.triangle")
+                    .navigationTitle("Command History for \(host.computerName)")
+#if os(iOS)
+                    .navigationBarTitleDisplayMode(.inline)
 #endif
             } else {
                 List {
@@ -57,7 +57,6 @@ struct HostCommandsView: View {
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Done", role: .cancel) {
                             dismiss()
-
                         }
                     }
                 }
@@ -95,19 +94,7 @@ struct HostCommandsView: View {
             case .missingToken:
                 print(error)
             case .none:
-                if let commandData = try? JSONEncoder().encode(commands) {
-                    if let jsonString = String(data: commandData, encoding: .utf8) {
-                        print("JSON string: \(jsonString)")
-
-                        // Optionally, you can print the specific value at index 8595
-                        if let jsonData = try? JSONSerialization.jsonObject(with: commandData, options: []),
-                           let jsonArray = jsonData as? [[String: Any]],
-                           jsonArray.indices.contains(8595) {
-                            print("Problematic entry: \(jsonArray[8595])")
-                        }
-                    }
-                }
-                print(String(describing: error))
+                print("Failed to fetch command history: \(error.localizedDescription)")
             }
         }
     }

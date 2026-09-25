@@ -1,6 +1,6 @@
 //
 //  NoHostView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 6/9/23.
 //
@@ -17,8 +17,6 @@ struct NoHostView: View {
     }
 }
 
-struct NoHostView_Previews: PreviewProvider {
-    static var previews: some View {
-        NoHostView()
-    }
+#Preview {
+    NoHostView()
 }

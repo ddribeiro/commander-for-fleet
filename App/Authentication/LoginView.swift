@@ -1,19 +1,15 @@
 //
 //  LoginView.swift
-//  FleetSample
+//  Commander
 //
 //  Created by Dale Ribeiro on 5/22/23.
 //
 
-import KeychainWrapper
 import SwiftUI
 
 struct LoginView: View {
-    @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
-    @Environment(\.networkManager) var networkManager
-
-    @EnvironmentObject var dataController: DataController
+    @EnvironmentObject var authService: AuthService
 
     @State private var serverURL = ""
     @State private var emailAddress = ""
@@ -22,167 +18,142 @@ struct LoginView: View {
 
     @State private var useApiKey = false
 
-    @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
-
     var body: some View {
-        NavigationView {
-            Form {
-                Section {
-                    LabeledContent("Server URL") {
-                        TextField("FleetDM Server URL", text: $serverURL)
-                            .multilineTextAlignment(.trailing)
-#if os(iOS)
+        ScrollView {
+            VStack(spacing: 24) {
+                VStack(spacing: 8) {
+                    Image(systemName: "lock.shield")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 64, height: 64)
+                        .foregroundStyle(Color.accentColor)
+                    
+                    Text("Commander")
+                        .font(.title.bold())
+                }
+                .padding(.top, 32)
+
+                VStack(spacing: 16) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Server URL")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        TextField("https://fleet.example.com", text: $serverURL)
+                            .textFieldStyle(.roundedBorder)
                             .textContentType(.URL)
                             .textInputAutocapitalization(.never)
                             .keyboardType(.URL)
                             .autocorrectionDisabled()
-#endif
-                            .labelsHidden()
                     }
-                } header: {
-                    Text("Sign in to your account")
-                }
 
-                Section {
                     if !useApiKey {
-                    LabeledContent("Email Address") {
-                        TextField("Email Address", text: $emailAddress)
-                                .multilineTextAlignment(.trailing)
-#if os(iOS)
-                                .textContentType(!useApiKey ? .emailAddress : .password)
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Email Address")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            TextField("email@example.com", text: $emailAddress)
+                                .textFieldStyle(.roundedBorder)
+                                .textContentType(.emailAddress)
                                 .textInputAutocapitalization(.never)
                                 .keyboardType(.emailAddress)
-#endif
                         }
 
-                        LabeledContent("Password") {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Password")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                             SecureField("Password", text: $password)
-                                .multilineTextAlignment(.trailing)
-#if os(iOS)
+                                .textFieldStyle(.roundedBorder)
                                 .textContentType(.password)
                                 .autocorrectionDisabled()
-#endif
                         }
                     } else {
-                        LabeledContent("API Token") {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("API Token")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                             SecureField("API Token", text: $apiKey)
-                                .multilineTextAlignment(.trailing)
-#if os(iOS)
+                                .textFieldStyle(.roundedBorder)
                                 .textContentType(.password)
                                 .autocorrectionDisabled()
-#endif
                         }
                     }
-                    LabeledContent("Use API Token") {
-                        Toggle("Use API Token", isOn: $useApiKey)
-                            .labelsHidden()
-                    }
-                } footer: {
-                    Text("Use an API Token if single sign-on is enabled on your account.")
-                }
 
-                Section {
-                    LabeledContent("Sign In") {
-                        Button {
-                            Task {
-                                dataController.loadingState = .loading
-                                if !useApiKey {
-                                    try await dataController.loginWithEmail(
-                                        email: emailAddress,
-                                        password: password,
-                                        serverURL: serverURL,
-                                        networkManager: networkManager
-                                    )
-                                } else {
-                                    try await dataController.loginWithApiKey(
-                                        apiKey: apiKey,
-                                        serverURL: serverURL,
-                                        networkManager: networkManager
-                                    )
-                                }
-
-                                if dataController.loadingState == .loaded {
-                                    dismiss()
-                                }
-                            }
-                        } label: {
-                            switch dataController.loadingState {
-                            case .loading:
-                                ProgressView()
-                            case .loaded:
-                                Text("Sign In")
-                            case .failed:
-                                Text("Sign In")
-                            }
-                        }
-                        .disabled(!isFormValid)
-                        .frame(maxWidth: .infinity)
-                    }
-                    .labelsHidden()
+                    Toggle("Use API Token", isOn: $useApiKey)
+                        .toggleStyle(.button)
+                        .tint(Color.accentColor)
                 }
-            }
-            .animation(.default, value: useApiKey)
-            .formStyle(.grouped)
-            .navigationTitle("Sign In")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        Task {
-                            dataController.loadingState = .loading
-                            if !useApiKey {
-                                try await dataController.loginWithEmail(
-                                    email: emailAddress,
-                                    password: password,
-                                    serverURL: serverURL,
-                                    networkManager: networkManager
-                                )
-                            } else {
-                                try await dataController.loginWithApiKey(
-                                    apiKey: apiKey,
-                                    serverURL: serverURL,
-                                    networkManager: networkManager
-                                )
-                            }
+                .padding(.horizontal, 20)
 
-                            if dataController.loadingState == .loaded {
-                                dismiss()
-                            }
+                Button {
+                    Task {
+                        if !useApiKey {
+                            try? await authService.login(
+                                email: emailAddress,
+                                password: password,
+                                serverURL: serverURL
+                            )
+                        } else {
+                            try? await authService.login(
+                                apiKey: apiKey,
+                                serverURL: serverURL
+                            )
                         }
-                    } label: {
-                        switch dataController.loadingState {
-                        case .loading:
-                            ProgressView()
-                        case .loaded:
-                            Text("Sign In")
-                        case .failed:
-                            Text("Sign In")
+                        
+                        if authService.loadingState == .loaded {
+                            dismiss()
                         }
                     }
-                    .disabled(!isFormValid)
+                } label: {
+                    if authService.loadingState == .loading {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                    } else {
+                        Text("Sign In")
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                    }
                 }
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", role: .cancel) {
-                        dismiss()
-                    }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .disabled(!isFormValid || authService.loadingState == .loading)
+                .padding(.horizontal, 20)
+                
+                if authService.error != nil {
+                    Text(authService.error?.description ?? "")
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 20)
                 }
             }
         }
-        .alert(dataController.alertTitle, isPresented: $dataController.showingAlert) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text(dataController.alertDescription)
+        .navigationTitle("Sign In")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                    dismiss()
+                }
+            }
         }
     }
 
     private var isFormValid: Bool {
-        // swiftlint:disable:next line_length
-        return (!serverURL.isEmpty && !emailAddress.isEmpty && !password.isEmpty) || (!serverURL.isEmpty && !apiKey.isEmpty)
+        if useApiKey {
+            return !serverURL.isEmpty && !apiKey.isEmpty
+        } else {
+            return !serverURL.isEmpty && !emailAddress.isEmpty && !password.isEmpty
+        }
     }
 }
 
-struct LoginView_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginView()
-            .environmentObject(DataController())
-    }
+#Preview {
+    let dataController = DataController(networkManager: NetworkManager(authManager: AuthManager()))
+    return LoginView()
+        .environmentObject(AuthService(
+            authManager: AuthManager(),
+            networkManager: NetworkManager(authManager: AuthManager()),
+            dataController: dataController
+        ))
 }

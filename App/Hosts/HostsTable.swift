@@ -1,6 +1,6 @@
 //
 //  HostsTable.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 11/29/23.
 //
@@ -10,56 +10,52 @@ import SwiftUI
 struct HostsTable: View {
     @EnvironmentObject var dataController: DataController
 
-    @Environment(\.managedObjectContext) var moc
-    @Environment(\.networkManager) var networkManager
+    @State private var sortOrder = [KeyPathComparator(\Host.computerName, order: .reverse)]
 
-    @State private var isShowingSignInSheet = false
-    @State private var sortOrder = [KeyPathComparator(\CachedHost.wrappedComputerName, order: .reverse)]
-
-    @Binding var selection: Set<CachedHost.ID>
+    @Binding var selection: Set<Host.ID>
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
-            TableColumn("Name", value: \.id) { host in
+            TableColumn("Name", value: \.computerName) { host in
                 HostRow(host: host)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .layoutPriority(1)
             }
             .width(200)
 
-            TableColumn("Serial Number", value: \.wrappedHardwareSerial) { host in
-                Text(host.wrappedHardwareSerial)
+            TableColumn("Serial Number", value: \.hardwareSerial) { host in
+                Text(host.hardwareSerial)
                     .monospaced()
             }
 
-            TableColumn("Model", value: \.wrappedHardwareModel) { host in
-                Text(host.wrappedHardwareModel)
+            TableColumn("Model", value: \.hardwareModel) { host in
+                Text(host.hardwareModel)
 #if os(macOS)
                     .foregroundStyle(.secondary)
 #endif
             }
 
-            TableColumn("Team", value: \.wrappedTeamName) { host in
-                Text(host.wrappedTeamName)
+            TableColumn("Team") { host in
+                Text(host.teamName ?? "")
 #if os(macOS)
                     .foregroundStyle(.secondary)
 #endif
             }
 
-            TableColumn("Last Seen", value: \.wrappedSeenTime) { host in
+            TableColumn("Last Seen", value: \.seenTime) { host in
                 Text(host.formattedDate)
 #if os(macOS)
                     .foregroundStyle(.secondary)
 #endif
             }
 
-            TableColumn("Status", value: \.wrappedStatus) { host in
+            TableColumn("Status", value: \.status) { host in
                 HStack {
                     Image(systemName: "circle.fill")
                         .imageScale(.small)
-                        .foregroundColor(host.wrappedStatus == "online" ? .green : .red)
+                        .foregroundColor(host.status.lowercased() == "online" ? .green : .red)
 
-                    Text(host.wrappedStatus.capitalized)
+                    Text(host.status.capitalized)
                 }
             }
 
@@ -73,7 +69,9 @@ struct HostsTable: View {
                         .labelStyle(.iconOnly)
                         .contentShape(Rectangle())
                 }
+#if os(macOS)
                 .menuStyle(.borderlessButton)
+#endif
                 .menuIndicator(.hidden)
                 .fixedSize()
                 .foregroundColor(.secondary)

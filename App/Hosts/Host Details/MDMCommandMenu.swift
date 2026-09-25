@@ -1,12 +1,11 @@
 //
 //  MDMCommandMenu.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 8/17/23.
 //
 
 import SwiftUI
-import KeychainWrapper
 
 struct MDMCommandMenu: View {
     var host: Host
@@ -15,6 +14,7 @@ struct MDMCommandMenu: View {
     @State private var showingLockAlert = false
     @State private var showingCommandSheet = false
     @Environment(\.networkManager) var networkManager
+    @EnvironmentObject var dataController: DataController
 
     var body: some View {
         Menu {
@@ -30,9 +30,9 @@ struct MDMCommandMenu: View {
                     Task {
                         let shutdownDeviceCommand = ShutDownDeviceCommand(command: ShutDownDeviceCommand.Command())
                         // swiftlint:disable:next line_length
-                        let mdmCommand = MdmCommand(command: try generatebase64EncodedPlistData(from: shutdownDeviceCommand), deviceIds: [host.uuid])
-
-                        try await sendMDMCommand(command: mdmCommand)
+                        let mdmCommand = MdmCommand(command: generatebase64EncodedPlistData(from: shutdownDeviceCommand), hostUuids: [host.uuid])
+                    
+                        await sendMDMCommand(command: mdmCommand)
                     }
                 } label: {
                     Label("Shutdown Device", systemImage: "power")
@@ -41,11 +41,11 @@ struct MDMCommandMenu: View {
                 Button(role: .destructive) {
                     Task {
                         let restartDeviceComand = RestartDeviceCommand(command: RestartDeviceCommand.Command())
-
+                    
                         // swiftlint:disable:next line_length
-                        let mdmCommand = MdmCommand(command: try generatebase64EncodedPlistData(from: restartDeviceComand), deviceIds: [host.uuid])
-
-                        try await sendMDMCommand(command: mdmCommand)
+                        let mdmCommand = MdmCommand(command: generatebase64EncodedPlistData(from: restartDeviceComand), hostUuids: [host.uuid])
+                    
+                        await sendMDMCommand(command: mdmCommand)
                     }
                 } label: {
                     Label("Restart Device", systemImage: "restart.circle")
@@ -81,19 +81,19 @@ struct MDMCommandMenu: View {
                             pin: lockCode
                         )
                     )
-
+                
                     let mdmCommand = MdmCommand(
-                        command: try generatebase64EncodedPlistData(from: lockDeviceCommand),
-                        deviceIds: [host.uuid]
+                        command: generatebase64EncodedPlistData(from: lockDeviceCommand),
+                        hostUuids: [host.uuid]
                     )
-
-                    try await sendMDMCommand(command: mdmCommand)
+                
+                    await sendMDMCommand(command: mdmCommand)
                 }
             }
         }
     }
 
-    func generatebase64EncodedPlistData<T: Encodable>(from object: T) throws -> String {
+    func generatebase64EncodedPlistData<T: Encodable>(from object: T) -> String {
         let encoder = PropertyListEncoder()
         encoder.outputFormat = .xml
 
@@ -106,15 +106,16 @@ struct MDMCommandMenu: View {
         }
     }
 
-    func sendMDMCommand(command: MdmCommand) async throws {
+    func sendMDMCommand(command: MdmCommand) async {
         do {
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
 
             _ = try await networkManager.fetch(.mdmCommand, with: encoder.encode(command))
         } catch {
-            print("Could not send command")
-            print(error.localizedDescription)
+            dataController.alertTitle = "Command Failed"
+            dataController.alertDescription = error.localizedDescription
+            dataController.showingAlert = true
         }
     }
 }

@@ -1,72 +1,53 @@
 //
 //  DataController.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 8/21/23.
 //
 
-import CoreData
 import Foundation
-import KeychainWrapper
 import SwiftUI
 
-/* There's a lot in here and it should be cleaned up a bit.
- Everything that is shared across the app is here and much
- of it should proably be moved into a view model. There is
- still a bunch of code that controls dataflow for CoreData
- and that can probably stay. */
+/* Central store for state shared across the app.
+ All data is held in memory only; nothing is persisted to disk.
+ Views fetch fresh data from the Fleet API whenever they need it. */
 @MainActor
-// swiftlint:disable:next type_body_length
 class DataController: ObservableObject {
-    let container = NSPersistentContainer(name: "FleetDMViewer")
-    @Published var selectedFilter = Filter.all
+    let networkManager: NetworkManager
 
-    @Published var filterText = ""
-    @Published var filterTokens = [SearchToken]()
-
-    @Published var filterStatus = Status.all
-    @Published var sortOldestFirst = true
-    @Published var sortType = SortType.name
-
-    @Published var selectedTeam: CachedTeam?
-    @Published var selectedUser: CachedUser?
+    // The active environment. AuthService is the sole writer of the
+    // persisted copy; it is surfaced here for views that inspect it.
     @Published var activeEnvironment: AppEnvironment?
 
+    // In-memory data.
+    @Published var hosts: [Host] = []
+    @Published var teams: [Team] = []
+    @Published var users: [User] = []
+    @Published var software: [Software] = []
+    @Published var policies: [Policy] = []
+    @Published var currentUser: User?
+
+    // Filtering and sorting.
+    @Published var selectedFilter = Filter.all
+    @Published var filterText = ""
+    @Published var filterTokens = [SearchToken]()
+    @Published var filterStatus: HostStatus = .all
+    @Published var sortOldestFirst = true
+    @Published var sortType: SortType = .name
+
+    // Alerts.
     @Published var showingAlert = false
     @Published var showingApiTokenAlert = false
     @Published var apiTokenText = ""
     @Published var alertTitle = ""
     @Published var alertDescription = ""
 
-    @Published var teamsLastUpdatedAt: Date? {
-        didSet {
-            UserDefaults.standard.setValue(teamsLastUpdatedAt, forKey: "teamsLastUpdatedAt")
-        }
-    }
-
-    @Published var hostsLastUpdatedAt: Date? {
-        didSet {
-            UserDefaults.standard.setValue(hostsLastUpdatedAt, forKey: "hostsLastUpdatedAt")
-        }
-    }
-
-    @Published var usersLastUpdatedAt: Date? {
-        didSet {
-            UserDefaults.standard.setValue(hostsLastUpdatedAt, forKey: "usersLastUpdatedAt")
-        }
-    }
-
-    @Published var softwareLastUpdatedAt: Date? {
-        didSet {
-            UserDefaults.standard.setValue(softwareLastUpdatedAt, forKey: "softwareLastUpdatedAt")
-        }
-    }
-
-    @Published var policiesLastUpdatedAt: Date? {
-        didSet {
-            UserDefaults.standard.setValue(policiesLastUpdatedAt, forKey: "policiesLastUpdatedAt")
-        }
-    }
+    // Last-updated timestamps; drive the refresh gates in each view.
+    @Published var teamsLastUpdatedAt: Date?
+    @Published var hostsLastUpdatedAt: Date?
+    @Published var usersLastUpdatedAt: Date?
+    @Published var softwareLastUpdatedAt: Date?
+    @Published var policiesLastUpdatedAt: Date?
 
     @Published var allTokens = [
         SearchToken(name: "macOS", platform: ["darwin"]),
@@ -76,432 +57,15 @@ class DataController: ObservableObject {
 
     @Published var loadingState = LoadingState.loaded
 
-    private var saveTask: Task<Void, Error>?
-
-    @Published var isAuthenticated: Bool = false {
-        didSet {
-            UserDefaults.standard.setValue(isAuthenticated, forKey: "isAuthenticated")
-        }
-    }
-
-    init() {
-        if let teamsLastUpdatedAt = UserDefaults.standard.value(forKey: "teamsLastUpdatedAt") as? Date {
-            self.teamsLastUpdatedAt = teamsLastUpdatedAt
-        }
-
-        if let hostsLastUpdatedAt = UserDefaults.standard.value(forKey: "hostsLastUpdatedAt") as? Date {
-            self.hostsLastUpdatedAt = hostsLastUpdatedAt
-        }
-
-        if let usersLastUpdatedAt = UserDefaults.standard.value(forKey: "usersLastUpdatedAt") as? Date {
-            self.usersLastUpdatedAt = usersLastUpdatedAt
-        }
-
-        if let softwareLastUpdatedAt = UserDefaults.standard.value(forKey: "softwareLastUpdatedAt") as? Date {
-            self.softwareLastUpdatedAt = softwareLastUpdatedAt
-        }
-
-        if let policiesLastUpdatedAt = UserDefaults.standard.value(forKey: "policiesLastUpdatedAt") as? Date {
-            self.policiesLastUpdatedAt = policiesLastUpdatedAt
-        }
-
-        if let selectedFilter = UserDefaults.standard.value(forKey: "selectedFilter") as? Filter {
-            self.selectedFilter = selectedFilter
-        }
-
-        if let isAuthenticated = UserDefaults.standard.value(forKey: "isAuthenticated") as? Bool {
-            self.isAuthenticated = isAuthenticated
-        }
-
-        container.loadPersistentStores { _, error in
-            if let error = error {
-                print("Core Data failed to load: \(error.localizedDescription)")
-            }
-
-            self.container.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        }
+    init(networkManager: NetworkManager) {
+        self.networkManager = networkManager
 
         if let data = UserDefaults.standard.data(forKey: "activeEnvironment") {
-            let decoded = try? JSONDecoder().decode(AppEnvironment.self, from: data)
-            self.activeEnvironment = decoded
+            self.activeEnvironment = try? JSONDecoder().decode(AppEnvironment.self, from: data)
         }
     }
 
-    private func saveActiveEnvironment(environment: AppEnvironment) {
-        let encoded = try? JSONEncoder().encode(environment)
-        UserDefaults.standard.set(encoded, forKey: "activeEnvironment")
-    }
-
-    func save() {
-        saveTask?.cancel()
-
-        if container.viewContext.hasChanges {
-            try? container.viewContext.save()
-        }
-    }
-
-    func queueSave() {
-        saveTask?.cancel()
-
-        saveTask = Task { @MainActor in
-            try await Task.sleep(for: .seconds(3))
-            save()
-        }
-    }
-
-    func delete(_ object: NSManagedObject) {
-        container.viewContext.delete(object)
-        save()
-    }
-
-    private func delete(_ fetchRequest: NSFetchRequest<NSFetchRequestResult>) {
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        batchDeleteRequest.resultType = .resultTypeObjectIDs
-
-        if let delete = try? container.viewContext.execute(batchDeleteRequest) as? NSBatchDeleteResult {
-            let changes = [NSDeletedObjectsKey: delete.result as? [NSManagedObjectID] ?? []]
-            NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [container.viewContext])
-        }
-    }
-
-    /* Created a fetch request for each Core Data entity and deletes it. 
-     This function needs to be updated as more functionality is added to
-     the app and more data types are being saved.*/
-    func deleteAll() {
-        let request1: NSFetchRequest<NSFetchRequestResult> = CachedTeam.fetchRequest()
-        delete(request1)
-
-        let request2: NSFetchRequest<NSFetchRequestResult> = CachedUser.fetchRequest()
-        delete(request2)
-
-        let request3: NSFetchRequest<NSFetchRequestResult> = CachedSoftware.fetchRequest()
-        delete(request3)
-
-        let request4: NSFetchRequest<NSFetchRequestResult> = CachedHost.fetchRequest()
-        delete(request4)
-
-        let request5: NSFetchRequest<NSFetchRequestResult> = CachedCommandResponse.fetchRequest()
-        delete(request5)
-
-        let request6: NSFetchRequest<NSFetchRequestResult> = CachedPolicy.fetchRequest()
-        delete(request6)
-    }
-
-    func policiesforSelectedFilter() -> [CachedPolicy] {
-        let filter = selectedFilter
-        var predicates = [NSPredicate]()
-
-        if let team = filter.team {
-            let teamPredicate = NSPredicate(format: "teamId == %@", "\(team.id)")
-            predicates.append(teamPredicate)
-        }
-
-        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
-
-        if trimmedFilterText.isEmpty == false {
-            let userNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
-            let emailPredicate = NSPredicate(format: "authorName CONTAINS[c] %@", trimmedFilterText)
-            let combinedPredicate = NSCompoundPredicate(
-                orPredicateWithSubpredicates: [userNamePredicate, emailPredicate]
-            )
-
-            predicates.append(combinedPredicate)
-        }
-
-        let request = CachedPolicy.fetchRequest()
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        let allPolicies = (try? container.viewContext.fetch(request)) ?? []
-        return allPolicies
-    }
-
-    func usersForSelectedFilter() -> [CachedUser] {
-        let filter = selectedFilter
-        var predicates = [NSPredicate]()
-
-        if let team = filter.team {
-            let teamPredicate = NSPredicate(format: "ANY teams.id = %@ OR teams.@count == 0", "\(team.id)")
-            predicates.append(teamPredicate)
-        }
-
-        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
-
-        if trimmedFilterText.isEmpty == false {
-            let userNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
-            let emailPredicate = NSPredicate(format: "email CONTAINS[c] %@", trimmedFilterText)
-            let combinedPredicate = NSCompoundPredicate(
-                orPredicateWithSubpredicates: [userNamePredicate, emailPredicate]
-            )
-
-            predicates.append(combinedPredicate)
-        }
-
-        let request = CachedUser.fetchRequest()
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        let allUsers = (try? container.viewContext.fetch(request)) ?? []
-        return allUsers.sorted(by: { $0.wrappedName < $1.wrappedName })
-    }
-
-    func softwareForSelectedFilter() -> [CachedSoftware] {
-        var predicates = [NSPredicate]()
-
-        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
-
-        if trimmedFilterText.isEmpty == false {
-            let softwareNamePredicate = NSPredicate(format: "name CONTAINS[c] %@", trimmedFilterText)
-            let combinedPredicate = NSCompoundPredicate(
-                orPredicateWithSubpredicates: [softwareNamePredicate]
-            )
-
-            predicates.append(combinedPredicate)
-        }
-        let request = CachedSoftware.fetchRequest()
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        let allSoftware = (try? container.viewContext.fetch(request)) ?? []
-        return allSoftware
-    }
-
-    // swiftlint:disable:next function_body_length
-    func hostsForSelectedFilter() -> [CachedHost] {
-        let filter = selectedFilter
-        var predicates = [NSPredicate]()
-        var sortDescriptors = [NSSortDescriptor]()
-
-        if let team = filter.team {
-            let teamPredicate = NSPredicate(format: "teamId CONTAINS %@", "\(team.id)")
-            predicates.append(teamPredicate)
-        } else {
-            let datePredicate = NSPredicate(format: "lastEnrolledAt > %@", filter.minEnrollmentDate as NSDate)
-            predicates.append(datePredicate)
-
-            let sortDescriptor = NSSortDescriptor(key: "lastEnrolledAt", ascending: true)
-            sortDescriptors.append(sortDescriptor)
-
-        }
-
-        let trimmedFilterText = filterText.trimmingCharacters(in: .whitespaces)
-
-        if trimmedFilterText.isEmpty == false {
-            let hostNamePredicate = NSPredicate(format: "computerName CONTAINS[c] %@", trimmedFilterText)
-            let serialNumberPredicate = NSPredicate(format: "hardwareSerial CONTAINS[c] %@", trimmedFilterText)
-            let combinedPredicate = NSCompoundPredicate(
-                orPredicateWithSubpredicates: [hostNamePredicate, serialNumberPredicate]
-            )
-
-            predicates.append(combinedPredicate)
-        }
-
-        if filterTokens.isEmpty == false {
-            var platformPredicates = [NSPredicate]()
-            for filterToken in filterTokens {
-                for platform in filterToken.platform {
-                    let tokenPredicate = NSPredicate(format: "platform CONTAINS[c] %@", platform)
-                    platformPredicates.append(tokenPredicate)
-                }
-            }
-            let combinedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: platformPredicates)
-            predicates.append(combinedPredicate)
-        }
-
-        if filterStatus != .all {
-            if filterStatus == .online {
-                let statusFilter = NSPredicate(format: "status CONTAINS[c] %@", "online")
-                predicates.append(statusFilter)
-            }
-            if filterStatus == .offline {
-                let statusFilter = NSPredicate(format: "status CONTAINS[c] %@", "offline")
-                predicates.append(statusFilter)
-            }
-            if filterStatus == .missing {
-                // swiftlint:disable:next line_length
-                let statusFilter = NSPredicate(format: "seenTime < %@", Date.now.addingTimeInterval(86400 * -30) as NSDate)
-                predicates.append(statusFilter)
-            }
-            if filterStatus == .recentlyEnrolled {
-                // swiftlint:disable:next line_length
-                let statusFilter = NSPredicate(format: "lastEnrolledAt > %@", Date.now.addingTimeInterval(86400 * -7) as NSDate)
-                predicates.append(statusFilter)
-            }
-        }
-
-        let request = CachedHost.fetchRequest()
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        request.sortDescriptors = [NSSortDescriptor(key: sortType.rawValue, ascending: sortOldestFirst)]
-        let allHosts = (try? container.viewContext.fetch(request)) ?? []
-        return allHosts
-    }
-
-    func loginWithEmail(
-        email: String,
-        password: String,
-        serverURL: String,
-        networkManager: NetworkManager
-    ) async throws {
-
-        KeychainWrapper.default.removeAllKeys()
-
-        let environment = AppEnvironment(
-            baseURL: URL(
-                string: "\(try validateServerURL(serverURL))"
-            )!
-        )
-
-        saveActiveEnvironment(environment: environment)
-
-        let credentials = LoginRequestBody(email: email, password: password)
-
-        do {
-            let response = try await networkManager.fetch(
-                .loginResponse,
-                with: JSONEncoder().encode(credentials),
-                allowRetry: false
-            )
-
-            let newToken = Token(value: response.token, isValid: true)
-            KeychainWrapper.default.set(newToken, forKey: "apiToken")
-            KeychainWrapper.default.set(email, forKey: "email")
-            KeychainWrapper.default.set(password, forKey: "password")
-
-            let user = response.user
-            var teams: [Team] {
-                if response.user.teams.isEmpty {
-                    return response.availableTeams
-                }
-
-                return response.user.teams
-            }
-
-            deleteAll()
-
-            await MainActor.run {
-                updateCache(with: user, downloadedTeams: teams)
-                activeEnvironment = environment
-            }
-            loadingState = .loaded
-            AppEnvironments().addEnvironment(environment)
-            isAuthenticated = true
-        } catch let error as HTTPError {
-            print(error.localizedDescription)
-            handleLoginErrors(error: error)
-        } catch {
-            alertTitle = "Login Error"
-            alertDescription = "\(error.localizedDescription)"
-            showingAlert.toggle()
-            print(error.localizedDescription)
-            loadingState = .failed
-        }
-    }
-
-    func loginWithApiKey(apiKey: String, serverURL: String, networkManager: NetworkManager) async throws {
-        KeychainWrapper.default.removeAllKeys()
-
-        let environment = AppEnvironment(
-            baseURL: URL(
-                string: "\(try validateServerURL(serverURL))"
-            )!
-        )
-        saveActiveEnvironment(environment: environment)
-        let newToken = Token(value: apiKey, isValid: true)
-
-        do {
-            KeychainWrapper.default.set(newToken, forKey: "apiToken")
-            let response = try await networkManager.fetch(.meEndpoint)
-            let user = response.user
-            let teams = response.availableTeams
-
-            deleteAll()
-
-            await MainActor.run {
-                updateCache(with: user, downloadedTeams: teams)
-                activeEnvironment = environment
-            }
-
-            loadingState = .loaded
-            AppEnvironments().addEnvironment(environment)
-            isAuthenticated = true
-        } catch let error as HTTPError {
-            print(error.localizedDescription)
-            handleLoginErrors(error: error)
-        } catch {
-            alertTitle = "Login Error"
-            alertDescription = "\(error.localizedDescription)"
-            showingAlert.toggle()
-            print(error.localizedDescription)
-            loadingState = .failed
-        }
-    }
-
-    func handleLoginErrors(error: HTTPError) {
-        switch error {
-        case .statusCode(let statusCode):
-            switch statusCode {
-            case (401):
-                alertTitle = "Authorization Error"
-                alertDescription = "Your email address or password are incorrect."
-                showingAlert.toggle()
-                loadingState = .failed
-            case (404):
-                alertTitle = "Server Not Found"
-                alertDescription = "Check your Fleet Server URL and try again."
-                showingAlert.toggle()
-                loadingState = .failed
-            default:
-                alertTitle = "Login Error"
-                alertDescription = "Unown error. Please Try again"
-                showingAlert.toggle()
-                print(error.localizedDescription)
-                loadingState = .failed
-            }
-        default:
-            alertTitle = "Login Error"
-            alertDescription = "\(error.localizedDescription)"
-            showingAlert.toggle()
-            print(error.localizedDescription)
-            loadingState = .failed
-        }
-    }
-
-    func signOut() async {
-        deleteAll()
-        activeEnvironment = nil
-        isAuthenticated = false
-        teamsLastUpdatedAt = nil
-        selectedTeam = nil
-
-        do {
-            _ = try await NetworkManager(authManager: AuthManager()).fetch(.logout)
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
-    func updateCache(with downloadedUser: User, downloadedTeams: [Team]) {
-        let viewContext = container.viewContext
-        let cachedUser = CachedUser(context: viewContext)
-
-        cachedUser.createdAt = downloadedUser.createdAt
-        cachedUser.updatedAt = downloadedUser.updatedAt
-        cachedUser.id = Int16(downloadedUser.id)
-        cachedUser.name = downloadedUser.name
-        cachedUser.email = downloadedUser.email
-        cachedUser.globalRole = downloadedUser.globalRole
-        cachedUser.gravatarUrl = downloadedUser.gravatarUrl
-        cachedUser.ssoEnabled = downloadedUser.ssoEnabled
-        cachedUser.apiOnly = downloadedUser.apiOnly
-
-        UserDefaults.standard.setValue(cachedUser.id, forKey: "loggedInUserID")
-
-        for team in downloadedTeams {
-            let cachedTeam = CachedTeam(context: viewContext)
-            cachedTeam.id = Int16(team.id)
-            cachedTeam.name = team.name
-            cachedTeam.role = team.role
-
-            cachedUser.addToTeams(cachedTeam)
-        }
-
-        print(cachedUser.teamsArray)
-        try? viewContext.save()
-    }
+    // MARK: - Environment
 
     func validateServerURL(_ urlString: String) throws -> String {
         guard !urlString.isEmpty else {
@@ -509,19 +73,282 @@ class DataController: ObservableObject {
         }
 
         guard let url = URL(string: urlString), url.scheme != nil else {
-            let validatedURLString = "https://" + urlString
-            return validatedURLString
-
+            return "https://" + urlString
         }
+
         return urlString
     }
-    // swiftlint:disable:next file_length
 
-    private func newTaskContext() -> NSManagedObjectContext {
-        let taskContext = container.newBackgroundContext()
-        taskContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+    // MARK: - State management
 
-        taskContext.undoManager = nil
-        return taskContext
+    /// Loads the logged-in user's data and clears stale results
+    /// from the previous session.
+    func syncLoginData(user: User?, teams: [Team]) {
+        currentUser = user
+        self.teams = teams
+
+        hosts = []
+        users = []
+        software = []
+        policies = []
+
+        teamsLastUpdatedAt = nil
+        hostsLastUpdatedAt = nil
+        usersLastUpdatedAt = nil
+        softwareLastUpdatedAt = nil
+        policiesLastUpdatedAt = nil
+
+        selectedFilter = .all
+        filterText = ""
+        filterTokens = []
+        filterStatus = .all
+        sortOldestFirst = true
+        sortType = .name
+        apiTokenText = ""
+    }
+
+    /// Clears all in-memory data, leaving the active environment intact.
+    func reset() {
+        syncLoginData(user: nil, teams: [])
+    }
+
+    // MARK: - Fetching
+
+    func updateTeams() async {
+        guard activeEnvironment != nil else { return }
+
+        loadingState = .loading
+        do {
+            teams = try await networkManager.fetch(.teams, attempts: 5)
+            teamsLastUpdatedAt = .now
+            loadingState = .loaded
+        } catch {
+            handleFetchError(error)
+        }
+    }
+
+    func updateHosts() async {
+        guard activeEnvironment != nil else { return }
+
+        loadingState = .loading
+        do {
+            hosts = try await networkManager.fetch(.hosts, attempts: 5)
+            hostsLastUpdatedAt = .now
+            loadingState = .loaded
+        } catch {
+            handleFetchError(error)
+        }
+    }
+
+    func updateUsers() async {
+        guard activeEnvironment != nil else { return }
+
+        loadingState = .loading
+        do {
+            users = try await networkManager.fetch(.users, attempts: 5)
+            usersLastUpdatedAt = .now
+            loadingState = .loaded
+        } catch {
+            handleFetchError(error)
+        }
+    }
+
+    /// Fetches global policies plus the policies of each visible team.
+    func updatePolicies() async {
+        guard activeEnvironment != nil else { return }
+
+        loadingState = .loading
+        do {
+            var all = try await networkManager.fetch(.globalPolicies, attempts: 5).policies ?? []
+            var seen = Set(all.map { $0.id })
+
+            for team in teams {
+                guard let teamPolicies = try? await networkManager.fetch(
+                    .getTeamPolicies(id: team.id),
+                    attempts: 5
+                ) else { continue }
+
+                for policy in teamPolicies.policies ?? [] where seen.insert(policy.id).inserted {
+                    all.append(policy)
+                }
+            }
+
+            policies = all
+            policiesLastUpdatedAt = .now
+            loadingState = .loaded
+        } catch {
+            handleFetchError(error)
+        }
+    }
+
+    /// The team scope (`team_id`) of the last successful software titles fetch;
+    /// `nil` means all teams. Detects a changed team scope when a view loads.
+    var softwareTeamId: Int?
+
+    /// Fetches software titles (optionally scoped to a single team), following
+    /// pagination until exhausted.
+    func updateSoftware(teamId: Int? = nil) async {
+        guard activeEnvironment != nil else { return }
+
+        loadingState = .loading
+        do {
+            var all: [Software] = []
+            var seen = Set<Int>()
+            let perPage = 50
+            var page = 1
+
+            // Defensive cap in case a server keeps reporting more results.
+            while page <= 100 {
+                let response = try await networkManager.fetch(
+                    .softwareTitles(page: page, perPage: perPage, teamId: teamId),
+                    attempts: 5
+                )
+
+                let titles = response.softwareTitles ?? []
+                for title in titles where seen.insert(title.id).inserted {
+                    all.append(title)
+                }
+
+                // Fall back to page size when the server omits `meta`.
+                let hasNext = response.meta?.hasNextResults ?? (titles.count == perPage)
+                if !hasNext || titles.isEmpty {
+                    break
+                }
+
+                page += 1
+            }
+
+            software = all
+            softwareTeamId = teamId
+            softwareLastUpdatedAt = .now
+            loadingState = .loaded
+        } catch {
+            handleFetchError(error)
+        }
+    }
+
+    /* A failed fetch either surfaces a token issue or marks the load as
+     failed; the last good data is kept either way. */
+    private func handleFetchError(_ error: Error) {
+        if let authError = error as? AuthManager.AuthError,
+           case .missingCredentials = authError {
+            apiTokenText = ""
+            showingApiTokenAlert = true
+            return
+        }
+
+        loadingState = .failed
+    }
+
+    // MARK: - Filtering
+
+    func hostsForSelectedFilter() -> [Host] {
+        var results = hosts
+
+        if let team = selectedFilter.team {
+            results = results.filter { $0.teamId == team.id }
+        } else if selectedFilter.minEnrollmentDate > Date.distantPast {
+            results = results.filter { $0.lastEnrolledAt > selectedFilter.minEnrollmentDate }
+        }
+
+        let trimmed = filterText.trimmingCharacters(in: .whitespaces)
+        if !trimmed.isEmpty {
+            results = results.filter {
+                $0.computerName.localizedCaseInsensitiveContains(trimmed)
+                    || $0.hardwareSerial.localizedCaseInsensitiveContains(trimmed)
+            }
+        }
+
+        if !filterTokens.isEmpty {
+            let platforms = filterTokens.flatMap { $0.platform }.map { $0.lowercased() }
+            results = results.filter { host in
+                let platform = host.platform.lowercased()
+                return platforms.contains { platform.contains($0) }
+            }
+        }
+
+        switch filterStatus {
+        case .all:
+            break
+        case .online:
+            results = results.filter { $0.status.lowercased().contains("online") }
+        case .offline:
+            results = results.filter { $0.status.lowercased().contains("offline") }
+        case .missing:
+            // swiftlint:disable:next line_length
+            let missingThreshold = Date.now.addingTimeInterval(86400 * -30)
+            results = results.filter { $0.seenTime < missingThreshold }
+        case .recentlyEnrolled:
+            let enrolledThreshold = Date.now.addingTimeInterval(86400 * -7)
+            results = results.filter { $0.lastEnrolledAt > enrolledThreshold }
+        }
+
+        return results.sorted { lhs, rhs in
+            switch sortType {
+            case .name:
+                let comparison = lhs.computerName.localizedCaseInsensitiveCompare(rhs.computerName)
+                return sortOldestFirst ? comparison == .orderedAscending
+                    : comparison == .orderedDescending
+            case .enrolledDate:
+                return sortOldestFirst ? lhs.lastEnrolledAt < rhs.lastEnrolledAt
+                    : lhs.lastEnrolledAt > rhs.lastEnrolledAt
+            case .updatedDate:
+                return sortOldestFirst ? lhs.seenTime < rhs.seenTime
+                    : lhs.seenTime > rhs.seenTime
+            }
+        }
+    }
+
+    func usersForSelectedFilter() -> [User] {
+        var results = users
+
+        if let team = selectedFilter.team {
+            results = results.filter {
+                $0.teams.contains { $0.id == team.id } || $0.teams.isEmpty
+            }
+        }
+
+        let trimmed = filterText.trimmingCharacters(in: .whitespaces)
+        if !trimmed.isEmpty {
+            results = results.filter {
+                $0.name.localizedCaseInsensitiveContains(trimmed)
+                    || $0.email.localizedCaseInsensitiveContains(trimmed)
+            }
+        }
+
+        return results.sorted {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+    }
+
+    func softwareForSelectedFilter() -> [Software] {
+        var results = software
+
+        let trimmed = filterText.trimmingCharacters(in: .whitespaces)
+        if !trimmed.isEmpty {
+            results = results.filter { $0.name.localizedCaseInsensitiveContains(trimmed) }
+        }
+
+        return results.sorted {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+    }
+
+    func policiesForSelectedFilter() -> [Policy] {
+        var results = policies
+
+        if let team = selectedFilter.team {
+            results = results.filter { $0.teamId == team.id }
+        }
+
+        let trimmed = filterText.trimmingCharacters(in: .whitespaces)
+        if !trimmed.isEmpty {
+            results = results.filter {
+                $0.name.localizedCaseInsensitiveContains(trimmed)
+                    || $0.authorName.localizedCaseInsensitiveContains(trimmed)
+            }
+        }
+
+        return results
     }
 }

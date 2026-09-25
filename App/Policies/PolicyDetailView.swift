@@ -1,6 +1,6 @@
 //
 //  PolicyDetailView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 12/6/23.
 //
@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct PolicyDetailView: View {
-    @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
     @Environment(\.networkManager) var networkManager
 
-    var policy: CachedPolicy
+    var policy: Policy
 
     @State private var passingHosts = [Host]()
     @State private var failingHosts = [Host]()
@@ -20,14 +19,14 @@ struct PolicyDetailView: View {
     var body: some View {
         Form {
             Section {
-                Text(policy.wrappedPolicyDescription)
+                Text(policy.description)
                     .foregroundStyle(.secondary)
             } header: {
                 Label("Description", systemImage: "info.circle")
             }
 
             Section {
-                Text(policy.wrappedQuery)
+                Text(policy.query)
                     .monospaced()
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -134,30 +133,30 @@ struct PolicyDetailView: View {
             }
 
             Section("Resolution") {
-                Text(policy.wrappedResolution)
+                Text(policy.resolution)
                     .foregroundStyle(.secondary)
             }
 
             Section {
                 LabeledContent(
                     "Created At",
-                    value: policy.wrappedCreatedAt.formatted(
+                    value: policy.createdAt.formatted(
                         date: .abbreviated,
                         time: .shortened
                     )
                 )
-                LabeledContent("Created By", value: policy.wrappedAuthorName)
+                LabeledContent("Created By", value: policy.authorName)
             }
         }
         .task {
             try? await fetchHostsForPolicy()
         }
-        .navigationTitle(policy.wrappedName)
+        .navigationTitle(policy.name)
     }
 
     func fetchHostsForPolicy() async throws {
-        let passingHostsEndpoint = Endpoint.getPassingHostsForPolicy(policyID: Int(policy.id))
-        let failingHostEndpoint = Endpoint.getFailingHostsForPolicy(policyID: Int(policy.id))
+        let passingHostsEndpoint = Endpoint.getPassingHostsForPolicy(policyID: policy.id)
+        let failingHostEndpoint = Endpoint.getFailingHostsForPolicy(policyID: policy.id)
         do {
             passingHosts = try await networkManager.fetch(passingHostsEndpoint)
             failingHosts = try await networkManager.fetch(failingHostEndpoint)

@@ -1,6 +1,6 @@
 //
 //  SotwareDetailView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 6/21/23.
 //
@@ -76,8 +76,6 @@ struct HostSoftwareDetailView: View {
     }
 }
 
-struct SoftwareDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        HostSoftwareDetailView(software: .example)
-    }
+#Preview {
+    HostSoftwareDetailView(software: .example)
 }

@@ -1,6 +1,6 @@
 //
 //  Endpoint.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 6/8/23.
 //
@@ -14,12 +14,9 @@ struct Endpoint<T: Decodable> {
     var headers = [String: String]()
     var keyPath: String?
     var id: Int?
-
+    var requiresAuth = true
 }
 
-extension Endpoint where T == LoginRequestBody {
-    static let loginRequest = Endpoint(path: "login", type: LoginRequestBody.self, method: .post)
-}
 extension Endpoint where T == LoginResponse {
     static let loginResponse = Endpoint(
         path: "/api/v1/fleet/login",
@@ -27,7 +24,8 @@ extension Endpoint where T == LoginResponse {
         method: .post,
         headers: [
             "Content-Type": "application/json"
-        ]
+        ],
+        requiresAuth: false
     )
 }
 
@@ -72,7 +70,7 @@ extension Endpoint where T == [Host] {
 }
 
 extension Endpoint where T == Host {
-    static func gethost(id: Int) -> Endpoint {
+    static func getHost(id: Int) -> Endpoint {
         return Endpoint(
             path: "/api/v1/fleet/hosts/\(id)",
             type: Host.self,
@@ -81,38 +79,52 @@ extension Endpoint where T == Host {
     }
 }
 
-extension Endpoint where T == [Software] {
-    static let software = Endpoint(
-        path: "/api/v1/fleet/software",
-        type: [Software].self,
-        keyPath: "software"
-    )
+/// Response for the `/api/v1/fleet/software/titles` endpoint.
+struct SoftwareTitlesResponse: Codable {
+    var softwareTitles: [Software]?
+    var meta: Meta?
 
-    static func getSoftwareForTeam(id: Int) -> Endpoint {
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        softwareTitles = try container.decodeIfPresent([Software].self, forKey: .softwareTitles)
+        meta = try container.decodeIfPresent(Meta.self, forKey: .meta)
+    }
+}
+
+/// Pagination metadata from Fleet list endpoints.
+struct Meta: Codable {
+    var hasNextResults: Bool?
+    var hasPreviousResults: Bool?
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        hasNextResults = try container.decodeIfPresent(Bool.self, forKey: .hasNextResults)
+        hasPreviousResults = try container.decodeIfPresent(Bool.self, forKey: .hasPreviousResults)
+    }
+}
+
+extension Endpoint where T == SoftwareTitlesResponse {
+    static func softwareTitles(page: Int = 1, perPage: Int = 50, teamId: Int? = nil) -> Endpoint {
+        var path = "/api/v1/fleet/software/titles?page=\(page)&per_page=\(perPage)"
+        if let teamId {
+            path += "&team_id=\(teamId)"
+        }
         return Endpoint(
-            path: "/api/v1/fleet/software?team_id=\(id)",
-            type: [Software].self,
-            keyPath: "software"
+            path: path,
+            type: SoftwareTitlesResponse.self
         )
     }
 }
 
 extension Endpoint where T == [User] {
     static let users = Endpoint(
-        path: "api/v1/fleet/users",
+        path: "/api/v1/fleet/users",
         type: [User].self,
         keyPath: "users"
     )
 }
 
 extension Endpoint where T == User {
-
-    //    static let meEndpoint = Endpoint(
-    //        path: "/api/v1/fleet/me",
-    //        type: User.self,
-    //        keyPath: "user"
-    //    )
-
     static let logout = Endpoint(
         path: "/api/v1/fleet/logout",
         method: .post
@@ -131,52 +143,53 @@ extension Endpoint where T == PolicyResponse {
             type: PolicyResponse.self
         )
     }
-        }
+}
 
-        extension Endpoint where T == UserReponse {
-            static let meEndpoint = Endpoint(
-                path: "/api/v1/fleet/me",
-                type: UserReponse.self
-            )
+extension Endpoint where T == MeResponse {
+    static let meEndpoint = Endpoint(
+        path: "/api/v1/fleet/me",
+        type: MeResponse.self
+    )
 
-            static func getUser(id: Int) -> Endpoint {
-                return Endpoint(
-                    path: "/api/v1/fleet/users/\(id)",
-                    type: UserReponse.self
-                )
-            }
-        }
+    static func getUser(id: Int) -> Endpoint {
+        return Endpoint(
+            path: "/api/v1/fleet/users/\(id)",
+            type: MeResponse.self
+        )
+    }
+}
 
-        extension Endpoint where T == MdmCommandResponse {
-            static let mdmCommand = Endpoint(
-                path: "/api/v1/fleet/mdm/apple/enqueue",
-                type: MdmCommandResponse.self,
-                method: .post,
-                headers: [
-                    "Content-Type": "application/json"
-                ]
-            )
-        }
+extension Endpoint where T == MdmCommandResponse {
+    static let mdmCommand = Endpoint(
+        path: "/api/v1/fleet/commands/run",
+        type: MdmCommandResponse.self,
+        method: .post,
+        headers: [
+            "Content-Type": "application/json"
+        ]
+    )
+}
 
-        extension Endpoint where T == [CommandResponse] {
-            static func getCommands(for host: Host) -> Endpoint {
-                return Endpoint(
-                    path: "/api/v1/fleet/commands?host_identifier=\(host.hardwareSerial)",
-                    type: [CommandResponse].self,
-                    keyPath: "results"
-                )
-            }
-            static let commands = Endpoint(
-                path: "/api/v1/fleet/commands",
-                type: [CommandResponse].self,
-                keyPath: "results"
-            )
-        }
+extension Endpoint where T == [CommandResponse] {
+    static func getCommands(for host: Host) -> Endpoint {
+        return Endpoint(
+            path: "/api/v1/fleet/commands?host_identifier=\(host.hardwareSerial)",
+            type: [CommandResponse].self,
+            keyPath: "results"
+        )
+    }
 
-        enum HTTPMethod: String {
-        case delete, get, patch, post, put
+    static let commands = Endpoint(
+        path: "/api/v1/fleet/commands",
+        type: [CommandResponse].self,
+        keyPath: "results"
+    )
+}
 
-            var rawValue: String {
-                String(describing: self).uppercased()
-            }
-        }
+enum HTTPMethod: String {
+    case delete, get, patch, post, put
+
+    var rawValue: String {
+        String(describing: self).uppercased()
+    }
+}

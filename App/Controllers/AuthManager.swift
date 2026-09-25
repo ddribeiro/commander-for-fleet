@@ -1,6 +1,6 @@
 //
 //  AuthManager.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 11/24/23.
 //
@@ -46,7 +46,7 @@ actor AuthManager {
             ).fetch(
                 .loginResponse, with: JSONEncoder().encode(credentials)
             )
-            let newToken = Token(value: response.token, isValid: true)
+            let newToken = Token(value: response.token ?? "", isValid: true)
 
             return newToken
         }

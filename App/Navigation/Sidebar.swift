@@ -1,6 +1,6 @@
 //
-//  NewSideBarView.swift
-//  FleetDMViewer
+//  Sidebar.swift
+//  Commander
 //
 //  Created by Dale Ribeiro on 11/28/23.
 //
@@ -20,13 +20,8 @@ enum Panel: Hashable {
 struct Sidebar: View {
     @Binding var selection: Panel?
 
-    @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
-    @Environment(\.scenePhase) var scenePhase
-    @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
-
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
 
     @State private var showingSettings = false
 
@@ -36,15 +31,6 @@ struct Sidebar: View {
                 TopLevelNavigationView()
             }
             .headerProminence(.increased)
-
-//            Section(header: Text("Teams")) {
-//                Text("No Team")
-//                ForEach(teams) { team in
-//                    NavigationLink(team.wrappedName) {
-//                        TeamView(team: team)
-//                    }
-//                }
-//            }
         }
         .sheet(isPresented: $showingSettings) {
             SettingsView()
@@ -62,19 +48,11 @@ struct Sidebar: View {
     }
 }
 
-struct Sidebar_Previews: PreviewProvider {
-    struct Preview: View {
-        @State private var selection: Panel? = Panel.hosts
-        var body: some View {
-            Sidebar(selection: $selection)
-        }
+#Preview {
+    NavigationSplitView {
+        Sidebar(selection: .constant(Panel.hosts))
+    } detail: {
+        Text("Detail!")
     }
-
-    static var previews: some View {
-        NavigationSplitView {
-            Preview()
-        } detail: {
-            Text("Detail!")
-        }
-    }
+    .environmentObject(DataController(networkManager: NetworkManager(authManager: AuthManager())))
 }

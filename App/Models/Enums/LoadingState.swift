@@ -1,6 +1,6 @@
 //
 //  LoadingState.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 9/26/24.
 //

@@ -1,6 +1,6 @@
 //
 //  PoliciesView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 6/19/23.
 //
@@ -40,6 +40,7 @@ struct HostPoliciesView: View {
                     }
                 }
             }
+            .listStyle(.insetGrouped)
         }
     }
 }

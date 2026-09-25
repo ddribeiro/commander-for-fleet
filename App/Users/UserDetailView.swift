@@ -1,6 +1,6 @@
 //
 //  UserView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 11/30/23.
 //
@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct UserDetailView: View {
-    @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
     @Environment(\.networkManager) var networkManager
 
     @State private var currentUser: User?
 
-    var id: Int
+    var id: Int?
 
     var body: some View {
         if let user = currentUser {
@@ -38,9 +37,11 @@ struct UserDetailView: View {
                     }
                 }
 
-                Section("Teams") {
-                    ForEach(user.teams) { team in
-                        LabeledContent(team.name, value: team.role?.capitalized ?? "")
+                if !user.teams.isEmpty {
+                    Section("Teams") {
+                        ForEach(user.teams) { team in
+                            LabeledContent(team.name, value: team.role?.capitalized ?? "")
+                        }
                     }
                 }
             }
@@ -61,18 +62,19 @@ struct UserDetailView: View {
     }
 
     private func updateUser() async {
-        guard dataController.activeEnvironment != nil else { return }
+        guard dataController.activeEnvironment != nil, let id else { return }
 
         do {
+            let meResponse = try await getUser(userID: id)
+            currentUser = meResponse.user
 
-            let userReponse = try await getUser(userID: id)
-            currentUser = userReponse.user
-
-            if userReponse.user.teams.isEmpty {
-                currentUser?.teams = userReponse.availableTeams
+            let assignedTeams: [Team]
+            if let user = meResponse.user, user.teams.isEmpty {
+                assignedTeams = meResponse.availableTeams ?? []
             } else {
-                currentUser?.teams = userReponse.user.teams
+                assignedTeams = meResponse.user?.teams ?? []
             }
+            currentUser?.teams = assignedTeams
 
         } catch {
             switch error as? AuthManager.AuthError {
@@ -91,7 +93,7 @@ struct UserDetailView: View {
         }
     }
 
-    func getUser(userID: Int) async throws -> UserReponse {
+    func getUser(userID: Int) async throws -> MeResponse {
         let endpoint = Endpoint.getUser(id: userID)
 
         do {

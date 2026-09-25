@@ -1,6 +1,6 @@
 //
 //  SoftwareRow.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 6/21/23.
 //
@@ -42,8 +42,6 @@ struct HostSoftwareRow: View {
     }
 }
 
-struct SoftwareRow_Previews: PreviewProvider {
-    static var previews: some View {
-        HostSoftwareRow(software: .example)
-    }
+#Preview {
+    HostSoftwareRow(software: .example)
 }

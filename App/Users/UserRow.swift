@@ -1,6 +1,6 @@
 //
 //  UserRow.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 11/30/23.
 //
@@ -10,24 +10,29 @@ import SwiftUI
 struct UserRow: View {
     @Environment(\.horizontalSizeClass) var sizeClass
 
-    var user: CachedUser
+    var user: User
+
+    var avatarSymbolName: String {
+        if let first = user.name.first, first.isLetter {
+            return "\(first.lowercased()).circle.fill"
+        }
+        return "u.circle.fill"
+    }
 
     var body: some View {
         HStack {
-            if user.wrappedGravatarUrl.isEmpty {
-                if let firstCharacter = user.wrappedName.first?.lowercased() {
-                    Image(systemName: "\(firstCharacter).circle.fill")
-                        .font(.system(.largeTitle))
-                        .symbolRenderingMode(.hierarchical)
+            if user.gravatarUrl.isEmpty {
+                Image(systemName: avatarSymbolName)
+                    .font(.system(.largeTitle))
+                    .symbolRenderingMode(.hierarchical)
 
 #if os(iOS)
-                        .frame(width: 40, height: 40)
+                    .frame(width: 40, height: 40)
 #else
-                        .frame(width: 20, height: 20)
+                    .frame(width: 20, height: 20)
 #endif
-                }
             } else {
-                AsyncImage(url: URL(string: "\(user.wrappedGravatarUrl)?s=240")) { image in
+                AsyncImage(url: URL(string: "\(user.gravatarUrl)?s=240")) { image in
                     image
                         .resizable()
                         .scaledToFit()
@@ -37,7 +42,6 @@ struct UserRow: View {
                                 .stroke(.white, lineWidth: 2)
                         }
                         .shadow(radius: 7)
-
                 } placeholder: {
                     ProgressView()
                 }
@@ -46,16 +50,15 @@ struct UserRow: View {
 #else
                 .frame(width: 20, height: 20)
 #endif
-
             }
             HStack {
                 VStack(alignment: .leading) {
-                    Text(user.wrappedName)
+                    Text(user.name)
                         .font(.headline)
                         .layoutPriority(1)
 
                     if sizeClass == .compact {
-                        Text(user.wrappedEmail)
+                        Text(user.email)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }

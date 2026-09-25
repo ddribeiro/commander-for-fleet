@@ -1,6 +1,6 @@
 //
 //  HostHardwareDetailsView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 9/22/24.
 //
@@ -11,7 +11,7 @@ struct HostHardwareDetailsView: View {
     let host: Host
 
     var body: some View {
-        Section {
+        Group {
             LabeledContent("Device Name", value: host.computerName)
 
             LabeledContent {
@@ -28,12 +28,10 @@ struct HostHardwareDetailsView: View {
             LabeledContent("Processor", value: host.cpuBrand)
                 .multilineTextAlignment(.trailing)
 
-            LabeledContent("Memory", value: "\(host.memory / 1073741824) GB")
-
-        } header: {
-            Label("Device Information", systemImage: "laptopcomputer")
+            LabeledContent("Memory") {
+                Text(ByteCountFormatter.string(fromByteCount: Int64(host.memory), countStyle: .memory))
+            }
         }
-
     }
 }
 

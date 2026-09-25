@@ -1,6 +1,6 @@
 //
 //  SoftwareView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 6/21/23.
 //
@@ -19,13 +19,17 @@ struct HostSoftwareView: View {
     }
 
     var body: some View {
-        Toggle("Only Show Software with Vulnerabilities", isOn: $isShowingVulnerableSoftware)
-        ForEach(isShowingVulnerableSoftware ? vulnerableSoftware : software) { software in
-            NavigationLink {
-                HostSoftwareDetailView(software: software)
-            } label: {
-                HostSoftwareRow(software: software)
+        List {
+            Toggle("Only Show Software with Vulnerabilities", isOn: $isShowingVulnerableSoftware)
+
+            ForEach(isShowingVulnerableSoftware ? vulnerableSoftware : software) { software in
+                NavigationLink {
+                    HostSoftwareDetailView(software: software)
+                } label: {
+                    HostSoftwareRow(software: software)
+                }
             }
         }
+        .listStyle(.insetGrouped)
     }
 }

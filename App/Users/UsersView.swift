@@ -1,6 +1,6 @@
 //
 //  UserView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 11/29/23.
 //
@@ -8,40 +8,24 @@
 import SwiftUI
 
 struct UsersView: View {
-    @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
-    @Environment(\.scenePhase) var scenePhase
-    @Environment(\.networkManager) var networkManager
+
     @Environment(\.horizontalSizeClass) var sizeClass
 
-    @State private var selection: Set<CachedUser.ID> = []
-    @State private var searchText = ""
-
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
-
-    var displayAsList: Bool {
-#if os(iOS)
-        return sizeClass == .compact
-#else
-        return false
-#endif
-    }
+    @State private var selection: Set<User.ID> = []
 
     var teamFilters: [Filter] {
-        teams.map { team in
-            Filter(id: Int(team.id), name: team.wrappedName, icon: "person.3", team: team)
+        dataController.teams.map { team in
+            Filter(id: team.id, name: team.name, icon: "person.2", team: team)
         }
     }
 
-    var searchResults: [CachedUser] {
-        if searchText.isEmpty {
-            return dataController.usersForSelectedFilter()
-        } else {
-            return dataController.usersForSelectedFilter().filter {
-                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
-            }
-        }
+    var displayAsList: Bool {
+        #if os(iOS)
+        return sizeClass == .compact
+        #else
+        return false
+        #endif
     }
 
     var body: some View {
@@ -49,57 +33,80 @@ struct UsersView: View {
             if displayAsList {
                 list
             } else {
-                UsersTableView(selection: $selection, searchText: $searchText)
+                UsersTableView(selection: $selection)
             }
         }
-        .navigationTitle("Users")
-        .navigationDestination(for: CachedUser.self) { user in
-            UserDetailView(id: Int(user.id))
+        .navigationTitle(dataController.selectedFilter == .all ? "All Users" : dataController.selectedFilter.name)
+        .navigationDestination(for: User.ID.self) { id in
+            UserDetailView(id: id)
+        }
+        .toolbar {
+            if !displayAsList {
+                toolbarButtons
+            }
         }
         .task {
             if let usersLastUpdatedAt = dataController.usersLastUpdatedAt {
                 guard usersLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
             }
-            await fetchUsers()
-        }
-        .refreshable {
-            await fetchUsers()
+            await dataController.updateUsers()
         }
         .overlay {
-            if dataController.usersForSelectedFilter().isEmpty {
-                ContentUnavailableView.search
+            let filtered = dataController.usersForSelectedFilter()
+            if filtered.isEmpty {
+                if dataController.loadingState == .loading {
+                    ProgressView("Loading Users…")
+                } else if dataController.usersLastUpdatedAt != nil {
+                    ContentUnavailableView.search
+                } else {
+                    ContentUnavailableView(
+                        "No Users Found",
+                        systemImage: "person.2.slash",
+                        description: Text("Pull to refresh to try again.")
+                    )
+                }
             }
         }
         .searchable(
-            text: $searchText
+            text: $dataController.filterText
         )
+        .refreshable {
+            await dataController.updateUsers()
+        }
+        .sheet(isPresented: $dataController.showingApiTokenAlert) {
+            APITokenRefreshView()
+                .presentationDetents([.medium])
+        }
 #if os(iOS)
         .toolbar {
-            ToolbarItem(placement: .bottomBar) {
-                if dataController.loadingState == .loaded {
-
-                    VStack {
-                        if let updatedAt = dataController.usersLastUpdatedAt {
-                            Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
-                                .font(.footnote)
-                            Text("^[\(searchResults.count) User](inflect: true)")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Picker("Team", selection: $dataController.selectedFilter) {
+                        Text("All Users").tag(Filter.all)
+                        Divider()
+                        ForEach(teamFilters) { filter in
+                            Text(filter.name).tag(filter)
                         }
                     }
+                } label: {
+                    Label("Teams", systemImage: "person.2")
+                        .symbolVariant(dataController.selectedFilter != .all ? .fill : .none)
                 }
+            }
 
-                if dataController.loadingState == .loading {
-                    HStack {
-                        ProgressView()
-                            .padding(.horizontal, 1)
-                            .controlSize(.mini)
+            ToolbarItem(placement: .topBarTrailing) {
+                ContentViewToolbar()
+            }
 
-                        Text("Loading Users")
+            ToolbarItem(placement: .bottomBar) {
+                if let updatedAt = dataController.usersLastUpdatedAt {
+                    VStack {
+                        Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                            .font(.footnote)
+                        Text("^[\(dataController.usersForSelectedFilter().count) User](inflect: true)")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
-
                 }
             }
         }
@@ -108,13 +115,13 @@ struct UsersView: View {
 
     var list: some View {
         List {
-            userRows(searchResults)
-            }
+            userRows(dataController.usersForSelectedFilter())
         }
+    }
 
-    func userRows(_ users: [CachedUser]) -> some View {
+    func userRows(_ users: [User]) -> some View {
         ForEach(users) { user in
-            NavigationLink(value: user) {
+            NavigationLink(value: user.id) {
                 UserRow(user: user)
             }
         }
@@ -127,69 +134,11 @@ struct UsersView: View {
         }
         .disabled(selection.isEmpty)
     }
-
-    func fetchUsers() async {
-        guard dataController.activeEnvironment != nil else { return }
-
-        do {
-            dataController.loadingState = .loading
-            let users = try await networkManager.fetch(.users, attempts: 5)
-
-            await MainActor.run {
-                updateCache(with: users)
-                dataController.usersLastUpdatedAt = .now
-            }
-            dataController.loadingState = .loaded
-
-        } catch {
-            dataController.loadingState = .failed
-            switch error as? AuthManager.AuthError {
-            case .missingCredentials:
-                if !dataController.showingApiTokenAlert {
-                    dataController.showingApiTokenAlert = true
-                    dataController.alertTitle = "API Token Expired"
-                    // swiftlint:disable:next line_length
-                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
-                }
-            case .missingToken:
-                print(error.localizedDescription)
-            case .none:
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    func updateCache(with downloadedUsers: [User]) {
-        for downloadedUser in downloadedUsers {
-            let cachedUser = CachedUser(context: moc)
-
-            cachedUser.createdAt = downloadedUser.createdAt
-            cachedUser.updatedAt = downloadedUser.updatedAt
-            cachedUser.id = Int16(downloadedUser.id)
-            cachedUser.name = downloadedUser.name
-            cachedUser.email = downloadedUser.email
-            cachedUser.gravatarUrl = downloadedUser.gravatarUrl
-            cachedUser.ssoEnabled = downloadedUser.ssoEnabled
-            cachedUser.globalRole = downloadedUser.globalRole
-            cachedUser.apiOnly = downloadedUser.apiOnly
-
-            cachedUser.removeFromTeams(cachedUser.teams ?? [] as NSSet)
-
-            for team in downloadedUser.teams {
-                let cachedTeam = CachedTeam(context: moc)
-                cachedTeam.id = Int16(team.id)
-                cachedTeam.name = team.name
-                cachedTeam.role = team.role
-
-                cachedUser.addToTeams(cachedTeam)
-
-            }
-        }
-
-        try? moc.save()
-    }
 }
 
 #Preview {
     UsersView()
+        .environmentObject(
+            DataController(networkManager: NetworkManager(authManager: AuthManager()))
+        )
 }

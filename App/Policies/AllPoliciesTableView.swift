@@ -1,6 +1,6 @@
 //
-//  AllPoliciesTable.swift
-//  FleetDMViewer
+//  AllPoliciesTableView.swift
+//  Commander
 //
 //  Created by Dale Ribeiro on 12/5/23.
 //
@@ -10,44 +10,30 @@ import SwiftUI
 struct AllPoliciesTableView: View {
     @EnvironmentObject var dataController: DataController
 
-    @Environment(\.managedObjectContext) var moc
-    @Environment(\.networkManager) var networkManager
+    @State private var sortOrder = [KeyPathComparator(\Policy.name)]
 
-    @Binding var selection: Set<CachedPolicy.ID>
-    @Binding var searchText: String
-
-    @State private var sortOrder = [KeyPathComparator(\CachedPolicy.id, order: .reverse)]
-
-    var searchResults: [CachedPolicy] {
-        if searchText.isEmpty {
-            return dataController.policiesforSelectedFilter()
-        } else {
-            return dataController.policiesforSelectedFilter().filter {
-                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
-            }
-        }
-    }
+    @Binding var selection: Set<Policy.ID>
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
-            TableColumn("Name", value: \.id) { policy in
+            TableColumn("Name", value: \.name) { policy in
                 AllPoliciesRow(policy: policy)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .layoutPriority(1)
             }
 
-            TableColumn("Passing", value: \.passingHostCount) { policy in
-                Text("^[\(policy.passingHostCount) host](inflect: true)")
-                    .frame(alignment: .trailing)
+            TableColumn("Passing") { policy in
+                Text(policy.passingHostCount.map(String.init) ?? "—")
+                    .frame(maxWidth: .infinity, alignment: .trailing)
 #if os(macOS)
                     .foregroundStyle(.secondary)
 #endif
             }
             .width(100)
 
-            TableColumn("Failing", value: \.failingHostCount) { policy in
-                Text("^[\(policy.failingHostCount) host](inflect: true)")
-                    .frame(alignment: .trailing)
+            TableColumn("Failing") { policy in
+                Text(policy.failingHostCount.map(String.init) ?? "—")
+                    .frame(maxWidth: .infinity, alignment: .trailing)
 #if os(macOS)
                     .foregroundStyle(.secondary)
 #endif
@@ -64,7 +50,9 @@ struct AllPoliciesTableView: View {
                         .labelStyle(.iconOnly)
                         .contentShape(Rectangle())
                 }
+#if os(macOS)
                 .menuStyle(.borderlessButton)
+#endif
                 .menuIndicator(.hidden)
                 .fixedSize()
                 .foregroundColor(.secondary)
@@ -72,7 +60,7 @@ struct AllPoliciesTableView: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(searchResults, id: \.id) { policy in
+                ForEach(dataController.policiesForSelectedFilter(), id: \.id) { policy in
                     TableRow(policy)
                 }
             }

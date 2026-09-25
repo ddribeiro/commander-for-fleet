@@ -1,6 +1,6 @@
 //
 //  TopLevelNavigationView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 4/5/25.
 //
@@ -17,9 +17,13 @@ struct TopLevelNavigationView: View {
 //            Label("Controls", systemImage: "slider.horizontal.3")
 //        }
 
-//        NavigationLink(value: Panel.software) {
-//            Label("Software", systemImage: "square.stack.3d.up")
-//        }
+        NavigationLink(value: Panel.users) {
+            Label("Users", systemImage: "person.2")
+        }
+
+        NavigationLink(value: Panel.software) {
+            Label("Software", systemImage: "square.stack.3d.up")
+        }
 
         NavigationLink(value: Panel.queries) {
             Label("Queries", systemImage: "rectangle.and.text.magnifyingglass")

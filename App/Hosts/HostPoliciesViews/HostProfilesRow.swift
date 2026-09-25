@@ -1,6 +1,6 @@
 //
 //  ProfilesRow.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 6/21/23.
 //
@@ -27,8 +27,6 @@ struct HostProfilesRow: View {
     }
 }
 
-struct ProfilesRow_Previews: PreviewProvider {
-    static var previews: some View {
-        HostProfilesRow(profile: .example)
-    }
+#Preview {
+    HostProfilesRow(profile: .example)
 }

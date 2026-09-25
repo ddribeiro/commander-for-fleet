@@ -1,32 +1,22 @@
 //
 //  HostsView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 11/29/23.
 //
 
 import SwiftUI
-import CoreData
 
 struct HostsView: View {
     @EnvironmentObject var dataController: DataController
 
-    @Environment(\.managedObjectContext) var moc
-    @Environment(\.scenePhase) var scenePhase
-    @Environment(\.networkManager) var networkManager
     @Environment(\.horizontalSizeClass) var sizeClass
 
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
-
-    @State private var selection: Set<CachedHost.ID> = []
-
-    let smartFilters: [Filter] = [.all, .recentlyEnrolled]
-
-    var hosts = [Host]()
+    @State private var selection: Set<Host.ID> = []
 
     var teamFilters: [Filter] {
-        teams.map { team in
-            Filter(id: Int(team.id), name: team.wrappedName, icon: "person.3", team: team)
+        dataController.teams.map { team in
+            Filter(id: team.id, name: team.name, icon: "person.3", team: team)
         }
     }
 
@@ -47,7 +37,7 @@ struct HostsView: View {
             }
         }
         .navigationTitle(dataController.selectedFilter == .all ? "All Hosts" : dataController.selectedFilter.name)
-        .navigationDestination(for: CachedHost.ID.self) { id in
+        .navigationDestination(for: Host.ID.self) { id in
             HostDetailsView(id: id)
         }
         .toolbar {
@@ -59,15 +49,25 @@ struct HostsView: View {
             if let hostsLastUpdatedAt = dataController.hostsLastUpdatedAt {
                 guard hostsLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
             }
-            await fetchTeams()
-            await fetchHosts()
+            await dataController.updateTeams()
+            await dataController.updateHosts()
         }
         .overlay {
-            if dataController.hostsForSelectedFilter().isEmpty {
-                ContentUnavailableView.search
+            let filtered = dataController.hostsForSelectedFilter()
+            if filtered.isEmpty {
+                if dataController.loadingState == .loading {
+                    ProgressView("Loading Hosts…")
+                } else if dataController.hostsLastUpdatedAt != nil {
+                    ContentUnavailableView.search
+                } else {
+                    ContentUnavailableView(
+                        "No Hosts Found",
+                        systemImage: "laptopcomputer.slash",
+                        description: Text("Pull to refresh to try again.")
+                    )
+                }
             }
         }
-
         .searchable(
             text: $dataController.filterText,
             tokens: $dataController.filterTokens,
@@ -76,8 +76,8 @@ struct HostsView: View {
             Text(token.name)
         }
         .refreshable {
-            await fetchHosts()
-            await fetchTeams()
+            await dataController.updateHosts()
+            await dataController.updateTeams()
         }
         .sheet(isPresented: $dataController.showingApiTokenAlert) {
             APITokenRefreshView()
@@ -109,7 +109,7 @@ struct HostsView: View {
                     VStack {
                         Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
                             .font(.footnote)
-                        Text("^[\(dataController.hostsForSelectedFilter().count) Computers](inflection: true)")
+                        Text("^[\(dataController.hostsForSelectedFilter().count) Computers](inflect: true)")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
@@ -117,7 +117,6 @@ struct HostsView: View {
             }
         }
 #endif
-
     }
 
     var list: some View {
@@ -126,7 +125,7 @@ struct HostsView: View {
         }
     }
 
-    func hostRows(_ hosts: [CachedHost]) -> some View {
+    func hostRows(_ hosts: [Host]) -> some View {
         ForEach(hosts) { host in
             NavigationLink(value: host.id) {
                 HostRow(host: host)
@@ -141,105 +140,11 @@ struct HostsView: View {
         }
         .disabled(selection.isEmpty)
     }
-
-    func fetchHosts() async {
-        guard dataController.activeEnvironment != nil else { return }
-
-        do {
-            let hosts = try await networkManager.fetch(.hosts, attempts: 5)
-
-            await MainActor.run {
-                updateCache(with: hosts)
-                dataController.hostsLastUpdatedAt = .now
-            }
-        } catch {
-            switch error as? AuthManager.AuthError {
-            case .missingCredentials:
-                if !dataController.showingApiTokenAlert {
-                    dataController.showingApiTokenAlert = true
-                    dataController.alertTitle = "API Token Expired"
-                    // swiftlint:disable:next line_length
-                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
-                }
-            case .missingToken:
-                print(error)
-            case .none:
-                print(error)
-            }
-        }
-    }
-
-    func updateCache(with downloadedHosts: [Host]) {
-        for downloadedHost in downloadedHosts {
-            let cachedHost = CachedHost(context: moc)
-
-            cachedHost.id = Int16(downloadedHost.id)
-            cachedHost.platform = downloadedHost.platform
-            cachedHost.lastEnrolledAt = downloadedHost.lastEnrolledAt
-            cachedHost.seenTime = downloadedHost.seenTime
-            cachedHost.uuid = downloadedHost.uuid
-            cachedHost.osVersion = downloadedHost.osVersion
-            cachedHost.uptime = Int64(downloadedHost.uptime)
-            cachedHost.memory = Int64(downloadedHost.memory)
-            cachedHost.cpuBrand = downloadedHost.cpuBrand
-            cachedHost.hardwareModel = downloadedHost.hardwareModel
-            cachedHost.hardwareSerial = downloadedHost.hardwareSerial
-            cachedHost.computerName = downloadedHost.computerName
-            cachedHost.publicIp = downloadedHost.publicIp
-            cachedHost.primaryIp = downloadedHost.primaryIp
-            cachedHost.primaryMac = downloadedHost.primaryMac
-            cachedHost.teamId = Int16(downloadedHost.teamId ?? 0)
-            cachedHost.gigsDiskSpaceAvailable = downloadedHost.gigsDiskSpaceAvailable
-            cachedHost.percentDiskSpaceAvailable = Double(downloadedHost.percentDiskSpaceAvailable)
-            cachedHost.diskEncryptionEnabled = downloadedHost.diskEncryptionEnabled ?? false
-            cachedHost.status = downloadedHost.status
-            cachedHost.teamName = downloadedHost.teamName
-        }
-
-        try? moc.save()
-    }
-
-    func fetchTeams() async {
-        guard dataController.activeEnvironment != nil else { return }
-
-        do {
-            let teams = try await networkManager.fetch(.teams, attempts: 5)
-
-            await MainActor.run {
-                updateCache(with: teams)
-                dataController.teamsLastUpdatedAt = .now
-            }
-        } catch {
-            switch error as? AuthManager.AuthError {
-            case .missingCredentials:
-                if !dataController.showingApiTokenAlert {
-                    dataController.showingApiTokenAlert = true
-                    dataController.alertTitle = "API Token Expired"
-                    // swiftlint:disable:next line_length
-                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
-                }
-            case .missingToken:
-                print(error.localizedDescription)
-            case .none:
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    func updateCache(with downloadedTeams: [Team]) {
-        for downloadedTeam in downloadedTeams {
-            let cachedTeam = CachedTeam(context: moc)
-
-            cachedTeam.hostCount = Int16(downloadedTeam.hostCount ?? 0)
-            cachedTeam.id = Int16(downloadedTeam.id)
-            cachedTeam.name = downloadedTeam.name
-            cachedTeam.role = downloadedTeam.role
-        }
-
-        try? moc.save()
-    }
 }
 
 #Preview {
-    HostsView(hosts: [.example])
+    HostsView()
+        .environmentObject(
+            DataController(networkManager: NetworkManager(authManager: AuthManager()))
+        )
 }

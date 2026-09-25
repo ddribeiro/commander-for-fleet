@@ -1,6 +1,6 @@
 //
 //  Filter.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 8/29/23.
 //
@@ -12,10 +12,10 @@ struct Filter: Identifiable, Hashable {
     var name: String
     var icon: String
     var minEnrollmentDate = Date.distantPast
-    var team: CachedTeam?
+    var team: Team?
 
     var hostCount: Int {
-        Int(team?.hostCount ?? 0)
+        team?.hostCount ?? 0
     }
 
     static var all = Filter(

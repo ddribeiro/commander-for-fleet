@@ -1,33 +1,43 @@
 //
 //  FleetDMViewerApp.swift
-//  FleetDMViewer
+//  Commander
 //
-//  Created by Dale Ribeiro on 6/2/23.
+//  Created by Dale Ribeiro on 5/22/23.
 //
 
 import SwiftUI
 
 @main
 struct FleetDMViewerApp: App {
-    @StateObject var dataController = DataController()
-    @State var networkManager = NetworkManager(authManager: AuthManager())
+    // The core services, wired up once here and shared across the app.
+    @StateObject private var authService: AuthService
+    @State private var networkManager: NetworkManager
+    @StateObject private var dataController: DataController
 
-    @State private var selection: Panel? = Panel.hosts
+    init() {
+        let auth = AuthManager()
+        let network = NetworkManager(authManager: auth)
+        let data = DataController(networkManager: network)
+
+        // Use wrappedValue for State/StateObject initialization in init.
+        _networkManager = State(wrappedValue: network)
+        _authService = StateObject(
+            wrappedValue: AuthService(authManager: auth, networkManager: network, dataController: data)
+        )
+        _dataController = StateObject(wrappedValue: data)
+    }
 
     var body: some Scene {
         WindowGroup {
-            if dataController.isAuthenticated {
+            if authService.isAuthenticated {
                 ContentView()
-                .environmentObject(dataController)
-                .environment(\.networkManager, networkManager)
-                .environment(\.managedObjectContext, dataController.container.viewContext)
+                    .environment(\.networkManager, networkManager)
             } else {
                 SignedOutView()
-                    .environmentObject(dataController)
                     .environment(\.networkManager, networkManager)
-                    .environment(\.managedObjectContext, dataController.container.viewContext)
-
             }
         }
+        .environmentObject(authService)
+        .environmentObject(dataController)
     }
 }

@@ -1,6 +1,6 @@
 //
 //  ProfilesView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 6/21/23.
 //
@@ -18,15 +18,16 @@ struct HostProfilesView: View {
                 description: Text("This host has no profiles installed.")
             )
         } else {
-            ForEach(profiles) { profile in
-                HostProfilesRow(profile: profile)
+            List {
+                ForEach(profiles) { profile in
+                    HostProfilesRow(profile: profile)
+                }
             }
+            .listStyle(.insetGrouped)
         }
     }
 }
 
-struct ProfilesView_Previews: PreviewProvider {
-    static var previews: some View {
-        HostProfilesView(profiles: [.example, .example, .example])
-    }
+#Preview {
+    HostProfilesView(profiles: [.example, .example, .example])
 }

@@ -1,6 +1,6 @@
 //
 //  APITokenRefreshView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 11/28/23.
 //
@@ -16,65 +16,75 @@ struct APITokenRefreshView: View {
     @State private var showingErrorText = false
 
     var body: some View {
-        VStack {
-            Text("API Token Expired")
-                .font(.title)
-                .padding(.bottom)
+        Form {
+            Section {
+                VStack(spacing: 8) {
+                    Text("API Token Expired")
+                        .font(.headline)
 
-            Text("Your API token has expired. Please create a new one and enter it below.")
-                .foregroundStyle(.secondary)
-                .font(.body)
-                .multilineTextAlignment(.center)
-
-            SecureField("API Token", text: $dataController.apiTokenText)
-                .textFieldStyle(.roundedBorder)
-                .animation(.bouncy, value: showingErrorText)
-
-            if showingErrorText {
-                Text("Your API Token was not accepted. Please try again.")
-                    .font(.caption)
-                    .foregroundStyle(.red)
+                    Text("Your API token has expired. Please create a new one and enter it below.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
             }
 
-            Button {
-                let newToken = Token(value: dataController.apiTokenText, isValid: true)
-                KeychainWrapper.default.set(newToken, forKey: "apiToken")
+            Section("New API Token") {
+                SecureField("API Token", text: $dataController.apiTokenText)
+                    .animation(.bouncy, value: showingErrorText)
+                
+                if showingErrorText {
+                    Text("Your API Token was not accepted. Please try again.")
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
+            }
 
-                Task {
-                    do {
-                        dataController.loadingState = .loading
-                        _ = try await networkManager.fetch(.meEndpoint)
+            Section {
+                Button {
+                    let newToken = Token(value: dataController.apiTokenText, isValid: true)
+                    KeychainWrapper.default.set(newToken, forKey: "apiToken")
 
-                        dismiss()
-                        dataController.loadingState = .loaded
-                        dataController.apiTokenText = ""
-                    } catch {
-                        dataController.loadingState = .failed
-                        showingErrorText = true
+                    Task {
+                        do {
+                            dataController.loadingState = .loading
+                            _ = try await networkManager.fetch(.meEndpoint)
+
+                            dismiss()
+                            dataController.loadingState = .loaded
+                            dataController.apiTokenText = ""
+                        } catch {
+                            dataController.loadingState = .failed
+                            showingErrorText = true
+                        }
+                    }
+                } label: {
+                    HStack {
+                        Spacer()
+                        if dataController.loadingState == .loading {
+                            ProgressView()
+                        } else {
+                            Text("Submit")
+                                .fontWeight(.semibold)
+                        }
+                        Spacer()
                     }
                 }
-
-            } label: {
-                switch dataController.loadingState {
-                case .loading:
-                    ProgressView()
-                case .loaded:
-                    Text("Submit")
-                case .failed:
-                    Text("Submit")
+                .disabled(dataController.loadingState == .loading)
+                
+                Button("Cancel", role: .cancel) {
+                    dismiss()
                 }
             }
-            .buttonStyle(.borderedProminent)
-            .padding(.top)
-
-            Button("Cancel", role: .cancel) {
-                dismiss()
-            }
         }
-        .padding()
     }
 }
 
 #Preview {
     APITokenRefreshView()
+        .environmentObject(
+            DataController(networkManager: NetworkManager(authManager: AuthManager()))
+        )
 }

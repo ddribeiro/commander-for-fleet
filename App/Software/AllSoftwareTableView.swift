@@ -1,6 +1,6 @@
 //
 //  AllSoftwareTableView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 12/1/23.
 //
@@ -10,76 +10,66 @@ import SwiftUI
 struct AllSoftwareTableView: View {
     @EnvironmentObject var dataController: DataController
 
-    @Environment(\.managedObjectContext) var moc
-    @Environment(\.networkManager) var networkManager
+    @State private var sortOrder = [KeyPathComparator(\Software.name)]
 
-    @State private var sortOrder = [KeyPathComparator(\CachedSoftware.id, order: .reverse)]
-
-    @Binding var selection: Set<CachedSoftware.ID>
-    @Binding var searchText: String
+    @Binding var selection: Set<Software.ID>
     @Binding var isShowingVulnerableSoftware: Bool
 
-    var searchResults: [CachedSoftware] {
-        if searchText.isEmpty && !isShowingVulnerableSoftware {
-            return dataController.softwareForSelectedFilter().sorted {
-                $0.wrappedName < $1.wrappedName
-            }
-        } else if searchText.isEmpty && isShowingVulnerableSoftware {
-            return vulnerableSoftware.sorted {
-                $0.wrappedName < $1.wrappedName
-            }
-        } else if isShowingVulnerableSoftware {
-                return vulnerableSoftware.filter({ $0.wrappedName.localizedCaseInsensitiveContains(searchText) })
-            } else {
-            return dataController.softwareForSelectedFilter().filter {
-                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
-            }
-        }
-    }
+    var results: [Software] {
+        var results = dataController.softwareForSelectedFilter()
 
-    var vulnerableSoftware: [CachedSoftware] {
-        dataController.softwareForSelectedFilter().filter {
-            !$0.vulnerabilitiesArray.isEmpty
+        if isShowingVulnerableSoftware {
+            results = results.filter { !($0.vulnerabilities ?? []).isEmpty }
         }
+
+        return results
     }
 
     var body: some View {
         Table(selection: $selection, sortOrder: $sortOrder) {
-            TableColumn("Name", value: \.id) { software in
+            TableColumn("Name", value: \.name) { software in
                 AllSoftwareRow(software: software)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .layoutPriority(1)
-
             }
             .width(400)
 
-            TableColumn("Version", value: \.wrappedVersion) { software in
-                Text(software.wrappedVersion)
+            TableColumn("Version", value: \.version) { software in
+                Text(software.version)
+                    .monospacedDigit()
 #if os(macOS)
-                    .frame(maxWidth: .infinity, alignment: . trailing)
                     .foregroundStyle(.secondary)
 #endif
+            }
+
+            TableColumn("Source") { software in
+                Text(software.source)
+            }
+
+            TableColumn("Hosts") { software in
+                Text(software.hostsCount.map(String.init) ?? "—")
                     .monospacedDigit()
+#if os(macOS)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+#endif
             }
 
-            TableColumn("Source", value: \.wrappedSource) { software in
-                Text(software.wrappedSource)
-            }
-
-            TableColumn("Hosts", value: \.hostCount) { software in
-                Text("\(software.hostCount)")
+            TableColumn("Versions") { software in
+                Text(software.versionsCount.map(String.init) ?? "—")
                     .monospacedDigit()
+#if os(macOS)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+#endif
             }
 
-            TableColumn("Vulnerabilties", value: \.vulnerabilitiesArray.count) { software in
+            TableColumn("Vulnerabilities") { software in
                 HStack {
+                    Image(systemName: "exclamationmark.shield.fill")
+                        .opacity((software.vulnerabilities?.count ?? 0) != 0 ? 1 : 0)
+                        .imageScale(.large)
+                        .foregroundStyle(.red)
 
-                        Image(systemName: "exclamationmark.shield.fill")
-                            .opacity(software.vulnerabilitiesArray.count != 0 ? 1 : 0)
-                            .imageScale(.large)
-                            .foregroundStyle(.red)
-
-                    Text("\(software.vulnerabilitiesArray.count)")
+                    Text("\(software.vulnerabilities?.count ?? 0)")
                         .monospacedDigit()
                 }
             }
@@ -94,7 +84,9 @@ struct AllSoftwareTableView: View {
                         .labelStyle(.iconOnly)
                         .contentShape(Rectangle())
                 }
+#if os(macOS)
                 .menuStyle(.borderlessButton)
+#endif
                 .menuIndicator(.hidden)
                 .fixedSize()
                 .foregroundColor(.secondary)
@@ -102,11 +94,10 @@ struct AllSoftwareTableView: View {
             .width(60)
         } rows: {
             Section {
-                ForEach(searchResults) { software in
+                ForEach(results, id: \.id) { software in
                     TableRow(software)
                 }
             }
         }
-        .id(UUID())
     }
 }

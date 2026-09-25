@@ -1,6 +1,6 @@
 //
 //  DetailColumn.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 11/29/23.
 //

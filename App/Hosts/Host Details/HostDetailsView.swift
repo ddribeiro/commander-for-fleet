@@ -1,155 +1,202 @@
 //
 //  HostDetailsView.swift
-//  FleetSample
+//  Commander
 //
 //  Created by Dale Ribeiro on 6/1/23.
 //
 
 import SwiftUI
-import KeychainWrapper
 
 struct HostDetailsView: View {
     @EnvironmentObject var dataController: DataController
     @Environment(\.networkManager) var networkManager
 
     @State private var updatedHost: Host?
-    @State private var selectedView = "Policies"
-    @State private var lockCode: String = ""
 
-    var id: Int16?
-    var views = ["Policies", "Software", "Profiles"]
+    private enum HostDetailPane: String, CaseIterable, Identifiable {
+        case policies = "Policies"
+        case software = "Software"
+        case profiles = "Profiles"
+        var id: String { rawValue }
+    }
+
+    @State private var selectedPane: HostDetailPane = .policies
+
+    var id: Int?
 
     var body: some View {
-        if let host = updatedHost {
-            Form {
-                HostHardwareDetailsView(host: host)
-                HostStorageDetailsView(host: host)
-
-                if let mdm = host.mdm {
-                    if mdm.enrollmentStatus != nil {
-                        HostMDMDetailsView(mdm: mdm)
-                    }
-                }
-
-                Section {
-
-                    // swiftlint:disable:next line_length
-                    LabeledContent("Enrolled", value: "\(host.lastEnrolledAt.formatted(date: .abbreviated, time: .shortened))")
-                        .multilineTextAlignment(.trailing)
-
-                    // swiftlint:disable:next line_length
-                    LabeledContent("Last Seen", value: "\(host.seenTime.formatted(date: .abbreviated, time: .shortened))")
-                        .multilineTextAlignment(.trailing)
-
-                    LabeledContent("Uptime", value: "\(host.uptime / 86491509803921) days")
-                }
-
-                Section {
-                    LabeledContent("IP Address", value: host.publicIp)
-
-                    LabeledContent("Private IP Address", value: host.primaryIp)
-
-                    LabeledContent("MAC Address", value: host.primaryMac)
-                } header: {
-                    Label("Network Information", systemImage: "network")
-                }
-
-                if let batteries = host.batteries {
+        Group {
+            if let host = updatedHost {
+                List {
                     Section {
-                        ForEach(batteries, id: \.self) { battery in
-                            Gauge(value: Double(battery.cycleCount), in: 0...1000) {
-                                Text("Cycle Counts")
-                            } currentValueLabel: {
-                                Text("\(battery.cycleCount)")
-                                    .foregroundStyle(.secondary)
-                            } minimumValueLabel: {
-                                Text("0")
-                                    .foregroundStyle(.secondary)
-                            } maximumValueLabel: {
-                                Text("1000")
-                                    .foregroundStyle(.secondary)
-                            }
-                            .tint(.green)
+                        HostHardwareDetailsView(host: host)
+                    } header: {
+                        Label("Device Information", systemImage: "laptopcomputer")
+                    }
 
-                            LabeledContent("Battery Health") {
-                                Text(battery.health)
-                                    .foregroundColor(battery.health == "Normal" ? .secondary : .red)
-                                if battery.health != "Normal" {
-                                    Image(systemName: "exclamationmark.triangle.fill")
-                                        .foregroundColor(.red)
+                    Section {
+                        HostStorageDetailsView(host: host)
+                    } header: {
+                        Label("Storage", systemImage: "internaldrive")
+                    }
+
+                    if let mdm = host.mdm, mdm.enrollmentStatus != nil {
+                        Section {
+                            HostMDMDetailsView(mdm: mdm)
+                        } header: {
+                            Label("MDM Information", systemImage: "lock.laptopcomputer")
+                        }
+                    }
+
+                    Section {
+                        LabeledContent("Enrolled") {
+                            Text(host.lastEnrolledAt.formatted(date: .abbreviated, time: .shortened))
+                                .foregroundStyle(.secondary)
+                        }
+                        LabeledContent("Last Seen") {
+                            Text(host.seenTime.formatted(date: .abbreviated, time: .shortened))
+                                .foregroundStyle(.secondary)
+                        }
+                        LabeledContent("Uptime") {
+                            Text(formattedUptime(Double(host.uptime)))
+                                .foregroundStyle(.secondary)
+                        }
+                    } header: {
+                        Label("Activity", systemImage: "clock")
+                    }
+
+                    Section {
+                        LabeledContent("IP Address", value: host.publicIp)
+                        LabeledContent("Private IP Address", value: host.primaryIp)
+                        LabeledContent("MAC Address", value: host.primaryMac)
+                    } header: {
+                        Label("Network", systemImage: "network")
+                    }
+
+                    if let batteries = host.batteries, !batteries.isEmpty {
+                        Section {
+                            ForEach(batteries, id: \.self) { battery in
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Gauge(value: battery.health ?? 1.0, in: 0...1) {
+                                        Text("Health")
+                                    } currentValueLabel: {
+                                        Text(batteryHealthLabel(for: battery))
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    .tint((battery.health ?? 1.0) < 0.8 ? .orange : .green)
+
+                                    LabeledContent("Cycle Count", value: "\(battery.cycleCount)")
+
+                                    if (battery.health ?? 1.0) < 0.8 {
+                                        Label(
+                                            "Battery health is below 80%",
+                                            systemImage: "exclamationmark.triangle.fill"
+                                        )
+                                        .foregroundStyle(.orange)
+                                        .font(.footnote)
+                                    }
                                 }
+                                .padding(.vertical, 4)
+                            }
+                        } header: {
+                            Label("Battery", systemImage: "battery.100")
+                        }
+                    }
+
+                    Section {
+                        NavigationLink(value: HostDetailPane.policies) {
+                            Label("Policies", systemImage: paneIcon(for: .policies))
+                        }
+                        NavigationLink(value: HostDetailPane.software) {
+                            Label("Software", systemImage: paneIcon(for: .software))
+                        }
+                        
+                        if let profiles = host.mdm?.profiles, !profiles.isEmpty {
+                            NavigationLink(value: HostDetailPane.profiles) {
+                                Label("Profiles", systemImage: paneIcon(for: .profiles))
                             }
                         }
                     } header: {
-                        Label("Battery Health", systemImage: "battery.100")
+                        Label("Management", systemImage: "gearshape")
                     }
                 }
-
-                Section {
-                    Picker("Select a view", selection: $selectedView) {
-                        ForEach(views, id: \.self) {
-                            Text($0)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-
-                    switch selectedView {
-                    case "Policies":
-                        if let policies = host.policies {
-                            HostPoliciesView(policies: policies)
-                        } else {
-                            ProgressView()
-                        }
-                    case "Software":
-                        if let software = host.software {
-                            HostSoftwareView(software: software)
-                        } else {
-                            ContentUnavailableView(
-                                "No Software",
-                                systemImage: "exclamationmark.triangle",
-                                description: Text("This host has no software.")
-                            )
-                        }
-                    case "Profiles":
-                        if let profiles = host.mdm?.profiles {
-                            HostProfilesView(profiles: profiles)
-                        } else {
-                            ContentUnavailableView(
-                                "No Profiles",
-                                systemImage: "exclamationmark.triangle",
-                                description: Text("This host has no profiles installed.")
-                            )
-                        }
-                    default:
-                        Text("N/A")
+                .listStyle(.insetGrouped)
+                .refreshable {
+                    await updateHost()
+                }
+                .sheet(isPresented: $dataController.showingApiTokenAlert) {
+                    APITokenRefreshView()
+                        .presentationDetents([.medium])
+                }
+                .alert(dataController.alertTitle, isPresented: $dataController.showingAlert) {
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    Text(dataController.alertDescription)
+                }
+                .toolbar {
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        MDMCommandMenu(host: host)
+                            .disabled(host.mdm?.enrollmentStatus == nil)
                     }
                 }
-            }
-            .onDisappear {
-                updatedHost = nil
-            }
-
-            .refreshable {
-                await updateHost()
-            }
-            .sheet(isPresented: $dataController.showingApiTokenAlert) {
-                APITokenRefreshView()
-                    .presentationDetents([.medium])
-            }
-            .toolbar {
-                MDMCommandMenu(host: host)
-                    .disabled(host.mdm?.enrollmentStatus == nil)
-            }
-            .navigationTitle("\(host.computerName)")
-        } else {
-            ProgressView()
-            Text("Loading")
-
+                .navigationTitle(host.computerName)
+                .navigationBarTitleDisplayMode(.inline)
+                .onDisappear {
+                    updatedHost = nil
+                }
+            } else {
+                ContentUnavailableView(
+                    "Loading Host",
+                    systemImage: "desktopcomputer",
+                    description: Text("Fetching the latest details…")
+                )
                 .task {
                     await updateHost()
                 }
+            }
         }
+        .navigationDestination(for: HostDetailPane.self) { pane in
+            switch pane {
+            case .policies:
+                if let policies = updatedHost?.policies {
+                    HostPoliciesView(policies: policies)
+                } else {
+                    ContentUnavailableView("No Policies", systemImage: "list.bullet", description: Text("This host has no policies installed."))
+                }
+            case .software:
+                if let software = updatedHost?.software, !software.isEmpty {
+                    HostSoftwareView(software: software)
+                } else {
+                    ContentUnavailableView("No Software", systemImage: "app.badge", description: Text("This host has no software installed."))
+                }
+            case .profiles:
+                if let profiles = updatedHost?.mdm?.profiles, !profiles.isEmpty {
+                    HostProfilesView(profiles: profiles)
+                } else {
+                    ContentUnavailableView("No Profiles", systemImage: "switch.2", description: Text("This host has no profiles installed."))
+                }
+            }
+        }
+    }
 
+    /// Shows Fleet's reported health text (e.g. "Service recommended") when
+    /// available, otherwise the percentage derived from the numeric level.
+    private func batteryHealthLabel(for battery: Battery) -> String {
+        if let healthText = battery.healthText {
+            return healthText
+        }
+        return (battery.health ?? 1.0).formatted(.percent.precision(.fractionLength(0)))
+    }
+
+    private func paneIcon(for pane: HostDetailPane) -> String {
+        switch pane {
+        case .policies:
+            return "list.bullet"
+        case .software:
+            return "app.badge"
+        case .profiles:
+            return "switch.2"
+        }
     }
 
     private func updateHost() async {
@@ -157,7 +204,7 @@ struct HostDetailsView: View {
 
         do {
             if let id = id {
-                updatedHost = try await getHost(hostID: Int(id))
+                updatedHost = try await getHost(hostID: id)
             }
         } catch {
             switch error as? AuthManager.AuthError {
@@ -165,26 +212,25 @@ struct HostDetailsView: View {
                 if !dataController.showingApiTokenAlert {
                     dataController.showingApiTokenAlert = true
                     dataController.alertTitle = "API Token Expired"
-                    // swiftlint:disable:next line_length
                     dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
                 }
-            case .missingToken:
-                print(error)
-            case .none:
+            case .missingToken, .none:
                 print(error)
             }
         }
     }
 
-    func getHost(hostID: Int) async throws -> Host {
-        let endpoint = Endpoint.gethost(id: hostID)
+    private func formattedUptime(_ raw: Double) -> String {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.day, .hour, .minute]
+        formatter.unitsStyle = .abbreviated
+        return formatter.string(from: raw) ?? "—"
+    }
 
-        do {
-            let host = try await networkManager.fetch(endpoint, attempts: 5)
-            return host
-        } catch {
-            print(error)
-            throw error
-        }
+    func getHost(hostID: Int) async throws -> Host {
+        let endpoint = Endpoint.getHost(id: hostID)
+
+        // NetworkManager logs the URL, status, and response body on failure.
+        return try await networkManager.fetch(endpoint, attempts: 5)
     }
 }

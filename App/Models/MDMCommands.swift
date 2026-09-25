@@ -1,6 +1,6 @@
 //
 //  MDMCommands.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 6/22/23.
 //
@@ -18,12 +18,12 @@ struct CommandResponse: Codable, Identifiable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        commandUuid = try container.decode(String.self, forKey: .commandUuid)
-        status = try container.decode(String.self, forKey: .status)
-        updatedAt = try container.decode(Date.self, forKey: .updatedAt)
-        requestType = try container.decode(String.self, forKey: .requestType)
-        hostname = try container.decode(String.self, forKey: .hostname)
-        hostUuid = try container.decode(String.self, forKey: .hostUuid)
+        status = try container.decodeIfPresent(String.self, forKey: .status) ?? ""
+        commandUuid = try container.decodeIfPresent(String.self, forKey: .commandUuid) ?? ""
+        updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? .distantPast
+        requestType = try container.decodeIfPresent(String.self, forKey: .requestType) ?? ""
+        hostname = try container.decodeIfPresent(String.self, forKey: .hostname) ?? ""
+        hostUuid = try container.decodeIfPresent(String.self, forKey: .hostUuid) ?? ""
     }
 
     enum CodingKeys: String, CodingKey {
@@ -31,14 +31,38 @@ struct CommandResponse: Codable, Identifiable {
     }
 }
 
+/// Request body for the `/api/v1/fleet/commands/run` endpoint.
+/// The snake_case encoder encodes `hostUuids` as `host_uuids`.
 struct MdmCommand: Codable {
     var command: String
-    var deviceIds: [String]
+    var hostUuids: [String]
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        command = try container.decodeIfPresent(String.self, forKey: .command) ?? ""
+        hostUuids = try container.decodeIfPresent([String].self, forKey: .hostUuids) ?? []
+    }
+
+    init(command: String, hostUuids: [String]) {
+        self.command = command
+        self.hostUuids = hostUuids
+    }
 }
 
 struct MdmCommandResponse: Codable {
-    var commandUuid: String
-    var requestType: String
+    var commandUuid: String?
+    var requestType: String?
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        commandUuid = try container.decodeIfPresent(String.self, forKey: .commandUuid)
+        requestType = try container.decodeIfPresent(String.self, forKey: .requestType)
+    }
+
+    init(commandUuid: String? = nil, requestType: String? = nil) {
+        self.commandUuid = commandUuid
+        self.requestType = requestType
+    }
 }
 
 // Struct for DeviceInformationCommand

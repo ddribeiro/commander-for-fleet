@@ -1,6 +1,6 @@
 //
 //  CommandRow.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 6/29/23.
 //

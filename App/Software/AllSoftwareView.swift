@@ -1,6 +1,6 @@
 //
 //  SoftwareView.swift
-//  FleetDMViewer
+//  Commander
 //
 //  Created by Dale Ribeiro on 12/1/23.
 //
@@ -8,49 +8,35 @@
 import SwiftUI
 
 struct AllSoftwareView: View {
-    @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
-    @Environment(\.scenePhase) var scenePhase
-    @Environment(\.networkManager) var networkManager
+
     @Environment(\.horizontalSizeClass) var sizeClass
 
-    @State private var selection: Set<CachedSoftware.ID> = []
-    @State private var searchText = ""
+    @State private var selection: Set<Software.ID> = []
     @State private var isShowingVulnerableSoftware = false
 
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var teams: FetchedResults<CachedTeam>
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name)]) var users: FetchedResults<CachedUser>
-
-    var searchResults: [CachedSoftware] {
-        if searchText.isEmpty && !isShowingVulnerableSoftware {
-            return dataController.softwareForSelectedFilter().sorted {
-                $0.wrappedName < $1.wrappedName
-            }
-        } else if searchText.isEmpty && isShowingVulnerableSoftware {
-            return vulnerableSoftware.sorted {
-                $0.wrappedName < $1.wrappedName
-            }
-        } else if isShowingVulnerableSoftware {
-                return vulnerableSoftware.filter({ $0.wrappedName.localizedCaseInsensitiveContains(searchText) })
-            } else {
-            return dataController.softwareForSelectedFilter().filter {
-                $0.wrappedName.localizedCaseInsensitiveContains(searchText)
-            }
+    var teamFilters: [Filter] {
+        dataController.teams.map { team in
+            Filter(id: team.id, name: team.name, icon: "square.grid.2x2", team: team)
         }
     }
 
-    var vulnerableSoftware: [CachedSoftware] {
-        dataController.softwareForSelectedFilter().filter {
-            !$0.vulnerabilitiesArray.isEmpty
+    var softwareResults: [Software] {
+        var results = dataController.softwareForSelectedFilter()
+
+        if isShowingVulnerableSoftware {
+            results = results.filter { !($0.vulnerabilities ?? []).isEmpty }
         }
+
+        return results
     }
 
     var displayAsList: Bool {
-#if os(iOS)
+        #if os(iOS)
         return sizeClass == .compact
-#else
+        #else
         return false
-#endif
+        #endif
     }
 
     var body: some View {
@@ -60,68 +46,59 @@ struct AllSoftwareView: View {
             } else {
                 AllSoftwareTableView(
                     selection: $selection,
-                    searchText: $searchText,
                     isShowingVulnerableSoftware: $isShowingVulnerableSoftware
                 )
             }
         }
-        .navigationDestination(for: CachedSoftware.self) { software in
+        .navigationTitle(dataController.selectedFilter == .all ? "All Software" : dataController.selectedFilter.name)
+        .navigationDestination(for: Software.self) { software in
             SoftwareDetailView(software: software)
         }
-
-        .navigationTitle("Software")
+        .toolbar {
+            if !displayAsList {
+                toolbarButtons
+            }
+        }
         .task {
-            if let softwareLastUpdatedAt = dataController.softwareLastUpdatedAt {
-                guard softwareLastUpdatedAt < .now.addingTimeInterval(-43200) else { return }
+            let requestedTeamId = dataController.selectedFilter.team?.id
+
+            if let softwareLastUpdatedAt = dataController.softwareLastUpdatedAt,
+               dataController.softwareTeamId == requestedTeamId {
+                guard softwareLastUpdatedAt < .now.addingTimeInterval(-300) else { return }
             }
 
-            if let savedUserID = UserDefaults.standard.value(forKey: "loggedInUserID") as? Int16 {
-                if let loggedInUser = users.first(where: { $0.id == savedUserID}) {
-                    if loggedInUser.globalRole != "admin" {
-                        for team in loggedInUser.teamsArray {
-                            Task {
-                                await fetchSoftwareForTeam(id: Int(team.id))
-                            }
-                        }
-                    } else {
-                        Task {
-                            await fetchSoftware()
-                        }
-                    }
-                }
-            }
+            await dataController.updateSoftware(teamId: requestedTeamId)
         }
         .refreshable {
-            if let savedUserID = UserDefaults.standard.value(forKey: "loggedInUserID") as? Int16 {
-                if let loggedInUser = users.first(where: { $0.id == savedUserID}) {
-                    if loggedInUser.globalRole != "admin" {
-                        for team in loggedInUser.teamsArray {
-                            Task {
-                                await fetchSoftwareForTeam(id: Int(team.id))
-                            }
-                        }
-                    } else {
-                        Task {
-                            await fetchSoftware()
-                        }
-                    }
+            await dataController.updateSoftware(teamId: dataController.selectedFilter.team?.id)
+        }
+        .onChange(of: dataController.selectedFilter) { _ in
+            Task {
+                await dataController.updateSoftware(teamId: dataController.selectedFilter.team?.id)
+            }
+        }
+        .overlay {
+            if softwareResults.isEmpty {
+                if dataController.loadingState == .loading {
+                    ProgressView("Loading Software…")
+                } else if dataController.softwareLastUpdatedAt != nil {
+                    ContentUnavailableView.search
+                } else {
+                    ContentUnavailableView(
+                        "No Software Found",
+                        systemImage: "app.slash",
+                        description: Text("Pull to refresh to try again.")
+                    )
                 }
             }
         }
-        .onAppear {
-            dataController.filterText = ""
+        .searchable(
+            text: $dataController.filterText
+        )
+        .sheet(isPresented: $dataController.showingApiTokenAlert) {
+            APITokenRefreshView()
+                .presentationDetents([.medium])
         }
-        .overlay {
-            if dataController.softwareForSelectedFilter().isEmpty {
-                ContentUnavailableView.search
-            }
-        }
-        .searchable(text: $searchText)
-//        .toolbar {
-//            if !displayAsList {
-//                toolbarButtons
-//            }
-//        }
 #if os(iOS)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -133,34 +110,52 @@ struct AllSoftwareView: View {
                 }
             }
 
-            ToolbarItem(placement: .bottomBar) {
-                if dataController.loadingState == .loaded {
-                    VStack {
-                        if let updatedAt = dataController.softwareLastUpdatedAt {
-                            Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
-                                .font(.footnote)
-                            Text("^[\(searchResults.count) Software Titles](inflection: true)")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Picker("Team", selection: $dataController.selectedFilter) {
+                        Text("All Software").tag(Filter.all)
+                        Divider()
+                        ForEach(teamFilters) { filter in
+                            Text(filter.name).tag(filter)
                         }
                     }
+                } label: {
+                    Label("Teams", systemImage: "square.grid.2x2")
+                        .symbolVariant(dataController.selectedFilter != .all ? .fill : .none)
                 }
+            }
 
-                if dataController.loadingState == .loading {
-                    HStack {
-                        ProgressView()
-                            .padding(.horizontal, 1)
-                            .controlSize(.mini)
+            ToolbarItem(placement: .topBarTrailing) {
+                ContentViewToolbar()
+            }
 
-                        Text("Loading Software")
+            ToolbarItem(placement: .bottomBar) {
+                if let updatedAt = dataController.softwareLastUpdatedAt {
+                    VStack {
+                        Text("Updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                            .font(.footnote)
+                        Text("^[\(softwareResults.count) Software Titles](inflect: true)")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
-
                 }
             }
         }
 #endif
+    }
+
+    var list: some View {
+        List {
+            softwareRows(softwareResults)
+        }
+    }
+
+    func softwareRows(_ software: [Software]) -> some View {
+        ForEach(software) { software in
+            NavigationLink(value: software) {
+                AllSoftwareRow(software: software)
+            }
+        }
     }
 
     @ViewBuilder
@@ -170,116 +165,11 @@ struct AllSoftwareView: View {
         }
         .disabled(selection.isEmpty)
     }
+}
 
-    func fetchSoftwareForTeam(id: Int) async {
-        guard dataController.activeEnvironment != nil else { return }
-        let endpoint = Endpoint.getSoftwareForTeam(id: id)
-
-        do {
-            dataController.loadingState = .loading
-            let software = try await networkManager.fetch(endpoint, attempts: 5)
-
-            await MainActor.run {
-                moc.perform {
-                    updateCache(with: software)
-                }
-            }
-            dataController.softwareLastUpdatedAt = .now
-            dataController.loadingState = .loaded
-        } catch {
-            dataController.loadingState = .failed
-            switch error as? AuthManager.AuthError {
-            case .missingCredentials:
-                if !dataController.showingApiTokenAlert {
-                    dataController.showingApiTokenAlert = true
-                    dataController.alertTitle = "API Token Expired"
-                    // swiftlint:disable:next line_length
-                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
-                }
-            case .missingToken:
-                print(error.localizedDescription)
-            case .none:
-                print("Thise error")
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    func fetchSoftware() async {
-        guard dataController.activeEnvironment != nil else { return }
-
-        do {
-            dataController.loadingState = .loading
-            let software = try await networkManager.fetch(.software, attempts: 5)
-
-            await MainActor.run {
-                moc.perform {
-                    updateCache(with: software)
-                }
-            }
-            dataController.softwareLastUpdatedAt = .now
-            dataController.loadingState = .loaded
-        } catch {
-            dataController.loadingState = .failed
-            switch error as? AuthManager.AuthError {
-            case .missingCredentials:
-                if !dataController.showingApiTokenAlert {
-                    dataController.showingApiTokenAlert = true
-                    dataController.alertTitle = "API Token Expired"
-                    // swiftlint:disable:next line_length
-                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
-                }
-            case .missingToken:
-                print(error.localizedDescription)
-            case .none:
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    var list: some View {
-        List {
-            softwareRows(searchResults)
-        }
-        .id(UUID())
-    }
-
-    func softwareRows(_ software: [CachedSoftware]) -> some View {
-        ForEach(software) { software in
-            NavigationLink(value: software) {
-                AllSoftwareRow(software: software)
-            }
-        }
-    }
-
-    func updateCache(with downloadedSoftware: [Software]) {
-        for downloadedSoftware in downloadedSoftware {
-            let cachedSoftware = CachedSoftware(context: moc)
-
-            cachedSoftware.id = Int32(downloadedSoftware.id)
-            cachedSoftware.name = downloadedSoftware.name
-            cachedSoftware.version = downloadedSoftware.version
-            cachedSoftware.bundleIdentifier = downloadedSoftware.bundleIdentifier
-            cachedSoftware.source = downloadedSoftware.source
-            cachedSoftware.hostCount = Int16(downloadedSoftware.hostsCount ?? 0)
-
-            if let vulnerabilities = downloadedSoftware.vulnerabilities {
-                for vulnerability in vulnerabilities {
-                    let cachedVulnerability = CachedVulnerability(context: moc)
-                    cachedVulnerability.cisaKnownExploit = vulnerability.cisaKnownExploit ?? false
-                    cachedVulnerability.cve = vulnerability.cve
-                    cachedVulnerability.cveDescription = vulnerability.cveDescription
-                    cachedVulnerability.cvePublished = vulnerability.cvePublished
-                    cachedVulnerability.cvssScore = vulnerability.cvssScore ?? 0
-                    cachedVulnerability.detailsLink = vulnerability.detailsLink
-                    cachedVulnerability.epssProbability = vulnerability.epssProbability ?? 0
-                    cachedVulnerability.resolvedInVersion = vulnerability.resolvedInVersion
-
-                    cachedSoftware.addToVulnerabilities(cachedVulnerability)
-                }
-            }
-        }
-
-        try? moc.save()
-    }
+#Preview {
+    AllSoftwareView()
+        .environmentObject(
+            DataController(networkManager: NetworkManager(authManager: AuthManager()))
+        )
 }
