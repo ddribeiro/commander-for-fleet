@@ -34,7 +34,7 @@ struct APITokenRefreshView: View {
             Section("New API Token") {
                 SecureField("API Token", text: $dataController.apiTokenText)
                     .animation(.bouncy, value: showingErrorText)
-                
+
                 if showingErrorText {
                     Text("Your API Token was not accepted. Please try again.")
                         .font(.caption)
@@ -73,7 +73,7 @@ struct APITokenRefreshView: View {
                     }
                 }
                 .disabled(dataController.loadingState == .loading)
-                
+
                 Button("Cancel", role: .cancel) {
                     dismiss()
                 }

@@ -23,11 +23,10 @@ struct LoginView: View {
             VStack(spacing: 24) {
                 VStack(spacing: 8) {
                     Image(systemName: "lock.shield")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .resizable().scaledToFit()
                         .frame(width: 64, height: 64)
                         .foregroundStyle(Color.accentColor)
-                    
+
                     Text("Commander")
                         .font(.title.bold())
                 }
@@ -99,7 +98,7 @@ struct LoginView: View {
                                 serverURL: serverURL
                             )
                         }
-                        
+
                         if authService.loadingState == .loaded {
                             dismiss()
                         }
@@ -118,7 +117,7 @@ struct LoginView: View {
                 .controlSize(.large)
                 .disabled(!isFormValid || authService.loadingState == .loading)
                 .padding(.horizontal, 20)
-                
+
                 if authService.error != nil {
                     Text(authService.error?.description ?? "")
                         .font(.caption)

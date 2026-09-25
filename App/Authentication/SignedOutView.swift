@@ -13,27 +13,26 @@ struct SignedOutView: View {
     var body: some View {
         VStack(spacing: 30) {
             Spacer()
-            
+
             Image(systemName: "command")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
+                .resizable().scaledToFit()
                 .frame(width: 100, height: 100)
                 .foregroundStyle(.tint)
-            
+
             VStack(spacing: 12) {
                 Text("Commander")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                
+
                 Text("Manage your Fleet instance on the go.")
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 40)
             }
-            
+
             Spacer()
-            
+
             Button(action: {
                 showingLogin.toggle()
             }) {

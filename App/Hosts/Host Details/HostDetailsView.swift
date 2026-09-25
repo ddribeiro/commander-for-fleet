@@ -110,7 +110,7 @@ struct HostDetailsView: View {
                         NavigationLink(value: HostDetailPane.software) {
                             Label("Software", systemImage: paneIcon(for: .software))
                         }
-                        
+
                         if let profiles = host.mdm?.profiles, !profiles.isEmpty {
                             NavigationLink(value: HostDetailPane.profiles) {
                                 Label("Profiles", systemImage: paneIcon(for: .profiles))
@@ -141,19 +141,16 @@ struct HostDetailsView: View {
                 }
                 .navigationTitle(host.computerName)
                 .navigationBarTitleDisplayMode(.inline)
-                .onDisappear {
-                    updatedHost = nil
-                }
             } else {
                 ContentUnavailableView(
                     "Loading Host",
                     systemImage: "desktopcomputer",
                     description: Text("Fetching the latest details…")
                 )
-                .task {
-                    await updateHost()
-                }
             }
+        }
+        .task {
+            await updateHost()
         }
         .navigationDestination(for: HostDetailPane.self) { pane in
             switch pane {

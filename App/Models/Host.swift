@@ -229,4 +229,3 @@ struct Battery: Codable, Hashable {
         health: 0.95
     )
 }
-

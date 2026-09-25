@@ -31,7 +31,7 @@ struct MDMCommandMenu: View {
                         let shutdownDeviceCommand = ShutDownDeviceCommand(command: ShutDownDeviceCommand.Command())
                         // swiftlint:disable:next line_length
                         let mdmCommand = MdmCommand(command: generatebase64EncodedPlistData(from: shutdownDeviceCommand), hostUuids: [host.uuid])
-                    
+
                         await sendMDMCommand(command: mdmCommand)
                     }
                 } label: {
@@ -41,10 +41,10 @@ struct MDMCommandMenu: View {
                 Button(role: .destructive) {
                     Task {
                         let restartDeviceComand = RestartDeviceCommand(command: RestartDeviceCommand.Command())
-                    
+
                         // swiftlint:disable:next line_length
                         let mdmCommand = MdmCommand(command: generatebase64EncodedPlistData(from: restartDeviceComand), hostUuids: [host.uuid])
-                    
+
                         await sendMDMCommand(command: mdmCommand)
                     }
                 } label: {
@@ -81,12 +81,12 @@ struct MDMCommandMenu: View {
                             pin: lockCode
                         )
                     )
-                
+
                     let mdmCommand = MdmCommand(
                         command: generatebase64EncodedPlistData(from: lockDeviceCommand),
                         hostUuids: [host.uuid]
                     )
-                
+
                     await sendMDMCommand(command: mdmCommand)
                 }
             }

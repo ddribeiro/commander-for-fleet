@@ -16,8 +16,7 @@ struct HostRow: View {
         HStack(spacing: 16) {
             // Device icon with SF Symbol
             Image(systemName: host.iconName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
+                .resizable().scaledToFit()
                 .frame(width: 28, height: 28)
                 .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
@@ -31,7 +30,7 @@ struct HostRow: View {
                     .accessibilityIdentifier("host-name-\(host.id)")
 
                 // Team name (when showing all or recently enrolled)
-                if (dataController.selectedFilter == .all || dataController.selectedFilter == .recentlyEnrolled),
+                if dataController.selectedFilter == .all || dataController.selectedFilter == .recentlyEnrolled,
                    let teamName = host.teamName, !teamName.isEmpty {
                     Text(teamName)
                         .font(.subheadline)
