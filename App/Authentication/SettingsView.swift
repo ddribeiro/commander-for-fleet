@@ -1,6 +1,6 @@
 //
 //  SettingsView.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 8/22/23.
 //

@@ -1,6 +1,6 @@
 //
 //  NetworkManager.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 5/25/23.
 //
@@ -59,11 +59,22 @@ actor NetworkManager {
         return try? JSONDecoder().decode(AppEnvironment.self, from: data)
     }
 
-    func fetch<T>(_ resource: Endpoint<T>, with data: Data? = nil, allowRetry: Bool = true) async throws -> T where T: Decodable {
+    // swiftlint: disable next cyclomatic_complexity
+// swiftlint: disable next function_body_length
+    func fetch<T>(
+        _ resource: Endpoint<T>,
+        with data: Data? = nil,
+        allowRetry: Bool = true
+    ) async throws -> T where T: Decodable {
         try await fetch(resource, with: data, allowRetry: allowRetry, retryCount: 0)
     }
 
-    private func fetch<T>(_ resource: Endpoint<T>, with data: Data? = nil, allowRetry: Bool, retryCount: Int) async throws -> T where T: Decodable {
+    private func fetch<T>(
+        _ resource: Endpoint<T>,
+        with data: Data? = nil,
+        allowRetry: Bool,
+        retryCount: Int
+    ) async throws -> T where T: Decodable {
         guard let url = URL(string: resource.path, relativeTo: environment?.baseURL) else {
             throw HTTPError.invalidURL
         }
@@ -125,8 +136,12 @@ actor NetworkManager {
             do {
                 return try decoder.decode(T.self, from: processedData)
             } catch {
-                let body = String(data: processedData, encoding: .utf8) ?? "<not valid UTF-8, \(processedData.count) bytes>"
-                debugPrint("Network: failed to decode \(T.self) (keyPath: \(resource.keyPath ?? "none"), body: \(resource.path)):\n\(String(body.prefix(2000)))")
+                let body = String(data: processedData, encoding: .utf8) ??
+                    "<not valid UTF-8, \(processedData.count) bytes>"
+                debugPrint("""
+                    Network: failed to decode \(T.self) (keyPath: \(resource.keyPath ?? "none"), \
+                        body: \(resource.path)):\n\(String(body.prefix(2000)))
+                    """)
                 throw error
             }
         } catch {
@@ -134,7 +149,12 @@ actor NetworkManager {
         }
     }
 
-    func fetch<T>(_ resource: Endpoint<T>, with data: Data? = nil, attempts: Int, retryDelay: Double = 1.0) async throws -> T where T: Decodable {
+    func fetch<T>(
+        _ resource: Endpoint<T>,
+        with data: Data? = nil,
+        attempts: Int,
+        retryDelay: Double = 1.0
+    ) async throws -> T where T: Decodable {
         var lastError: Error?
 
         for attempt in (1...attempts).reversed() {
@@ -155,7 +175,11 @@ actor NetworkManager {
         throw lastError!
     }
 
-    func fetch<T>(_ resource: Endpoint<T>, with data: Data? = nil, defaultValue: T) async throws -> T where T: Decodable {
+    func fetch<T>(
+        _ resource: Endpoint<T>,
+        with data: Data? = nil,
+        defaultValue: T
+    ) async throws -> T where T: Decodable {
         do {
             return try await fetch(resource, with: data)
         } catch {

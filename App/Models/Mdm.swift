@@ -1,6 +1,6 @@
 //
 //  Mdm.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 6/8/23.
 //
@@ -27,7 +27,13 @@ struct Profile: Codable, Identifiable, Hashable {
         detail = try container.decodeIfPresent(String.self, forKey: .detail) ?? ""
     }
 
-    init(profileUuid: String = "", name: String = "", status: String = "", operationType: String = "", detail: String = "") {
+    init(
+        profileUuid: String = "",
+        name: String = "",
+        status: String = "",
+        operationType: String = "",
+        detail: String = ""
+    ) {
         self.profileUuid = profileUuid
         self.name = name
         self.status = status

@@ -1,6 +1,6 @@
 //
 //  HostMDMDetailsView.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 9/22/24.
 //
@@ -27,7 +27,11 @@ struct HostMDMDetailsView: View {
                     Text(mdm.encryptionKeyAvailable ? "Yes" : "No")
                         .foregroundColor(mdm.encryptionKeyAvailable ? .secondary : .red)
 
-                    Image(systemName: mdm.encryptionKeyAvailable ? "checkmark.shield.fill" : "exclamationmark.shield.fill")
+                     Image(
+                          systemName: mdm.encryptionKeyAvailable
+                                       ? "checkmark.shield.fill"
+                                       : "exclamationmark.shield.fill"
+                     )
                         .imageScale(.large)
                         .foregroundColor(mdm.encryptionKeyAvailable ? .green : .red)
                 }

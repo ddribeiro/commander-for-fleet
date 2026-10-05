@@ -1,6 +1,6 @@
 //
 //  User.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 6/14/23.
 //

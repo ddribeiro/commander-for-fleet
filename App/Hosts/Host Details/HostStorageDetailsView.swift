@@ -1,6 +1,6 @@
 //
 //  HostStorageDetailsView.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 9/22/24.
 //

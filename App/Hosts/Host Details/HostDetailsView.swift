@@ -1,6 +1,6 @@
 //
 //  HostDetailsView.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 6/1/23.
 //
@@ -158,19 +158,31 @@ struct HostDetailsView: View {
                 if let policies = updatedHost?.policies {
                     HostPoliciesView(policies: policies)
                 } else {
-                    ContentUnavailableView("No Policies", systemImage: "list.bullet", description: Text("This host has no policies installed."))
+                     ContentUnavailableView(
+                         "No Policies",
+                         systemImage: "list.bullet",
+                         description: Text("This host has no policies installed.")
+                     )
                 }
             case .software:
                 if let software = updatedHost?.software, !software.isEmpty {
                     HostSoftwareView(software: software)
                 } else {
-                    ContentUnavailableView("No Software", systemImage: "app.badge", description: Text("This host has no software installed."))
+                     ContentUnavailableView(
+                         "No Software",
+                         systemImage: "app.badge",
+                         description: Text("This host has no software installed.")
+                     )
                 }
             case .profiles:
                 if let profiles = updatedHost?.mdm?.profiles, !profiles.isEmpty {
                     HostProfilesView(profiles: profiles)
                 } else {
-                    ContentUnavailableView("No Profiles", systemImage: "switch.2", description: Text("This host has no profiles installed."))
+                     ContentUnavailableView(
+                         "No Profiles",
+                         systemImage: "switch.2",
+                         description: Text("This host has no profiles installed.")
+                     )
                 }
             }
         }
@@ -209,7 +221,8 @@ struct HostDetailsView: View {
                 if !dataController.showingApiTokenAlert {
                     dataController.showingApiTokenAlert = true
                     dataController.alertTitle = "API Token Expired"
-                    dataController.alertDescription = "Your API Token has expired. Please provide a new one or sign out."
+                     dataController.alertDescription =
+                        "Your API Token has expired. Please provide a new one or sign out."
                 }
             case .missingToken, .none:
                 print(error)

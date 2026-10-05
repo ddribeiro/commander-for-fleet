@@ -1,6 +1,6 @@
 //
 //  MDMCommandMenu.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 8/17/23.
 //

@@ -1,6 +1,6 @@
 //
 //  AuthService.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 11/24/23.
 //

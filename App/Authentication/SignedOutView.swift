@@ -1,6 +1,6 @@
 //
 //  SignedOutView.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 11/2/23.
 //
@@ -20,7 +20,7 @@ struct SignedOutView: View {
                 .foregroundStyle(.tint)
 
             VStack(spacing: 12) {
-                Text("Commander")
+                Text("Cygnet")
                     .font(.largeTitle)
                     .fontWeight(.bold)
 
@@ -33,16 +33,16 @@ struct SignedOutView: View {
 
             Spacer()
 
-            Button(action: {
-                showingLogin.toggle()
-            }) {
-                HStack {
-                    Text("Sign In")
-                    Image(systemName: "chevron.right")
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-            }
+             Button {
+                 showingLogin.toggle()
+             } label: {
+                 HStack {
+                     Text("Sign In")
+                     Image(systemName: "chevron.right")
+                 }
+                 .frame(maxWidth: .infinity)
+                 .padding()
+             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .padding(.horizontal, 40)

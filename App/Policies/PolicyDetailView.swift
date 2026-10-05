@@ -1,6 +1,6 @@
 //
 //  PolicyDetailView.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 12/6/23.
 //

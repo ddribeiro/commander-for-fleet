@@ -1,6 +1,6 @@
 //
 //  AllSoftwareRow.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 12/1/23.
 //

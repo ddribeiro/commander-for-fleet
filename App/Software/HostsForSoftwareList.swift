@@ -1,6 +1,6 @@
 //
 //  HostsForSoftwareList.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 12/7/23.
 //

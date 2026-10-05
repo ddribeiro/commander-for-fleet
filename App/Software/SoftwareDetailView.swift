@@ -1,6 +1,6 @@
 //
 //  SoftwareDetailView.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 12/7/23.
 //
@@ -30,7 +30,10 @@ struct SoftwareDetailView: View {
                     NavigationLink {
                         HostsForSoftwareList(software: software)
                     } label: {
-                        Text("^[View \(software.hostsCount ?? 0) hosts](inflect: true) with version \(software.version) of \(software.name)")
+                        let hostCountText = software.hostsCount ?? 0
+                        let hostText = "View \(hostCountText) hosts"
+                        let versionText = "with version \(software.version) of \(software.name)"
+                        Text("^[ \(hostText) ](inflect: true) \(versionText)")
                     }
                 } else {
                     ContentUnavailableView(

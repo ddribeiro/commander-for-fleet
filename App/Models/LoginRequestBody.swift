@@ -1,6 +1,6 @@
 //
 //  LoginRequestBody.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 6/8/23.
 //

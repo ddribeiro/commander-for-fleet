@@ -1,6 +1,6 @@
 //
 //  HostStatusFilter.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 9/26/24.
 //

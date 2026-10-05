@@ -1,6 +1,7 @@
 //
-//  FleetDMViewerApp.swift
-//  Commander
+//  CygnetApp.swift
+//  Cygnet
+
 //
 //  Created by Dale Ribeiro on 5/22/23.
 //
@@ -8,7 +9,7 @@
 import SwiftUI
 
 @main
-struct FleetDMViewerApp: App {
+struct CygnetApp: App {
     // The core services, wired up once here and shared across the app.
     @StateObject private var authService: AuthService
     @State private var networkManager: NetworkManager

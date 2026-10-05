@@ -1,6 +1,6 @@
 //
 //  LoginView.swift
-//  Commander
+//  Cygnet
 //
 //  Created by Dale Ribeiro on 5/22/23.
 //
@@ -27,7 +27,7 @@ struct LoginView: View {
                         .frame(width: 64, height: 64)
                         .foregroundStyle(Color.accentColor)
 
-                    Text("Commander")
+                    Text("Cygnet")
                         .font(.title.bold())
                 }
                 .padding(.top, 32)
