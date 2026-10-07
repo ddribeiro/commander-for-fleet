@@ -26,11 +26,11 @@ struct UserRow: View {
                     .font(.system(.largeTitle))
                     .symbolRenderingMode(.hierarchical)
 
-#if os(iOS)
+    #if os(iOS)
                     .frame(width: 40, height: 40)
-#else
+    #else
                     .frame(width: 20, height: 20)
-#endif
+    #endif
             } else {
                 AsyncImage(url: URL(string: "\(user.gravatarUrl)?s=240")) { image in
                     image
@@ -39,17 +39,17 @@ struct UserRow: View {
                         .clipShape(Circle())
                         .overlay {
                             Circle()
-                                .stroke(.white, lineWidth: 2)
+                                                .stroke(.primary, lineWidth: 2)
                         }
                         .shadow(radius: 7)
                 } placeholder: {
                     ProgressView()
                 }
-#if os(iOS)
+    #if os(iOS)
                 .frame(width: 40, height: 40)
-#else
+    #else
                 .frame(width: 20, height: 20)
-#endif
+    #endif
             }
             HStack {
                 VStack(alignment: .leading) {
@@ -68,10 +68,10 @@ struct UserRow: View {
                     if user.apiOnly == true {
                         Text("API")
                             .font(.headline)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal)
+                            .foregroundStyle(.primary)
+                            .padding(.horizontal, 8)
                             .padding(.vertical, 2)
-                            .background(.tertiary, in: RoundedRectangle(cornerRadius: 8))
+                            .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 8))
                     }
                 }
             }

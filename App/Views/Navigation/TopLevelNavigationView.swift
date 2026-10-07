@@ -1,21 +1,14 @@
-//
-//  TopLevelNavigationView.swift
-//  Cygnet
-//
-//  Created by Dale Ribeiro on 4/5/25.
-//
-
 import SwiftUI
 
 struct TopLevelNavigationView: View {
     var body: some View {
+        NavigationLink(value: Panel.home) {
+            Label("Home", systemImage: "house")
+        }
+
         NavigationLink(value: Panel.hosts) {
             Label("Hosts", systemImage: "laptopcomputer")
         }
-
-//        NavigationLink(value: Panel.controls) {
-//            Label("Controls", systemImage: "slider.horizontal.3")
-//        }
 
         NavigationLink(value: Panel.users) {
             Label("Users", systemImage: "person.2")

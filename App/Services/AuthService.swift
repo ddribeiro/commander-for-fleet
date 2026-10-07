@@ -25,7 +25,11 @@ class AuthService: ObservableObject {
         self.dataController = dataController
 
         // A token in the keychain means the last session was signed in.
-        self.isAuthenticated = KeychainWrapper.default.object(of: Token.self, forKey: "apiToken") != nil
+        if let token = KeychainWrapper.default.object(of: Token.self, forKey: "apiToken"), token.isValid {
+            self.isAuthenticated = true
+        } else {
+            self.isAuthenticated = false
+        }
     }
 
     func login(email: String, password: String, serverURL: String) async throws {

@@ -51,11 +51,6 @@ struct SignedOutView: View {
         .sheet(isPresented: $showingLogin) {
             NavigationStack {
                 LoginView()
-                    .environmentObject(AuthService(
-                        authManager: AuthManager(),
-                        networkManager: NetworkManager(authManager: AuthManager()),
-                        dataController: DataController(networkManager: NetworkManager(authManager: AuthManager()))
-                    ))
             }
         }
     }
